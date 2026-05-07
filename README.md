@@ -11,16 +11,18 @@
 
 ---
 
-## Strategy Summary
+## Strategy Summary (v2.0 — Post-Iran-War-Pivot)
 
-Three-layer approach designed to generate alpha over a passive SPY hold:
+Iran ceasefire holding; formal peace deal imminent. Rotated out of energy/defense into
+tech/growth/recovery. Sell CSPs NOW while war-era IV is still elevated (window: 2–4 weeks).
 
-| Layer | Allocation | Target Contribution |
-|---|---|---|
-| Core ETF positions | $55,000 (55%) | Market + sector alpha |
-| Options income (The Wheel) | $30,000 (30%) | 2–3%/month premium |
-| Opportunistic / momentum | $10,000 (10%) | High-conviction short-term plays |
-| Cash reserve | $5,000 (5%) | Dry powder |
+| Layer | Allocation | Holdings | Target |
+|---|---|---|---|
+| Core ETFs | $53,000 (53%) | QQQ×45, SPY×13, XLY×40, JETS×80, XLE×100 | Market + recovery alpha |
+| The Wheel (CSPs) | $30,000 (30%) | NVDA, QQQ, TSM, TSLA, AMZN, INTC, DRAM | 2–3%/month premium |
+| Single-stock options | $15,000 (15%) | TSLA, AMZN, NVDA, INTC, DRAM CSPs | IV-elevated income now |
+| Opportunistic | $10,000 (10%) | JETS, IWM, XLY, MU | Peace dividend trades |
+| Cash reserve | $5,000 (5%) | Dry powder | Deploy on volatility |
 
 ---
 
