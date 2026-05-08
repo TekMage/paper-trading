@@ -11,9 +11,9 @@
 | Date | Account Value | SPY Price | Our Return | SPY Return | Alpha |
 |---|---|---|---|---|---|
 | 2026-05-07 | $100,000.00 | $731.53 | 0.00% | 0.00% | 0.00% |
-| 2026-05-08 | $100,000.00 | $734.71 | 0.00% | +0.43% | -0.43% |
+| 2026-05-08 | $100,000.00* | $737.27 | 0.00%* | +0.78% | -0.78% | API blocked Day 2; L1 trades intended not confirmed; theoretical +0.49% if executed; Iran MOU unsigned; oil $101 |
 
-*Note: May 8 account value held at $100,000 — Alpaca API returned 403 "Host not in allowlist" from trading bot environment. Layer 1 trades documented as intended below; manual execution required via Alpaca dashboard or local terminal.*
+*Note: May 8 account value held at $100,000 confirmed — Alpaca API returned 403 "Host not in allowlist" from trading bot environment (both sessions). Layer 1 trades documented as intended; manual execution required via Alpaca dashboard. Theoretical equity if L1 executed at open: ~$100,490 (+0.49%). SPY close $737.27; QQQ hit new 52-wk high $711.23 (+2.35%); JETS $27.59; NVDA $215.70; TSLA $428.95.*
 
 ---
 
