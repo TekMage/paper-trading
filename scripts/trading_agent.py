@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
 """
-trading_agent.py — GitHub Actions trading agent
-Calls Claude API for decisions, executes via Alpaca REST.
+trading_agent.py — Rule-based trading agent for GitHub Actions.
+No AI API required — executes strategy rules mechanically.
 
-Usage: python3 trading_agent.py --session {open|midday|eod}
-       python3 trading_agent.py --session open --dry-run
+Sessions:
+  open   — Layer 1 rebalance + open new CSPs
+  midday — Profit takes, 50% CSP closes, stop checks
+  eod    — Summary log only (market already closed)
+
+Usage:
+  python3 trading_agent.py --session open
+  python3 trading_agent.py --session open --dry-run
 """
 
 import argparse
 import json
 import os
-import re
 import sys
 from datetime import date, timedelta
 from pathlib import Path
 
-import anthropic
 import requests
 
 # ---------------------------------------------------------------------------
@@ -24,10 +28,10 @@ import requests
 ALPACA_KEY    = os.environ["ALPACA_API_KEY"]
 ALPACA_SECRET = os.environ["ALPACA_SECRET_KEY"]
 ALPACA_BASE   = os.environ.get("ALPACA_BASE_URL", "https://paper-api.alpaca.markets/v2")
-ALPACA_DATA   = os.environ.get("ALPACA_DATA_URL", "https://data.alpaca.markets/v2")
+ALPACA_DATA   = os.environ.get("ALPACA_DATA_URL",  "https://data.alpaca.markets/v2")
 
-ALPACA_HEADERS = {
-    "APCA-API-KEY-ID": ALPACA_KEY,
+HEADERS = {
+    "APCA-API-KEY-ID":    ALPACA_KEY,
     "APCA-API-SECRET-KEY": ALPACA_SECRET,
 }
 
@@ -39,34 +43,44 @@ STARTING_CAPITAL = 100_000.00
 SPY_START        = 731.53
 ACCOUNT_FLOOR    = 87_500.00
 
-# Layer 1 targets
-LAYER1_TARGETS = {"QQQ": 45, "SPY": 13, "XLY": 40, "JETS": 80, "XLE": 100}
+# Layer 1 share targets
+LAYER1 = {"QQQ": 45, "SPY": 13, "XLY": 40, "JETS": 80, "XLE": 100}
 
-# CSP targets: symbol → (strike, max_contracts)
-CSP_TARGETS = {
-    "TSLA": (370, 1),
-    "NVDA": (190, 1),
-    "AMZN": (245, 1),
-    "INTC": (95,  1),
-}
+# CSP targets: underlying -> (strike, max_contracts)
+# Priority order matters — most IV-sensitive first
+CSP_TARGETS = [
+    ("TSLA", 370, 1),
+    ("NVDA", 190, 1),
+    ("AMZN", 245, 1),
+    ("INTC",  95, 1),
+]
 
-WATCHLIST = ["SPY", "QQQ", "XLY", "JETS", "XLE", "NVDA", "TSLA", "AMZN", "INTC", "IWM", "MU"]
+# Layer 3 profit-take thresholds (unrealized %)
+PROFIT_TAKE    = {"JETS": 0.30, "IWM": 0.20, "MU": 0.20, "XLY": 0.20}
+STOP_REVIEW    = 0.10   # flag for review if L3 down >10%
+
+# CSP close-early threshold: buy back when current premium <= this fraction of entry
+CSP_CLOSE_PCT  = 0.50
+
+# Option chain search window
+OPT_DTE_MIN = 25
+OPT_DTE_MAX = 50
 
 # ---------------------------------------------------------------------------
-# Alpaca REST helpers
+# Alpaca REST
 # ---------------------------------------------------------------------------
 def _get(url, params=None):
-    r = requests.get(url, headers=ALPACA_HEADERS, params=params, timeout=15)
+    r = requests.get(url, headers=HEADERS, params=params, timeout=15)
     r.raise_for_status()
     return r.json()
 
 def _post(url, body):
-    r = requests.post(url, headers=ALPACA_HEADERS, json=body, timeout=15)
+    r = requests.post(url, headers=HEADERS, json=body, timeout=15)
     r.raise_for_status()
     return r.json()
 
 def _delete(url):
-    r = requests.delete(url, headers=ALPACA_HEADERS, timeout=15)
+    r = requests.delete(url, headers=HEADERS, timeout=15)
     r.raise_for_status()
     return r.json() if r.content else {}
 
@@ -83,244 +97,274 @@ def get_clock():
     return _get(f"{ALPACA_BASE}/clock")
 
 def get_snapshots(symbols):
-    return _get(f"{ALPACA_DATA}/stocks/snapshots", {"symbols": ",".join(symbols), "feed": "iex"})
+    return _get(f"{ALPACA_DATA}/stocks/snapshots",
+                {"symbols": ",".join(symbols), "feed": "iex"})
 
-def get_option_contracts(underlying, strike_gte, strike_lte):
-    today = date.today()
-    expiry_gte = (today + timedelta(days=25)).isoformat()
-    expiry_lte = (today + timedelta(days=50)).isoformat()
+def get_option_chain(underlying, strike_target):
+    gte = (date.today() + timedelta(days=OPT_DTE_MIN)).isoformat()
+    lte = (date.today() + timedelta(days=OPT_DTE_MAX)).isoformat()
     return _get(f"{ALPACA_BASE}/options/contracts", {
         "underlying_symbols": underlying,
         "type": "put",
-        "expiration_date_gte": expiry_gte,
-        "expiration_date_lte": expiry_lte,
-        "strike_price_gte": strike_gte,
-        "strike_price_lte": strike_lte,
+        "expiration_date_gte": gte,
+        "expiration_date_lte": lte,
+        "strike_price_gte":    strike_target * 0.90,
+        "strike_price_lte":    strike_target * 1.05,
         "limit": 20,
     })
 
-def place_stock_order(symbol, side, qty, order_type="market", limit_price=None):
-    body = {"symbol": symbol, "qty": str(qty), "side": side,
-            "type": order_type, "time_in_force": "day"}
-    if limit_price:
-        body["limit_price"] = str(limit_price)
-    return _post(f"{ALPACA_BASE}/orders", body)
+def place_stock_order(symbol, side, qty):
+    return _post(f"{ALPACA_BASE}/orders", {
+        "symbol": symbol, "qty": str(qty),
+        "side": side, "type": "market", "time_in_force": "day",
+    })
 
 def place_option_order(symbol, side, qty, limit_price, position_intent):
-    body = {"symbol": symbol, "qty": str(qty), "side": side,
-            "type": "limit", "limit_price": str(limit_price),
-            "time_in_force": "day", "position_intent": position_intent}
-    return _post(f"{ALPACA_BASE}/orders", body)
+    return _post(f"{ALPACA_BASE}/orders", {
+        "symbol": symbol, "qty": str(qty), "side": side,
+        "type": "limit", "limit_price": str(round(limit_price, 2)),
+        "time_in_force": "day", "position_intent": position_intent,
+    })
 
 def close_position(symbol):
     return _delete(f"{ALPACA_BASE}/positions/{symbol}")
 
 # ---------------------------------------------------------------------------
-# Context helpers
+# Strategy helpers
 # ---------------------------------------------------------------------------
-def load_plan():
-    p = REPO_ROOT / "PLAN.md"
-    return p.read_text() if p.exists() else "No PLAN.md found."
+def equity_positions(positions):
+    return {p["symbol"]: p for p in positions
+            if p.get("asset_class") == "us_equity"}
 
-def load_recent(prefix):
-    files = sorted(TRADES_DIR.glob(f"{prefix}_*.md"), reverse=True)
-    return files[0].read_text() if files else f"No {prefix} file found."
+def option_positions(positions):
+    return {p["symbol"]: p for p in positions
+            if p.get("asset_class") == "us_option"}
 
-def gather_option_chains():
-    chains = {}
-    for sym, (strike, _) in CSP_TARGETS.items():
-        try:
-            data = get_option_contracts(sym, strike * 0.85, strike * 1.10)
-            contracts = data.get("option_contracts", [])
-            # Keep only contracts with open interest or close price
-            liquid = [c for c in contracts if c.get("close_price") or c.get("open_interest")]
-            chains[sym] = liquid[:10]  # top 10 per name
-        except Exception as e:
-            chains[sym] = [{"error": str(e)}]
-    return chains
+def pending_option_orders(orders, underlying):
+    """Return True if there's already an open/pending option order for this underlying."""
+    for o in orders:
+        sym = o.get("symbol", "")
+        if sym.startswith(underlying) and o.get("asset_class") == "us_option":
+            return True
+    return False
+
+def find_best_contract(underlying, strike_target):
+    """
+    Find the most liquid tradeable put contract closest to strike_target
+    within the DTE window. Returns contract dict or None.
+    """
+    try:
+        data = get_option_chain(underlying, strike_target)
+    except Exception as e:
+        print(f"    Option chain fetch failed for {underlying}: {e}")
+        return None
+
+    contracts = [c for c in data.get("option_contracts", [])
+                 if c.get("tradable") and c.get("close_price")]
+
+    if not contracts:
+        return None
+
+    # Prefer monthly expiry (highest OI), then closest strike to target
+    contracts.sort(key=lambda c: (
+        -int(c.get("open_interest") or 0),
+        abs(float(c["strike_price"]) - strike_target),
+    ))
+    return contracts[0]
 
 # ---------------------------------------------------------------------------
-# Claude decision engine
+# Rule engine
 # ---------------------------------------------------------------------------
-SYSTEM_PROMPT = """You are an automated trading agent managing a paper trading account.
-You receive account state and market data, then return a JSON action plan.
-Be conservative: only trade when the strategy clearly calls for it.
-Never exceed buying power. Always verify positions before placing orders."""
+def layer1_actions(eq_positions):
+    """Buy any Layer 1 ETF that is below its target share count."""
+    actions = []
+    for sym, target in LAYER1.items():
+        current = int(float(eq_positions.get(sym, {}).get("qty", 0)))
+        shortfall = target - current
+        if shortfall > 0:
+            actions.append({
+                "type": "buy_stock",
+                "symbol": sym,
+                "qty": shortfall,
+                "note": f"Layer 1 rebalance: have {current}, need {target}",
+            })
+    return actions
 
-def build_user_prompt(session, account, positions, orders, snapshots, option_chains, plan, context):
-    equity = float(account.get("equity", 0))
-    options_bp = float(account.get("options_buying_power", 0))
-    cash = float(account.get("cash", 0))
 
-    pos_summary = {p["symbol"]: {"qty": p["qty"], "avg_cost": p["avg_entry_price"],
-                                  "market_value": p["market_value"],
-                                  "unrealized_pl": p["unrealized_pl"],
-                                  "unrealized_plpc": p["unrealized_plpc"]}
-                   for p in positions}
+def csp_open_actions(eq_positions, opt_positions, orders, options_bp):
+    """Open new CSPs for any target name that doesn't already have one."""
+    actions = []
+    for underlying, strike, max_contracts in CSP_TARGETS:
+        # Skip if already have a position or a pending order
+        already_open = any(sym.startswith(underlying) for sym in opt_positions)
+        if already_open or pending_option_orders(orders, underlying):
+            print(f"    {underlying} CSP: already open or pending — skip")
+            continue
 
-    open_option_orders = [o for o in orders if o.get("asset_class") == "us_option"]
-    price_summary = {sym: snap["latestTrade"]["p"]
-                     for sym, snap in snapshots.items() if "latestTrade" in snap}
+        # Check buying power (rough check: strike × 100 per contract)
+        required_bp = strike * 100
+        if options_bp < required_bp:
+            print(f"    {underlying} CSP: need ${required_bp:,}, have ${options_bp:,.0f} — skip")
+            continue
 
-    return f"""SESSION: {session.upper()} | DATE: {TODAY}
+        contract = find_best_contract(underlying, strike)
+        if not contract:
+            print(f"    {underlying} CSP: no tradeable contract found — skip")
+            continue
 
-## ACCOUNT
-- Equity: ${equity:,.2f} (start: $100,000 | return: {(equity-100000)/100000*100:+.2f}%)
-- Cash: ${cash:,.2f}
-- Options buying power: ${options_bp:,.2f}
-- Floor trigger: ${ACCOUNT_FLOOR:,.0f} (pause new positions if below)
+        close_px = float(contract["close_price"])
+        # Sell at 5% below yesterday's close to improve fill odds
+        limit_price = round(close_px * 0.95, 2)
 
-## CURRENT POSITIONS
-{json.dumps(pos_summary, indent=2)}
+        actions.append({
+            "type": "sell_csp",
+            "symbol": contract["symbol"],
+            "underlying": underlying,
+            "strike": contract["strike_price"],
+            "expiry": contract["expiration_date"],
+            "limit_price": limit_price,
+            "close_price": close_px,
+            "note": (f"{underlying} {contract['strike_price']}P {contract['expiration_date']} "
+                     f"@ ${limit_price} (close was ${close_px})"),
+        })
+        # Deduct from available BP so we don't over-commit in the same session
+        options_bp -= required_bp
 
-## OPEN OPTION ORDERS (pending fills)
-{json.dumps(open_option_orders, indent=2)}
+    return actions
 
-## MARKET PRICES
-{json.dumps(price_summary, indent=2)}
 
-## OPTION CHAINS (30-50 DTE puts, near target strikes)
-{json.dumps(option_chains, indent=2)}
+def management_actions(eq_positions, opt_positions):
+    """
+    Check open positions for:
+    - Layer 3 profit takes / stop flags
+    - CSP 50% profit closes
+    """
+    actions = []
+    flags   = []
 
-## STRATEGY (PLAN.md excerpt)
-Layer 1 targets: QQQ×45, SPY×13, XLY×40, JETS×80, XLE×100
-CSP priority: TSLA $370 strike, NVDA $190, AMZN $245, INTC $95
-- Open CSPs with 30-45 DTE when IV is elevated (war-era IV still elevated)
-- Close CSPs at 50% profit (buy to close)
-- Roll if premium doubles (50% loss)
-- Exit XLE if Brent crude < $85
-- Layer 3 profit at +20%, JETS at +30%
-- STOP new positions if equity < $87,500
+    # --- Layer 3 equity profit/stop checks ---
+    for sym, pos in eq_positions.items():
+        if sym in LAYER1:
+            continue  # Layer 1 — hold forever per strategy
+        pct = float(pos.get("unrealized_plpc", 0))
+        threshold = PROFIT_TAKE.get(sym, 0.20)
+        if pct >= threshold:
+            actions.append({
+                "type": "close_position",
+                "symbol": sym,
+                "note": f"Profit take: +{pct*100:.1f}% >= {threshold*100:.0f}% target",
+            })
+        elif pct <= -STOP_REVIEW:
+            flags.append(f"⚠️  {sym} down {pct*100:.1f}% — review stop")
 
-## TODAY'S RESEARCH CONTEXT
-{context}
+    # --- CSP 50% profit closes ---
+    for sym, pos in opt_positions.items():
+        qty = float(pos.get("qty", 0))
+        if qty >= 0:
+            continue  # long options — not our CSPs
+        avg_cost    = float(pos.get("avg_entry_price", 0))   # premium originally received
+        current_px  = float(pos.get("current_price", avg_cost))
+        if avg_cost > 0 and current_px <= avg_cost * CSP_CLOSE_PCT:
+            # Buy to close at 5% above current to ensure fill
+            limit = round(current_px * 1.05, 2)
+            actions.append({
+                "type": "buy_to_close",
+                "symbol": sym,
+                "limit_price": limit,
+                "note": (f"50% profit: sold @ ${avg_cost:.2f}, "
+                         f"now ${current_px:.2f} — locking in gain"),
+            })
 
----
+    return actions, flags
 
-Return a JSON object with this exact structure:
-
-```json
-{{
-  "reasoning": "brief explanation of your decisions",
-  "risk_flags": ["any warnings or stops triggered"],
-  "actions": [
-    {{
-      "type": "buy_stock",
-      "symbol": "QQQ",
-      "qty": 45,
-      "note": "Layer 1: at 0 of 45 target"
-    }}
-  ]
-}}
-```
-
-Valid action types:
-- "buy_stock": {{"symbol", "qty", "note"}}
-- "sell_csp": {{"symbol": "OCC_SYMBOL", "limit_price": float, "note"}} — use exact OCC symbol from option_chains
-- "buy_to_close": {{"symbol": "OCC_SYMBOL", "limit_price": float, "note"}}
-- "close_position": {{"symbol": "TICKER", "note"}}
-- "no_action": {{"note": "reason"}}
-
-Rules:
-1. Only buy Layer 1 stocks that are SHORT of their target qty in current positions
-2. Only sell_csp if options_buying_power >= strike × 100 AND no existing open order for that name
-3. For sell_csp limit_price: use close_price from option_chains, subtract 5-10% to improve fill odds
-4. If equity < ${ACCOUNT_FLOOR:,.0f}: no new buy_stock or sell_csp actions
-5. Return "no_action" if nothing needs to be done
-
-Return ONLY the JSON block."""
-
-def ask_claude(session, account, positions, orders, snapshots, option_chains, plan, context):
-    client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
-    prompt = build_user_prompt(session, account, positions, orders, snapshots,
-                                option_chains, plan, context)
-    msg = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2048,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return msg.content[0].text
-
-def parse_decision(raw):
-    m = re.search(r'```json\s*(.*?)\s*```', raw, re.DOTALL)
-    if m:
-        return json.loads(m.group(1))
-    return json.loads(raw)
 
 # ---------------------------------------------------------------------------
 # Execution
 # ---------------------------------------------------------------------------
-def execute_actions(actions, dry_run=False):
+def execute(actions, dry_run=False):
     results = []
-    for action in actions:
-        atype  = action.get("type", "no_action")
-        symbol = action.get("symbol", "")
-        note   = action.get("note", "")
-        tag    = f"{atype} {symbol}".strip()
+    for a in actions:
+        atype  = a["type"]
+        symbol = a.get("symbol", "")
+        note   = a.get("note", "")
+        print(f"  {'[DRY RUN] ' if dry_run else ''}→ {atype} {symbol}: {note}")
 
-        print(f"  → {tag}: {note}")
-
-        if dry_run or atype == "no_action":
-            results.append({"action": action, "status": "dry_run" if dry_run else "no_action"})
+        if dry_run:
+            results.append({**a, "status": "dry_run"})
             continue
 
         try:
             if atype == "buy_stock":
-                r = place_stock_order(symbol, "buy", action["qty"])
-                results.append({"action": action, "status": "submitted", "order_id": r["id"]})
+                r = place_stock_order(symbol, "buy", a["qty"])
+                results.append({**a, "status": "submitted", "order_id": r["id"]})
 
             elif atype == "close_position":
-                r = close_position(symbol)
-                results.append({"action": action, "status": "closed"})
+                close_position(symbol)
+                results.append({**a, "status": "closed"})
 
             elif atype == "sell_csp":
                 r = place_option_order(symbol, "sell", 1,
-                                        action["limit_price"], "sell_to_open")
-                results.append({"action": action, "status": "submitted", "order_id": r["id"]})
+                                        a["limit_price"], "sell_to_open")
+                results.append({**a, "status": "submitted", "order_id": r["id"]})
 
             elif atype == "buy_to_close":
                 r = place_option_order(symbol, "buy", 1,
-                                        action["limit_price"], "buy_to_close")
-                results.append({"action": action, "status": "submitted", "order_id": r["id"]})
+                                        a["limit_price"], "buy_to_close")
+                results.append({**a, "status": "submitted", "order_id": r["id"]})
 
         except requests.HTTPError as e:
-            msg = e.response.text if e.response else str(e)
-            print(f"    ERROR: {msg}")
-            results.append({"action": action, "status": "error", "error": msg})
+            err = e.response.text if e.response else str(e)
+            print(f"    ERROR: {err}")
+            results.append({**a, "status": "error", "error": err})
         except Exception as e:
             print(f"    ERROR: {e}")
-            results.append({"action": action, "status": "error", "error": str(e)})
+            results.append({**a, "status": "error", "error": str(e)})
 
     return results
+
 
 # ---------------------------------------------------------------------------
 # Logging
 # ---------------------------------------------------------------------------
-def write_log(session, reasoning, risk_flags, actions, results, account):
-    equity = float(account.get("equity", 0))
-    our_ret = (equity - STARTING_CAPITAL) / STARTING_CAPITAL * 100
+def write_log(session, account, actions, results, flags, snapshots):
+    equity      = float(account.get("equity", 0))
+    options_bp  = float(account.get("options_buying_power", 0))
+    our_ret     = (equity - STARTING_CAPITAL) / STARTING_CAPITAL * 100
+    spy_px      = snapshots.get("SPY", {}).get("latestTrade", {}).get("p", 0)
+    spy_ret     = (spy_px - SPY_START) / SPY_START * 100 if spy_px else 0
+    alpha       = our_ret - spy_ret
 
     lines = [
-        f"# exec_{session} — {TODAY}\n",
-        f"**Equity:** ${equity:,.2f} | **Return:** {our_ret:+.2f}%\n",
-        f"\n## Reasoning\n{reasoning}\n",
+        f"# exec_{session} — {TODAY}\n\n",
+        f"| | |\n|---|---|\n",
+        f"| Equity | ${equity:,.2f} |\n",
+        f"| Our return | {our_ret:+.2f}% |\n",
+        f"| SPY return | {spy_ret:+.2f}% (${spy_px:.2f}) |\n",
+        f"| Alpha | {alpha:+.2f}% |\n",
+        f"| Options BP remaining | ${options_bp:,.2f} |\n\n",
     ]
-    if risk_flags:
-        lines.append("\n## Risk Flags\n" + "\n".join(f"- {f}" for f in risk_flags) + "\n")
 
-    lines.append("\n## Actions\n")
-    for r in results:
-        a   = r["action"]
-        st  = r["status"]
-        oid = r.get("order_id", "")
-        lines.append(f"- `{a.get('type')} {a.get('symbol','')}` — {a.get('note','')} **[{st}]**"
-                      + (f" `{oid}`" if oid else "") + "\n")
+    if flags:
+        lines.append("## Flags\n" + "".join(f"- {f}\n" for f in flags) + "\n")
+
+    if actions:
+        lines.append("## Actions\n")
+        for r in results:
+            st  = r.get("status", "?")
+            oid = r.get("order_id", "")
+            lines.append(
+                f"- `{r['type']} {r.get('symbol','')}` — {r.get('note','')} "
+                f"**[{st}]**" + (f" `{oid}`" if oid else "") + "\n"
+            )
+    else:
+        lines.append("## Actions\nNo actions needed.\n")
 
     TRADES_DIR.mkdir(exist_ok=True)
     outfile = TRADES_DIR / f"exec_{session}_{TODAY}.md"
     outfile.write_text("".join(lines))
     print(f"Wrote {outfile}")
+    return str(outfile)
+
 
 # ---------------------------------------------------------------------------
 # Main
@@ -328,77 +372,94 @@ def write_log(session, reasoning, risk_flags, actions, results, account):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--session", required=True, choices=["open", "midday", "eod"])
-    parser.add_argument("--dry-run", action="store_true", help="Plan only, no orders placed")
+    parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    print(f"=== Trading Agent — {args.session.upper()} — {TODAY} ===")
+    print(f"=== Trading Agent [{args.session.upper()}] {TODAY} ===")
     if args.dry_run:
         print("DRY RUN — no orders will be placed")
 
-    # 1. Market clock check
+    # ── Market clock check ─────────────────────────────────────────────────
     clock = get_clock()
-    if not clock.get("is_open") and args.session in ("open", "midday"):
-        print(f"Market is closed (next open: {clock.get('next_open')}). Skipping execution.")
-        # Still write a log so the cron is visible in git history
+    is_open = clock.get("is_open", False)
+
+    if not is_open and args.session in ("open", "midday"):
+        next_open = clock.get("next_open", "unknown")
+        print(f"Market closed. Next open: {next_open}. Exiting.")
         TRADES_DIR.mkdir(exist_ok=True)
         (TRADES_DIR / f"exec_{args.session}_{TODAY}.md").write_text(
             f"# exec_{args.session} — {TODAY}\nMarket closed — no action.\n"
         )
         sys.exit(0)
 
-    # 2. Gather state
+    # ── Gather state ───────────────────────────────────────────────────────
     print("Fetching account state...")
     account   = get_account()
     positions = get_positions()
     orders    = get_orders(status="open")
     equity    = float(account.get("equity", 0))
-    print(f"  Equity: ${equity:,.2f} | Positions: {len(positions)} | Open orders: {len(orders)}")
+    options_bp = float(account.get("options_buying_power", 0))
+    print(f"  Equity: ${equity:,.2f} | Options BP: ${options_bp:,.2f} | "
+          f"Positions: {len(positions)} | Open orders: {len(orders)}")
 
-    # 3. Market data
-    print("Fetching market snapshots...")
-    snapshots = get_snapshots(WATCHLIST)
+    # ── Hard stop ──────────────────────────────────────────────────────────
+    below_floor = equity < ACCOUNT_FLOOR
+    if below_floor:
+        print(f"⚠️  BELOW FLOOR ${ACCOUNT_FLOOR:,.0f} — blocking new positions")
 
-    # 4. Option chains (skip for EOD)
-    option_chains = {}
-    if args.session != "eod":
-        print("Fetching option chains...")
-        option_chains = gather_option_chains()
+    eq_pos  = equity_positions(positions)
+    opt_pos = option_positions(positions)
 
-    # 5. Context from repo
-    plan = load_plan()
-    context_map = {
-        "open":   lambda: load_recent("premarket"),
-        "midday": lambda: load_recent("exec_open") or load_recent("premarket"),
-        "eod":    lambda: load_recent("exec_midday") or load_recent("exec_open"),
-    }
-    context = context_map[args.session]()
+    # ── Market snapshots ───────────────────────────────────────────────────
+    watchlist = list(LAYER1.keys()) + ["NVDA", "TSLA", "AMZN", "INTC", "IWM", "MU"]
+    print("Fetching snapshots...")
+    snapshots = get_snapshots(watchlist)
 
-    # 6. Ask Claude
-    print("Consulting Claude for decisions...")
-    raw = ask_claude(args.session, account, positions, orders,
-                      snapshots, option_chains, plan, context)
-    print("Claude response received.")
+    # ── Build action list by session ───────────────────────────────────────
+    all_actions = []
+    all_flags   = []
 
-    # 7. Parse
-    decision   = parse_decision(raw)
-    reasoning  = decision.get("reasoning", "")
-    risk_flags = decision.get("risk_flags", [])
-    actions    = decision.get("actions", [])
-    print(f"Reasoning: {reasoning}")
-    print(f"Actions planned: {len(actions)}")
+    if args.session == "open":
+        if not below_floor:
+            print("Checking Layer 1 targets...")
+            all_actions += layer1_actions(eq_pos)
+            print("Checking CSP targets...")
+            all_actions += csp_open_actions(eq_pos, opt_pos, orders, options_bp)
+        # Management checks at open too
+        mgmt, flags = management_actions(eq_pos, opt_pos)
+        all_actions += mgmt
+        all_flags   += flags
 
-    # 8. Hard stops
-    if equity < ACCOUNT_FLOOR:
-        print(f"⚠️  BELOW FLOOR ${ACCOUNT_FLOOR:,.0f} — blocking buy/sell_csp actions")
-        actions = [a for a in actions if a["type"] not in ("buy_stock", "sell_csp")]
-        risk_flags.append(f"Account ${equity:,.2f} below floor ${ACCOUNT_FLOOR:,.0f} — new positions blocked")
+    elif args.session == "midday":
+        print("Running midday management checks...")
+        mgmt, flags = management_actions(eq_pos, opt_pos)
+        all_actions += mgmt
+        all_flags   += flags
 
-    # 9. Execute
-    results = execute_actions(actions, dry_run=args.dry_run)
+    elif args.session == "eod":
+        print("EOD — summary log only.")
+        mgmt, flags = management_actions(eq_pos, opt_pos)
+        all_actions += mgmt   # close any positions that hit targets late in day
+        all_flags   += flags
+        if below_floor:
+            all_flags.append(f"🚨 Account ${equity:,.2f} below floor ${ACCOUNT_FLOOR:,.0f}!")
+        spy_px = snapshots.get("SPY", {}).get("latestTrade", {}).get("p", 0)
+        if spy_px:
+            spy_ret = (spy_px - SPY_START) / SPY_START * 100
+            our_ret = (equity - STARTING_CAPITAL) / STARTING_CAPITAL * 100
+            print(f"  SPY: ${spy_px:.2f} ({spy_ret:+.2f}%) | "
+                  f"Us: ${equity:,.2f} ({our_ret:+.2f}%) | "
+                  f"Alpha: {our_ret-spy_ret:+.2f}%")
 
-    # 10. Log
-    write_log(args.session, reasoning, risk_flags, actions, results, account)
+    # ── Execute ────────────────────────────────────────────────────────────
+    if all_actions:
+        print(f"Executing {len(all_actions)} action(s)...")
+    results = execute(all_actions, dry_run=args.dry_run)
+
+    # ── Write log ──────────────────────────────────────────────────────────
+    write_log(args.session, account, all_actions, results, all_flags, snapshots)
     print("Done.")
+
 
 if __name__ == "__main__":
     main()
