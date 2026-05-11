@@ -148,10 +148,23 @@ def pending_option_orders(orders, underlying):
             return True
     return False
 
+def _is_monthly_expiry(expiry_str):
+    """Return True if expiry_str (YYYY-MM-DD) is a standard monthly (3rd Friday)."""
+    try:
+        d = date.fromisoformat(expiry_str)
+        if d.weekday() != 4:  # not a Friday
+            return False
+        # 3rd Friday: day is between 15 and 21
+        return 15 <= d.day <= 21
+    except ValueError:
+        return False
+
+
 def find_best_contract(underlying, strike_target):
     """
     Find the most liquid tradeable put contract closest to strike_target
-    within the DTE window. Returns contract dict or None.
+    within the DTE window. Prefers monthly expiries over weeklies.
+    Returns contract dict or None.
     """
     try:
         data = get_option_chain(underlying, strike_target)
@@ -165,8 +178,9 @@ def find_best_contract(underlying, strike_target):
     if not contracts:
         return None
 
-    # Prefer monthly expiry (highest OI), then closest strike to target
+    # Monthly first (0), then weekly (1); within each tier sort by OI desc, then strike proximity
     contracts.sort(key=lambda c: (
+        0 if _is_monthly_expiry(c.get("expiration_date", "")) else 1,
         -int(c.get("open_interest") or 0),
         abs(float(c["strike_price"]) - strike_target),
     ))
@@ -352,9 +366,11 @@ def write_log(session, account, actions, results, flags, snapshots):
         for r in results:
             st  = r.get("status", "?")
             oid = r.get("order_id", "")
+            err = r.get("error", "")
             lines.append(
                 f"- `{r['type']} {r.get('symbol','')}` — {r.get('note','')} "
-                f"**[{st}]**" + (f" `{oid}`" if oid else "") + "\n"
+                f"**[{st}]**" + (f" `{oid}`" if oid else "")
+                + (f"\n  - error: `{err}`" if err else "") + "\n"
             )
     else:
         lines.append("## Actions\nNo actions needed.\n")
