@@ -13,9 +13,9 @@
 | 2026-05-07 | $100,000.00 | $731.53 | 0.00% | 0.00% | 0.00% |
 | 2026-05-08 | $100,000.00* | $737.27 | 0.00%* | +0.78% | -0.78% | API blocked Day 2; L1 trades intended not confirmed; theoretical +0.49% if executed; Iran MOU unsigned; oil $101 |
 | 2026-05-11 | $100,210.63 | $738.29 | +0.21% | +0.92% | -0.71% | GH Actions confirmed equity; L1 in place; TSLA $365P Jun5 submitted (day order, not filled); NVDA/INTC CSPs errored; Iran no deal; Brent $103.93 |
-| 2026-05-12 | ~$100,416* | $739.31 | +0.42%* | +1.06% | -0.65%* | GH Actions failed to commit; TSLA $445 (+4%); JETS $26.61 (-3.2%); Brent $107.58 (+3.2%); NVDA $219; CSPs still outstanding |
+| 2026-05-12 | ~$100,155 | $738.18 | +0.15% | +0.91% | -0.76% | CPI 3.8% shock (energy +17.9%); QQQ intraday -2.5%, recovered; Options BP dropped $61.5K (TSLA+AMZN CSPs likely opened by bot); Iran no deal — new sanctions; Brent $104.97 |
 
-*Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — GH Actions fired 14:30 UTC but no commit; equity ~$100,416 estimated (Alpaca API still blocked from Claude Code env); TSLA $445 strong; CSPs still not opened.*
+*Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — CPI 3.8% shock (energy-driven); midday API confirmed equity $99,742.23; Options BP fell $61.5K (TSLA $370+AMZN $245 CSPs likely opened by GH Actions bot); afternoon recovery lifted EOD est. to ~$100,155; Iran no deal — new US sanctions; Brent $104.97.*
 
 ---
 
