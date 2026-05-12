@@ -12,9 +12,10 @@
 |---|---|---|---|---|---|
 | 2026-05-07 | $100,000.00 | $731.53 | 0.00% | 0.00% | 0.00% |
 | 2026-05-08 | $100,000.00* | $737.27 | 0.00%* | +0.78% | -0.78% | API blocked Day 2; L1 trades intended not confirmed; theoretical +0.49% if executed; Iran MOU unsigned; oil $101 |
-| 2026-05-11 | $100,000.00* | ~$736.39 | 0.00%* (+0.16% theoretical) | +0.66% | -0.66% (-0.50% theoretical) | Iran talks collapsed; S&P -0.12%; TSLA +4.02% $428.35; MU +5.8% $790.13; NVDA +1.75% $215.20; oil +3% $103.93; L1 unconfirmed Day 5 API blocked |
+| 2026-05-11 | $100,210.63 | $738.29 | +0.21% | +0.92% | -0.71% | GH Actions confirmed equity; L1 in place; TSLA $365P Jun5 submitted (day order, not filled); NVDA/INTC CSPs errored; Iran no deal; Brent $103.93 |
+| 2026-05-12 | ~$100,416* | $739.31 | +0.42%* | +1.06% | -0.65%* | GH Actions failed to commit; TSLA $445 (+4%); JETS $26.61 (-3.2%); Brent $107.58 (+3.2%); NVDA $219; CSPs still outstanding |
 
-*Note: May 8 account value held at $100,000 confirmed — Alpaca API returned 403 "Host not in allowlist" from trading bot environment (both sessions). Layer 1 trades documented as intended; manual execution required via Alpaca dashboard. Theoretical equity if L1 executed at open: ~$100,490 (+0.49%). SPY close $737.27; QQQ hit new 52-wk high $711.23 (+2.35%); JETS $27.59; NVDA $215.70; TSLA $428.95.*
+*Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — GH Actions fired 14:30 UTC but no commit; equity ~$100,416 estimated (Alpaca API still blocked from Claude Code env); TSLA $445 strong; CSPs still not opened.*
 
 ---
 
