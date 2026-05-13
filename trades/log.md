@@ -13,9 +13,10 @@
 | 2026-05-07 | $100,000.00 | $731.53 | 0.00% | 0.00% | 0.00% |
 | 2026-05-08 | $100,000.00* | $737.27 | 0.00%* | +0.78% | -0.78% | API blocked Day 2; L1 trades intended not confirmed; theoretical +0.49% if executed; Iran MOU unsigned; oil $101 |
 | 2026-05-11 | $100,210.63 | $738.29 | +0.21% | +0.92% | -0.71% | GH Actions confirmed equity; L1 in place; TSLA $365P Jun5 submitted (day order, not filled); NVDA/INTC CSPs errored; Iran no deal; Brent $103.93 |
-| 2026-05-12 | ~$100,155 | $738.18 | +0.15% | +0.91% | -0.76% | CPI 3.8% shock (energy +17.9%); QQQ intraday -2.5%, recovered; Options BP dropped $61.5K (TSLA+AMZN CSPs likely opened by bot); Iran no deal — new sanctions; Brent $104.97 |
+| 2026-05-12 | $99,977.39 | $737.58 | -0.02% | +0.83% | -0.85% | EOD confirmed via GH Actions; Options BP $11,666.84 (TSLA+AMZN CSPs inferred open, $61.5K collateral); Iran talks collapsed; Brent $107.05; PPI +1.4% hot |
+| 2026-05-13 | ~$100,098 | ~$737 | ~+0.10% | ~+0.75% | ~-0.65% | API blocked (Day 7); L1 all at target; TSLA+AMZN CSPs inferred open (verify fills); NVDA CSP not open — DO NOT open before May 20 earnings; no new positions; manual: verify fills + set 50% take-profit orders |
 
-*Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — CPI 3.8% shock (energy-driven); midday API confirmed equity $99,742.23; Options BP fell $61.5K (TSLA $370+AMZN $245 CSPs likely opened by GH Actions bot); afternoon recovery lifted EOD est. to ~$100,155; Iran no deal — new US sanctions; Brent $104.97.*
+*Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — CPI 3.8% shock (energy-driven); EOD GH Actions confirmed equity $99,977.39; Options BP $11,666.84 (TSLA $370+AMZN $245 CSPs likely opened by GH Actions bot, $61.5K collateral consumed); Iran no deal — Trump rejected counter-proposal, new US sanctions, naval clashes; Brent $107.05. May 13 — API blocked (Day 7); L1 fully at target; TSLA+AMZN CSPs inferred open; NVDA CSP not open; pre-open est. $100,098; PPI +1.4% hot print; no new positions pending NVDA earnings May 20.*
 
 ---
 
@@ -313,3 +314,61 @@ Target expiry: June 20, 2026 (~40 DTE from today)
   2. Open TSLA $370 Jun 20 CSP — 1 contract (~$800–1,000 credit)
   3. Open NVDA $190 Jun 20 CSP — 1 contract (~$400–600 credit)
   4. Consider MU Layer 3 entry (4–6 shares ~$3.2–4.8K)
+
+---
+
+### 2026-05-13 — MARKET OPEN SESSION LOG
+
+#### Account State (pre-open)
+
+| Metric | Value |
+|--------|-------|
+| EOD equity (May 12, confirmed) | $99,977.39 |
+| Est. open equity | ~$100,098 |
+| Our return | ~+0.10% |
+| SPY return | ~+0.75% (~$737) |
+| Alpha | ~-0.65% |
+| Options BP remaining | $11,666.84 |
+| Cash reserve (est.) | ~$5,900 |
+
+#### Market Context
+
+- Iran talks: **STALLED/ESCALATING** — Trump rejected counter-proposal; new US Treasury sanctions (10 entities); naval clashes resuming in Hormuz. No deal imminent.
+- Brent crude: **$107.05/bbl** — well above $85 XLE exit trigger. HOLD all energy.
+- Macro: PPI +1.4% (vs +0.5% est.) — hot; Fed cuts pushed out. Rate headwind for QQQ growth but chips/AI leading independently.
+- Chips/AI: NVDA +1%, MU +5%+ PM (Samsung union strike = HBM supply tightening), INTC +2.9%.
+- JETS: +1.7% PM on peace hopes but Hormuz still blocked — thesis delayed, not dead.
+
+#### Positions — No Changes Needed Today
+
+| Layer | Status |
+|-------|--------|
+| L1 QQQ 45 | ✅ At target |
+| L1 SPY 13 | ✅ At target |
+| L1 XLY 40 | ✅ At target |
+| L1 JETS 80 | ✅ At target (below entry; hold) |
+| L1 XLE 100 | ✅ At target (Brent $107 >> $85) |
+| TSLA $370P Jun 20 | 🔶 INFERRED OPEN — verify fill at app.alpaca.markets |
+| AMZN $245P Jun 20 | 🔶 INFERRED OPEN — verify fill at app.alpaca.markets |
+| NVDA $190P | ❌ NOT OPEN (BP confirms) — DO NOT open before May 20 |
+
+#### Trades Executed Today
+None — API blocked from bot environment.
+
+#### Manual Actions Required
+1. **Verify TSLA $370 Jun 20 CSP fill** — confirm premium received, exact expiry
+2. **Verify AMZN $245 Jun 20 CSP fill** — confirm premium received, exact expiry
+3. **Set 50% take-profit GTC orders** — buy-to-close at 50% of received premium
+4. **No new buys** — preserve $11,666.84 BP through NVDA earnings week (May 20)
+
+#### NVDA Earnings Warning — May 20
+- NVDA reports next Wednesday (7 days). No NVDA CSP open.
+- DO NOT open NVDA CSP before May 20. Post-earnings entry at July expiry is the plan.
+- Decision point: May 18–19 (confirm no NVDA options exposure before earnings gap).
+
+#### Layer 3 Assessment — Deferred
+- MU: Price data inconsistent ($795 May 12 vs ~$645 premarket May 13) — skip today
+- DRAM: $42 strike now ~23% OTM at $54.65 — no meaningful premium; skip
+- INTC $115P: Barely fits BP ($11,500); low priority; defer post-earnings week
+- Cash ~$5,900 is limited — preserve for emergencies
+
