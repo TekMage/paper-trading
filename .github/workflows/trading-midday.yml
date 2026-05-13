@@ -40,7 +40,7 @@ jobs:
         run: |
           git config user.email "trading-bot@github-actions"
           git config user.name "Trading Bot"
-          git pull --rebase origin main
           git add trades/
+          git pull --rebase --autostash origin main
           git diff --staged --quiet || git commit -m "exec_midday: $(date -u +%Y-%m-%d)"
           git push
