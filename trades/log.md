@@ -372,3 +372,63 @@ None — API blocked from bot environment.
 - INTC $115P: Barely fits BP ($11,500); low priority; defer post-earnings week
 - Cash ~$5,900 is limited — preserve for emergencies
 
+---
+
+### 2026-05-14 — MARKET OPEN SESSION LOG
+
+#### Account State (pre-open)
+
+| Metric | Value |
+|--------|-------|
+| EOD equity (May 13, estimated) | $100,614.57 |
+| Est. open equity | ~$100,700 |
+| Our return | ~+0.70% |
+| SPY return | ~+1.78% (~$744.55) |
+| Alpha | ~-1.08% |
+| Options BP remaining | ~$11,922 |
+| Cash reserve (est.) | ~$5,900 |
+
+#### Market Context
+
+- Iran talks: **MOU being drafted (Witkoff/Kushner) but NOT signed** — fundamental sticking points remain. Trump: ceasefire on "massive life support." No deal imminent.
+- Brent crude: **$107.82/bbl** — well above $85 XLE exit trigger. HOLD all energy.
+- Macro: Futures modestly green (S&P +0.27%, Nasdaq +0.19%), extending Wednesday's record highs. Cisco beat. AI/chips leading. PPI +1.4% hot but market shrugged it off.
+- NVDA: +1.9% premarket (6th straight gain). **EARNINGS MAY 20 — 6 DAYS.** No NVDA CSP open.
+- TSLA: +2.77% premarket to ~$445 → $370 CSP now **16.9% OTM** — excellent buffer.
+- AMZN: +1.1–2.3% to ~$268–271 → $245 CSP now **8.5–9.3% OTM** — adequate; watch if drops below $260.
+
+#### Positions — No Changes Needed Today
+
+| Layer | Status |
+|-------|--------|
+| L1 QQQ 45 | ✅ At target — +$379 unrealized (+1.18%) |
+| L1 SPY 13 | ✅ At target — +$106 unrealized (+0.85%) |
+| L1 XLY 40 | ✅ At target — +$210 unrealized (+4.48%) |
+| L1 JETS 80 | ✅ Hold below entry — -$36 (-1.64%); Hormuz blocked, thesis intact |
+| L1 XLE 100 | ✅ At target — +$222 unrealized (+3.92%); Brent $107.82 |
+| TSLA $370P Jun 20 | 🔶 INFERRED OPEN — 16.9% OTM; very healthy |
+| AMZN $245P Jun 20 | 🔶 INFERRED OPEN — 8.5–9.3% OTM; watch if AMZN < $260 |
+| NVDA $190P | ❌ NOT OPEN — DO NOT open before May 20 earnings |
+
+#### Trades Executed Today
+None — API blocked from bot environment (Day 8).
+
+#### Manual Actions Required
+1. **Verify TSLA 20JUN2026 370P fill** — record exact premium, current mark
+2. **Verify AMZN 20JUN2026 245P fill** — record exact premium, current mark
+3. **Set 50% take-profit GTC orders** on both confirmed CSPs
+4. **Watch AMZN**: if drops below $260 intraday, evaluate defensive roll
+5. **Confirm NO NVDA options open** before May 19 EOD — earnings gap risk
+
+#### NVDA Earnings Warning — May 20 (6 Days)
+- DO NOT open NVDA CSP before May 20. Post-earnings plan: NVDA $190P Jul 18.
+- If beat + pop: sell Jul 18 $190P for ~$2–4 after IV resets.
+- If miss + drop: wait 1–2 days, re-evaluate strike level.
+- Decision deadline: May 19 EOD.
+
+#### Layer 3 Assessment — Deferred
+- MU (~$655): Layer 3 candidate (5–6 shares ~$3.3–4K); defer until post-NVDA earnings week
+- IWM: Risk-on but Iran/Hormuz uncertainty; defer
+- DRAM $42P: ~23% OTM at $55–56 — no meaningful premium; skip
+- Cash ~$5,900 preserved for emergencies
+
