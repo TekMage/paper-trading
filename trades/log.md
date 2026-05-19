@@ -18,6 +18,8 @@
 | 2026-05-14 | **$100,950.97** | **$747.80** | **+0.95%** | **+2.22%** | **-1.27%** | ✅ exec_eod confirmed; S&P 7,500 record; Dow 50K; Trump-Xi summit; H200 China approved; Iran MOU NOT signed; Brent $105.87; NVDA $180P Jun18 confirmed open (sold $1.67, BTC $0.80 submitted GTC) |
 | 2026-05-15 | **~$100,104** | **$737.43** | **+0.10%** | **+0.81%** | **-0.71%** | Risk-off Friday; alpha gap NARROWED (-1.27%→-0.71%); XLE +4.69% vs cost (Brent $108); TSLA -4.74% ($422.24); JETS -6.85% vs cost; NVDA $180P BTC $0.80 NOT FILLED (put ~$1.70) — MUST CLOSE MON before May 20 earnings; no new trades |
 | 2026-05-18 open | **~$99,905** | **~$734** | **~-0.10%** | **~+0.34%** | **~-0.44%** | API blocked Day 10; Iran escalated — drone on UAE nuclear plant, Hormuz toll plan, NSC military meeting May 19; Brent $110+; NVDA $229.72 — BTC $180P PRIORITY 1 (earnings Wed May 20); TSLA $434 (+2.8%), $370P healthy 15.2% OTM; AMZN ~$263, $245P 7.3% OTM watch $258; NO new positions — preserve $11,716 BP for post-NVDA CSP |
+| 2026-05-18 EOD | **$100,013.46** | **$738.30** | **+0.01%** | **+0.93%** | **-0.91%** | ✅ exec_eod confirmed via GH Actions; Options BP $11,710.32; L1 all holds; NVDA $180P still open — BTC TODAY before earnings; TSLA/AMZN inferred open Day 12 |
+| 2026-05-19 open | **~$99,900** | **~$734** | **~-0.10%** | **~+0.34%** | **~-0.44%** | API blocked Day 13; NVDA ~$236 (+6.9%) premarket — $180P ~31% OTM, est. value $1.50–$2.50, **BTC AT OPEN (earnings TOMORROW)** — near breakeven exit; Trump called off Tuesday Iran attack, NSC framed as contingency review — most bullish Iran signal in weeks; Brent $110.10; JETS +0.6% PM on de-escalation; QQQ -0.6% PM; XLE +0.9% PM; TSLA $430P, AMZN $267 — CSPs inferred open Day 13; NO new positions — $11,710 BP reserved post-NVDA |
 | 2026-05-18 | **~$99,900** | **~$737.20** | **~-0.10%** | **+0.77%** | **~-0.87%** | API blocked Day 12; Trump "holds off" Tue Iran attack (Gulf state leaders asked); negotiations "more serious"; Brent fell $110→$107.71; S&P -0.07%, Nasdaq -0.51%; QQQ ~$704 drag; XLE $60.45 hedge carrying; NVDA $220.58 (pre-earnings IV expanding $180P now ~$3-4) — MUST BTC TUE MORNING; TSLA ~$422, AMZN $266.81 (CSPs healthy); NSC meeting Tue May 19, NVDA earnings Wed May 20 |
 
 *Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — CPI 3.8% shock (energy-driven); EOD GH Actions confirmed equity $99,977.39; Options BP $11,666.84 (TSLA $370+AMZN $245 CSPs likely opened by GH Actions bot, $61.5K collateral consumed); Iran no deal — Trump rejected counter-proposal, new US sanctions, naval clashes; Brent $107.05. May 13 — exec_eod confirmed $100,614.57; L1 fully at target; TSLA+AMZN CSPs inferred open; NVDA CSP not open; PPI +1.4% hot print; no new positions. May 14 — ✅ exec_eod confirmed $100,950.97; S&P 7,500 record; Dow 50K; Trump-Xi Beijing summit; H200 China chip sales approved (NVDA +5.3%); Iran MOU NOT signed; Brent $105.87; NVDA $180P Jun18 CONFIRMED OPEN (sold $1.67, BTC $0.80 GTC submitted). May 15 — Risk-off Friday; S&P -1.14%, Nasdaq -1.62%, 30-yr yield 5.12% (2007 high); Trump rejected Iran counteroffer ("totally unacceptable") — deal dead, oil surged to $108 (Brent); XLE outperformed as energy hedge worked (closed +4.69% vs cost); TSLA -4.74% ($422.24) dragged XLY down; JETS -6.85% vs cost ($25.57); QQQ $707.23 (-0.52% vs cost); exec_midday confirmed $100,497.87 — EOD estimated ~$100,104; alpha gap improved -1.27%→-0.71% because XLE; NVDA $180P BTC $0.80 NOT FILLED (put ~$1.70, NVDA $227.15) — CRITICAL: close Monday before May 20 earnings; TSLA+AMZN CSPs still inferred/unconfirmed Day 10.*
@@ -573,3 +575,67 @@ None — API blocked from bot environment (Day 10).
 
 *exec_open_2026-05-18 — API blocked. Alpaca paper-api.alpaca.markets not in allowlist.*
 *NVDA $180P CONFIRMED OPEN — close today before May 20 earnings. All other positions hold.*
+
+---
+
+### 2026-05-19 — MARKET OPEN SESSION LOG
+
+#### Account State (API Blocked — Day 13)
+
+| Metric | Value | Note |
+|--------|-------|------|
+| Last confirmed equity (May 18 EOD) | $100,013.46 | ✅ exec_eod confirmed via GH Actions |
+| Est. open equity | ~$99,900 | L1 drag ~-$150 (SPY -0.4% futures) |
+| Our return (est.) | ~-0.10% | |
+| SPY est. open | ~$734 | S&P futures -0.4% |
+| SPY benchmark return | ~+0.34% | vs $731.53 start |
+| Alpha (cumulative, est.) | ~-0.44% | Improved from -0.91% (XLE offsetting QQQ drag) |
+| Options BP | $11,710.32 | Earmarked for post-NVDA CSP Thursday |
+| Account vs $87,500 floor | ✅ OK — ~$12,400 cushion | No halt |
+
+#### Market Context
+
+- **Iran**: Trump called off scheduled Tuesday attack — Gulf leaders' requests, "serious negotiations" cited. NSC meeting today reframed as contingency review. Most constructive Iran signal in weeks; Hormuz still blocked, Brent $110.10 (no XLE exit).
+- **NVDA earnings**: TOMORROW May 20 after close. NVDA premarket ~$236 (+6.9%). $180P now ~31% OTM — estimated value $1.50–$2.50 vs $1.67 received. Near-breakeven BTC exit available today.
+- **Nasdaq**: -0.6% premarket; QQQ drag continues. S&P: -0.4%. Tech cautious pre-earnings.
+
+#### Layer 1 — No Changes
+
+| Symbol | Shares | Est. Price | vs Cost | Unreal P&L | Status |
+|--------|--------|------------|---------|------------|--------|
+| QQQ | 45 | ~$700 | -1.53% | ~-$491 | 🔴 Below cost; Nasdaq soft |
+| SPY | 13 | ~$734 | -0.32% | ~-$31 | 🟡 Near cost |
+| XLY | 40 | ~$117 | ~0.00% | ~+$0 | 🟡 Flat |
+| JETS | 80 | ~$25.50 | -7.1% | ~-$156 | 🟡 Iran de-escalation lift; above $24.71 alert |
+| XLE | 100 | ~$61.00 | +7.6% | ~+$430 | ✅ Brent $110.10; far above $85 exit |
+
+#### Layer 2/2b CSP Status
+
+| Symbol | Strike | Expiry | DTE | Stock Est. | OTM% | Premium | Status |
+|--------|--------|--------|-----|------------|------|---------|--------|
+| NVDA | $180 | Jun 18 '26 | 29 | ~$236 | ~31% | $1.67 | 🔴 **BTC AT OPEN — EARNINGS TOMORROW** |
+| TSLA | $370 | Jun 20 '26 | 32 | ~$430 | ~14% | ~$11 inferred | 🟢 Inferred open; healthy |
+| AMZN | $245 | Jun 20 '26 | 32 | ~$267 | ~8.2% | ~$5 inferred | 🟡 Inferred; ~70%+ profit captured |
+
+#### Trades Executed Today
+
+None — API blocked from bot environment (Day 13).
+
+#### Manual Actions Required (app.alpaca.markets)
+
+1. **PRIORITY 1 — NVDA $180P BTC at 9:30 AM**: Cancel stale GTC orders. New limit BTC $2.00; raise to $2.50 or market if no fill in 5 min. Max acceptable: $3.00. Earnings tomorrow = non-negotiable close.
+2. **PRIORITY 2 — TSLA $370P confirm**: Exact fill + premium. Set GTC BTC $5.50 (50% target).
+3. **PRIORITY 2 — AMZN $245P confirm**: Exact fill + premium. Set GTC BTC $2.50 (50% target — may fill soon).
+4. **NO new positions** — NSC meeting outcome unknown, NVDA earnings binary tomorrow, preserve $11,710 BP.
+
+#### Post-NVDA Deployment Plan (Thursday May 21)
+
+| NVDA Result | Level | Action |
+|-------------|-------|--------|
+| Beat + pop | > $260 | Sell $215–$220P Aug 15; target $4–7/contract |
+| Beat + strong | $245–$260 | Sell $205–$215P Aug 15; target $3–5/contract |
+| Beat + muted | $235–$245 | Wait 1 day; sell $200–$210P Aug 15 |
+| In-line | $220–$235 | Wait 2 days; sell $185–$195P Jul 18 |
+| Miss + drop | < $220 | Hold off entirely |
+
+*exec_open_2026-05-19 — API blocked Day 13. NVDA $180P near-breakeven BTC available (NVDA ~$236, put ~$1.50–$2.50). Close TODAY before May 20 earnings. Trump called off Iran attack — NSC contingency meeting today — most bullish geopolitical signal in 2 weeks. $11,710 BP preserved. All L1 targets met. TSLA/AMZN CSPs inferred open — confirm fills manually.*
