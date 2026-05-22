@@ -26,6 +26,8 @@
 | 2026-05-20 | **$100,402.60** | **$740.86** | **+0.40%** | **+1.28%** | **-0.87%** | ✅ exec_eod confirmed; NVDA $180P BTC $0.76 = **+$91 PROFIT** (BP jump $11,905→$29,725 confirms collateral released); Chinese supertankers exit Hormuz; Trump/Vance deal imminent; NVDA beat Q1 FY27 EPS+Rev+$80B buyback but stock SLIPPED AH to $220.64 sell-the-news; Brent $110.59; Options BP $29,725.38 |
 | 2026-05-21 open | **$100,794.38** | **$741.83** | **+0.79%** | **+1.41%** | **-0.61%** | ✅ exec_open confirmed; GH bot submitted NEW NVDA $180P Jun18 sell @ $0.78 (order 8fee0039) — DEVIATION from plan (plan = Jul 18 $185–195P); SPY $741.83; Iran 48-hr window active; Brent $108.76; NVDA $220.66; BP $29,878 pre-new-CSP |
 | 2026-05-21 | **~$100,800** | **$738.51** | **~+0.80%** | **+0.95%** | **~-0.15%** | API blocked Day 17; exec_midday confirmed $100,621.17; afternoon recovery on Iran deal report (Pakistan army chief sought MOU acceptance; "gaps reduced"); JETS closed $26.61 (+1.6% day); AMZN +2.19% → $265.01; XLE $60.04 (oil volatile: Brent $108.76 AM → ~$105 EOD); QQQ ~$710 (recovered from $703 lows); S&P -0.35% day / Nasdaq mixed; New NVDA $180P Jun18 open (bot re-entry $0.78); TSLA/AMZN CSPs inferred open (GTC fills unconfirmed Day 17); Rome Round 5 May 23 (tomorrow) |
+| 2026-05-21 EOD | **$100,893.34** | **$742.91** | **+0.89%** | **+1.56%** | **-0.66%** | ✅ exec_eod confirmed; Options BP $29,936.23 (TSLA/AMZN GTC fills strongly implied — BP jump from $4,772 midday); SPY rallied hard late (+$4 afternoon); Rome Rd5 ended without deal; Brent $104.52 (+1.89%); NVDA $180P Jun18 Rd2 open 18.2% OTM; JETS $26.61 (-3.1% vs cost); QQQ $716.97 (+0.85% vs cost) |
+| 2026-05-22 open | **$100,893.34** | **~$744** | **+0.89%** | **~+1.70%** | **~-0.80%** | API blocked Day 19; all L1 targets met (QQQ 45/SPY 13/XLY 40/JETS 80/XLE 100); NVDA $180P Jun18 Rd2 open ($0.78, 27 DTE, 19% OTM) — safe; TSLA/AMZN likely closed (confirm manually at app.alpaca.markets — Day 19 overdue); BP $29,936 — NVDA Jul18 $185-190P pending confirmation; Iran Rome Rd5 no deal; Brent $104.52 — no XLE triggers; SPY futures +0.2%; no trades submitted |
 
 *Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — CPI 3.8% shock (energy-driven); EOD GH Actions confirmed equity $99,977.39; Options BP $11,666.84 (TSLA $370+AMZN $245 CSPs likely opened by GH Actions bot, $61.5K collateral consumed); Iran no deal — Trump rejected counter-proposal, new US sanctions, naval clashes; Brent $107.05. May 13 — exec_eod confirmed $100,614.57; L1 fully at target; TSLA+AMZN CSPs inferred open; NVDA CSP not open; PPI +1.4% hot print; no new positions. May 14 — ✅ exec_eod confirmed $100,950.97; S&P 7,500 record; Dow 50K; Trump-Xi Beijing summit; H200 China chip sales approved (NVDA +5.3%); Iran MOU NOT signed; Brent $105.87; NVDA $180P Jun18 CONFIRMED OPEN (sold $1.67, BTC $0.80 GTC submitted). May 15 — Risk-off Friday; S&P -1.14%, Nasdaq -1.62%, 30-yr yield 5.12% (2007 high); Trump rejected Iran counteroffer ("totally unacceptable") — deal dead, oil surged to $108 (Brent); XLE outperformed as energy hedge worked (closed +4.69% vs cost); TSLA -4.74% ($422.24) dragged XLY down; JETS -6.85% vs cost ($25.57); QQQ $707.23 (-0.52% vs cost); exec_midday confirmed $100,497.87 — EOD estimated ~$100,104; alpha gap improved -1.27%→-0.71% because XLE; NVDA $180P BTC $0.80 NOT FILLED (put ~$1.70, NVDA $227.15) — CRITICAL: close Monday before May 20 earnings; TSLA+AMZN CSPs still inferred/unconfirmed Day 10.*
 
@@ -644,3 +646,56 @@ None — API blocked from bot environment (Day 13).
 | Miss + drop | < $220 | Hold off entirely |
 
 *exec_open_2026-05-19 — API blocked Day 13. NVDA $180P near-breakeven BTC available (NVDA ~$236, put ~$1.50–$2.50). Close TODAY before May 20 earnings. Trump called off Iran attack — NSC contingency meeting today — most bullish geopolitical signal in 2 weeks. $11,710 BP preserved. All L1 targets met. TSLA/AMZN CSPs inferred open — confirm fills manually.*
+
+---
+
+### 2026-05-22 — MARKET OPEN SESSION LOG (Friday)
+
+#### Account State (API Blocked — Day 19)
+
+| Metric | Value | Note |
+|--------|-------|------|
+| Last confirmed equity (May 21 EOD) | $100,893.34 | ✅ exec_eod confirmed |
+| Our return | +0.89% | |
+| SPY | $742.91 | SPY return +1.56% from $731.53 start |
+| Alpha (cumulative) | -0.66% | SPY outperforming on pure momentum |
+| Options BP | $29,936.23 | ✅ Major jump from May 21 midday $4,772 — TSLA/AMZN GTC fills implied |
+| Account vs $87,500 floor | ✅ OK — $13,393 cushion | No halt |
+
+#### Market Context
+
+- **Iran**: Rome Round 5 ended without deal. Both sides agreed to continue. Core sticking point: uranium enrichment program. "Constructive" framing from US/Iran. Round 6 TBD.
+- **Brent crude**: $104.52 (+1.89% from ~$102.58) — oil recovering because deal stalled. $19.52 above $85 XLE exit trigger. $14.52 above $90 trim trigger. **XLE: HOLD.**
+- **NVDA**: Earnings beat May 20 (EPS + Rev + $80B buyback). Post-earnings stock ~$220–225. IV compressed. $180P Jun18 Rd2 open safely (19% OTM).
+- **Futures**: SPY futures +0.2%. Markets tracking for longest weekly gain streak since 2023.
+
+#### Layer 1 — All At Target, No Trades Needed
+
+| Symbol | Qty | Avg Cost | Est. May 22 Open | Unreal P&L | Status |
+|--------|-----|----------|-----------------|------------|--------|
+| QQQ | 45 | $710.93 | ~$717 | ~+$272 | ✅ Full |
+| SPY | 13 | $736.39 | ~$743 | ~+$85 | ✅ Full |
+| XLY | 40 | $117.00 | ~$119 | ~+$80 | ✅ Full |
+| JETS | 80 | $27.45 | ~$26.61 | ~-$67 | ✅ Full — thesis intact |
+| XLE | 100 | $56.70 | ~$60 | ~+$334 | ✅ Full — Brent $104.52 |
+
+#### Layer 2/2b CSP Status
+
+| Symbol | Strike | Expiry | DTE | Stock Est. | OTM% | Sold For | Status |
+|--------|--------|--------|-----|------------|------|----------|--------|
+| NVDA | $180 | Jun 18 '26 | 27 | ~$222 | ~19% | $0.78 | 🟡 OPEN — Rd2 re-entry May 21; safe |
+| TSLA | $370 | Jun 20 '26 | 29 | ~$418 | ~12.9% | ~$11 | 🟢 **LIKELY CLOSED** via GTC $5.50 — confirm manually |
+| AMZN | $245 | Jun 20 '26 | 29 | ~$265 | ~7.5% | ~$5 | 🟢 **LIKELY CLOSED** via GTC $2.50 — confirm manually |
+
+#### Trades Executed Today
+
+None — API blocked from bot environment (Day 19). All Layer 1 targets met. No new positions submitted.
+
+#### Manual Actions Required (app.alpaca.markets)
+
+1. **PRIORITY 1 — Confirm TSLA 20JUN2026 370P fill**: GTC $5.50 — if filled, record P&L (~+$550). If still open at ~$1.50, set new BTC limit $1.50.
+2. **PRIORITY 1 — Confirm AMZN 20JUN2026 245P fill**: GTC $2.50 — if filled, record P&L (~+$250). If still open at ~$0.30, set new BTC limit $0.30.
+3. **PRIORITY 2 — NVDA Jul 18 $185–190P** (only after Priority 1 confirmed): Wait until 10 AM; sell 1 contract if NVDA > $210; target $3–5 premium; collateral ~$18,500; fits within $29,936 BP.
+4. **PRIORITY 3 — Prep XLE trim**: Stage 60-share sell order for MOU event (don't execute yet; Iran deal not imminent).
+
+*exec_open_2026-05-22 — API blocked Day 19. All L1 targets met; no equity buys needed. NVDA $180P Jun18 Rd2 open ($0.78, 27 DTE, 19% OTM) — safe. TSLA/AMZN GTC fills likely (BP jump). BP $29,936 unlocks NVDA Jul18 CSP once confirmed. Iran: Rome Rd5 no deal; XLE hold (Brent $104.52); JETS patience. SPY +0.2% futures — markets positive heading into weekend.*
