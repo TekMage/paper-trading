@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Trading Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
+    padding: 1.5rem;
+  }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: 0.25rem; }
+  .subtitle { color: #8b949e; font-size: 0.8rem; margin-bottom: 1.5rem; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+  }
+  .stat-label { color: #8b949e; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-value { font-size: 1.25rem; font-weight: 600; margin-top: 0.2rem; }
+  .pos { color: #3fb950; }
+  .neg { color: #f85149; }
+  .neu { color: #e6edf3; }
+  .chart-wrap {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .chart-title { color: #8b949e; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+  canvas { max-height: 280px; }
+</style>
+</head>
+<body>
+
+<h1>Paper Trading Dashboard</h1>
+<p class="subtitle">Updated 2026-05-21 &nbsp;&middot;&nbsp; Started 2026-05-07 &nbsp;&middot;&nbsp; $100,000 starting capital</p>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-label">Account Value</div>
+    <div class="stat-value neu">${last_equity:,.2f}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Total P&amp;L</div>
+    <div class="stat-value {'pos' if total_pnl >= 0 else 'neg'}">{'+'  if total_pnl >= 0 else ''}${total_pnl:,.2f}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Our Return</div>
+    <div class="stat-value {'pos' if last_our_ret >= 0 else 'neg'}">{last_our_ret:+.2f}%</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">SPY Return</div>
+    <div class="stat-value {'pos' if last_spy_ret >= 0 else 'neg'}">{last_spy_ret:+.2f}%</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Alpha</div>
+    <div class="stat-value {'pos' if last_alpha >= 0 else 'neg'}">{last_alpha:+.2f}%</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Options BP Available</div>
+    <div class="stat-value neu">${last_bp:,.0f}</div>
+  </div>
+</div>
+
+<div class="chart-wrap">
+  <div class="chart-title">Account Value vs SPY Benchmark ($100K)</div>
+  <canvas id="equityChart"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <div class="chart-title">Daily P&amp;L ($)</div>
+  <canvas id="pnlChart"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <div class="chart-title">Cumulative Return: Us vs SPY (%)</div>
+  <canvas id="retChart"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <div class="chart-title">Options Buying Power Remaining</div>
+  <canvas id="bpChart"></canvas>
+</div>
+
+<script>
+const DATES     = ["2026-05-07", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21"];
+const EQUITIES  = [100000.0, 100210.63, 99977.39, 100614.57, 100950.97, 100058.34, 100013.46, 99744.04, 100402.6, 100893.34];
+const SPY_VALS  = [100000.0, 100920.0, 100830.0, 101540.0, 102220.0, 100840.0, 100930.0, 100260.0, 101280.0, 101560.0];
+const OUR_RETS  = [0.0, 0.21, -0.02, 0.61, 0.95, 0.06, 0.01, -0.26, 0.4, 0.89];
+const SPY_RETS  = [0.0, 0.92, 0.83, 1.54, 2.22, 0.84, 0.93, 0.26, 1.28, 1.56];
+const ALPHAS    = [0.0, -0.71, -0.85, -0.93, -1.27, -0.78, -0.92, -0.52, -0.88, -0.67];
+const DAILY_PNL = [0.0, 210.63, -233.24, 637.18, 336.4, -892.63, -44.88, -269.42, 658.56, 490.74];
+const OPT_BPS   = [100000.0, 73073.98, 11666.84, 11922.38, 12071.08, 11716.76, 11710.32, 11590.11, 29725.38, 29936.23];
+
+const GRID = { color: 'rgba(48,54,61,0.8)' };
+const TICK = { color: '#8b949e', font: { size: 11 } };
+
+new Chart(document.getElementById('equityChart'), {
+  type: 'line',
+  data: {
+    labels: DATES,
+    datasets: [
+      { label: 'Account Value', data: EQUITIES, borderColor: '#58a6ff', backgroundColor: 'rgba(88,166,255,0.08)', tension: 0.3, fill: true, pointRadius: 4 },
+      { label: 'SPY ($100K)',   data: SPY_VALS,  borderColor: '#3fb950', backgroundColor: 'rgba(63,185,80,0.06)',  tension: 0.3, fill: true, pointRadius: 4 },
+    ]
+  },
+  options: {
+    responsive: true, interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { color: '#e6edf3', font: { size: 12 } } } },
+    scales: {
+      x: { grid: GRID, ticks: TICK },
+      y: { grid: GRID, ticks: { ...TICK, callback: v => '$' + v.toLocaleString() } }
+    }
+  }
+});
+
+new Chart(document.getElementById('pnlChart'), {
+  type: 'bar',
+  data: {
+    labels: DATES.slice(1),
+    datasets: [{ label: 'Daily P&L', data: DAILY_PNL.slice(1),
+      backgroundColor: DAILY_PNL.slice(1).map(v => v >= 0 ? 'rgba(63,185,80,0.7)' : 'rgba(248,81,73,0.7)'),
+      borderRadius: 3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#e6edf3', font: { size: 12 } } } },
+    scales: {
+      x: { grid: GRID, ticks: TICK },
+      y: { grid: GRID, ticks: { ...TICK, callback: v => '$' + v.toLocaleString() } }
+    }
+  }
+});
+
+new Chart(document.getElementById('retChart'), {
+  type: 'line',
+  data: {
+    labels: DATES,
+    datasets: [
+      { label: 'Us',    data: OUR_RETS, borderColor: '#58a6ff', tension: 0.3, pointRadius: 4 },
+      { label: 'SPY',   data: SPY_RETS, borderColor: '#3fb950', tension: 0.3, pointRadius: 4 },
+      { label: 'Alpha', data: ALPHAS,   borderColor: '#d2a8ff', tension: 0.3, pointRadius: 4, borderDash: [4,4] },
+    ]
+  },
+  options: {
+    responsive: true, interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { color: '#e6edf3', font: { size: 12 } } } },
+    scales: {
+      x: { grid: GRID, ticks: TICK },
+      y: { grid: GRID, ticks: { ...TICK, callback: v => v.toFixed(2) + '%' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('bpChart'), {
+  type: 'bar',
+  data: {
+    labels: DATES,
+    datasets: [{ label: 'Options BP Remaining', data: OPT_BPS,
+      backgroundColor: 'rgba(88,166,255,0.55)', borderRadius: 3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#e6edf3', font: { size: 12 } } } },
+    scales: {
+      x: { grid: GRID, ticks: TICK },
+      y: { grid: GRID, ticks: { ...TICK, callback: v => '$' + v.toLocaleString() } }
+    }
+  }
+});
+</script>
+</body>
+</html>
