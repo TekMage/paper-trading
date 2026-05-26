@@ -710,39 +710,40 @@ None — API blocked from bot environment (Day 19). All Layer 1 targets met. No 
 
 | Metric | Value | Note |
 |--------|-------|------|
-| Estimated equity | ~$101,120 | May 22 EOD est.; no new confirmed data |
-| Our return | ~+1.12% | |
-| SPY | ~$746 | ~flat from $745.64 May 22 close |
-| SPY return | +1.94% | From $731.53 start |
-| Alpha (cumulative) | ~-0.82% | XLE drag + JETS below cost |
-| Options BP (est.) | ~$30,000 | Based on May 22 exec |
-| Account vs $87,500 floor | ✅ OK — ~$13,620 cushion | No halt |
+| Equity (confirmed May 22 EOD) | $101,184.27 | ✅ Confirmed |
+| Equity (est. premarket May 26) | ~$101,254 | +$70 premarket moves |
+| Our return (est.) | ~+1.20% | |
+| SPY | $745.92 | May 22 last close |
+| SPY return | +1.97% | From $731.53 start |
+| Alpha (cumulative) | ~-0.77% | JETS drag; closes on Iran deal |
+| Options BP (confirmed May 22 EOD) | $55,832.67 | ✅ TSLA/AMZN collateral released |
+| Account vs $87,500 floor | ✅ OK — ~$13,700 cushion | No halt |
 
 #### Market Context
 
-- **Iran**: Deal NOT signed as of open. Rubio: "still a work in progress" but "a chance" today. Trump "not in a hurry." **Scenario B** — no gap events. Monitoring intraday for MOU announcement.
-- **Brent crude**: ~$100–104 (May 24–25 data). XLE exit ($85) and trim ($90) triggers not hit. **XLE: HOLD.**
-- **Prices (web-sourced, approximate)**:
-  - SPY ~$746 | QQQ ~$719 | TSLA ~$426 (+1.95%) | JETS ~$26.91 | XLE ~$59.50 | AMZN ~$267 | NVDA ~$215–218
+- **Iran**: Deal NOT signed as of open. Rubio: "still a work in progress" but "a chance" today. Trump "not in a hurry." **Scenario B** — no gap events. Deal probability 45–55%. Monitor intraday.
+- **Brent crude**: **$98.11** (+0.89%; down ~6% from $104.52 May 22 close on deal optimism). XLE triggers NOT hit. **XLE: HOLD.** $90 trim trigger ~$8 away.
+- **Prices (premarket estimates)**:
+  - SPY ~$746 | QQQ ~$719 | TSLA ~$423 (+1.1%) | JETS ~$26.91 | XLE ~$59.31 | AMZN ~$268 | NVDA ~$221 (+1.3%)
 
 #### Layer 1 — All At Target, No Trades Needed
 
 | Symbol | Qty | Avg Cost | Est. May 26 | Unreal P&L | Status |
 |--------|-----|----------|-------------|------------|--------|
-| QQQ | 45 | $710.93 | ~$719 | ~+$366 | ✅ Full |
+| QQQ | 45 | $710.93 | ~$719 | ~+$364 | ✅ Full |
 | SPY | 13 | $736.39 | ~$746 | ~+$124 | ✅ Full |
 | XLY | 40 | $117.00 | ~$120 | ~+$120 | ✅ Full |
 | JETS | 80 | $27.45 | ~$26.91 | ~-$43 | ✅ Full — Iran deal pending |
-| XLE | 100 | $56.70 | ~$59.50 | ~+$280 | ✅ Full — Brent ~$100–104 |
+| XLE | 100 | $56.70 | ~$59.31 | ~+$261 | ✅ Full — Brent $98.11, above all triggers |
 
 #### Layer 2/2b CSP Status
 
 | Symbol | Strike | Expiry | DTE | Stock (est.) | OTM% | Sold For | Status |
 |--------|--------|--------|-----|-------------|------|----------|--------|
-| NVDA R2 | $180P | Jun 18 '26 | 23 | ~$217 | ~19% | $0.78 | 🔴 **BTC OVERDUE — DO AT OPEN** (~$0.20 mark) |
-| NVDA R3 | $180P | Jun 18 '26 | 23 | ~$217 | ~19% | $0.66 | 🟡 Open — near 50% target (~$0.30–$0.33 mark) |
-| TSLA | $370P | Jun 20 '26 | 25 | ~$426 | ~13.5% | ~$11 | 🔴 **STATUS UNKNOWN Day 21 — CONFIRM** |
-| AMZN | $245P | Jun 20 '26 | 25 | ~$267 | ~8.9% | ~$5 | 🔴 **STATUS UNKNOWN Day 21 — CONFIRM** |
+| NVDA R2 | $180P | Jun 18 '26 | 23 | ~$221 | 18.6% | $0.78 | 🔴 **BTC OVERDUE — ~$0.15–$0.20 mark; DO AT OPEN** |
+| NVDA R3 | $180P | Jun 18 '26 | 23 | ~$221 | 18.6% | $0.66 | 🔴 **At/past 50% target (~$0.20–$0.28); BTC with R2** |
+| TSLA | $370P | Jun 20 '26 | 25 | ~$423 | 14.3% | ~$11 | 🔴 **STATUS UNKNOWN Day 21 — CONFIRM FIRST** |
+| AMZN | $245P | Jun 20 '26 | 25 | ~$268 | 9.4% | ~$5 | 🔴 **STATUS UNKNOWN Day 21 — CONFIRM FIRST** |
 
 #### Trades Executed Today
 
@@ -750,8 +751,8 @@ None — API blocked from bot environment (Day 21). All Layer 1 targets met. No 
 
 #### Manual Actions Required (app.alpaca.markets)
 
-1. **🔴 PRIORITY 1 — Confirm TSLA 370P + AMZN 245P status (Day 21 overdue)**: Both stocks well above strikes. TSLA $426 (+13.5% OTM); AMZN $267 (+8.9% OTM). GTC fills likely. If still open, BTC at market immediately.
-2. **🔴 PRIORITY 2 — BTC NVDA $180P R2 at open**: Mark ~$0.15–$0.25 (sold $0.78 — well past 50% target). Limit $0.25 or market. Consider R3 ($0.66 sold, ~$0.30 mark) simultaneously.
-3. **🟡 PRIORITY 3 — Monitor Iran deal intraday**: If MOU signed: sell 60 XLE at market, hold JETS (target $32–35). Do NOT open new CSPs (IV rank TSLA ~22, NVDA ~34 — below 40 threshold).
+1. **🔴 PRIORITY 1 — Confirm TSLA 370P + AMZN 245P status (Day 21 overdue)**: TSLA ~$423 (14.3% OTM); AMZN ~$268 (9.4% OTM). GTC fills very likely (BP $55,832 vs ~$30K prior confirms collateral released). If still open, BTC at market.
+2. **🔴 PRIORITY 2 — BTC NVDA $180P R2 + R3 at open**: R2 ($0.78 sold) ~$0.15–$0.20 mark; R3 ($0.66 sold) ~$0.20–$0.28 mark. Submit both simultaneously. Combined locked P&L ~$96–109.
+3. **🟡 PRIORITY 3 — Monitor Iran deal intraday**: If MOU signed: sell 60 XLE at market, hold JETS (target $32–35). Do NOT open new CSPs (TSLA IV ~22, NVDA IV ~34 — below 40 threshold).
 
-*exec_open_2026-05-26 — API blocked Day 21 (403 confirmed). Scenario B: Iran deal not signed; Rubio "work in progress / possible today"; Trump not rushing. SPY ~$746, QQQ ~$719, TSLA ~$426, JETS ~$26.91. All L1 targets met. NVDA R2 BTC overdue — handle at open. TSLA/AMZN CSP status Day 21 — confirm immediately. Brent ~$100–104; XLE hold. No new CSPs until IV recovers above 40.*
+*exec_open_2026-05-26 (updated with confirmed figures) — API blocked Day 21. BP corrected to $55,832 confirmed (prior ~$30k was wrong; TSLA/AMZN collateral released). Scenario B: Iran deal not signed; Rubio "possible today"; Trump not rushing; deal probability 45-55%. SPY ~$746, QQQ ~$719, TSLA ~$423, NVDA ~$221, JETS ~$26.91, Brent $98.11. All L1 at target. NVDA R2+R3 BTC both overdue. TSLA/AMZN CSP status confirm at broker. No new CSPs — IV below threshold.*
