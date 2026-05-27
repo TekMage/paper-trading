@@ -50,10 +50,11 @@ LAYER1 = {"QQQ": 45, "SPY": 13, "XLY": 40, "JETS": 80, "XLE": 100}
 # CSP targets: (underlying, strike, max_contracts)
 # Priority order matters — most IV-sensitive first
 # INTC removed: v2.0 strategy does not target INTC; Jun18 position was unintended bot action
-# TSLA strike corrected to 350 (actual fill was $350P Jun18, not $370P)
+# TSLA removed: $350P Jun18 closed at 50% profit (good exit). Bot was re-entering daily with
+#   $330-335P Jun26 at ~0.37% yield (GTC orders never filled; Alpaca paper cancels options
+#   GTC at session end). Do not re-enter TSLA until IV > 40 and manually re-added here.
 # NVDA strike 190 targeting Jul18 expiry (post-earnings IV); OPT_DTE_MAX extended to cover ~57 DTE
 CSP_TARGETS = [
-    ("TSLA", 350, 1),
     ("NVDA", 190, 1),
     ("AMZN", 245, 1),
 ]
@@ -68,6 +69,12 @@ CSP_CLOSE_PCT  = 0.50
 # Option chain search window — extended to 60 to reach Jul18 expiry (~57 DTE)
 OPT_DTE_MIN = 25
 OPT_DTE_MAX = 60
+
+# Minimum premium to accept when opening a new CSP.
+# Prevents entering contracts with negligible yield relative to collateral.
+# At $1.50/contract minimum: $150 credit on $19K-35K collateral = ~0.4-0.8% floor.
+# Raise this in low-IV environments; lower it only when IV > 40 and strike is close.
+CSP_MIN_PREMIUM = 1.50
 
 # ---------------------------------------------------------------------------
 # Alpaca REST
@@ -232,6 +239,10 @@ def csp_open_actions(eq_positions, opt_positions, orders, options_bp):
         close_px = float(contract["close_price"])
         # Sell at 5% below yesterday's close to improve fill odds
         limit_price = round(close_px * 0.95, 2)
+
+        if limit_price < CSP_MIN_PREMIUM:
+            print(f"    {underlying} CSP: limit ${limit_price:.2f} below minimum ${CSP_MIN_PREMIUM:.2f} — skip (low IV)")
+            continue
 
         actions.append({
             "type": "sell_csp",
