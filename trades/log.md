@@ -30,7 +30,8 @@
 | 2026-05-22 open | **$101,295.08** | **$747.23** | **+1.30%** | **+2.15%** | **-0.85%** | ✅ exec_open confirmed; INTC $90P BTC $1.18 = +$143; bot sold NVDA $180P Jun18 R3 @ $0.66 (+$66 premium); Al-Arabiya leaked "final draft" US-Iran framework (no nuclear terms); Dow gap-up open |
 | 2026-05-22 | **$101,184.27** | **$745.92** | **+1.18%** | **+1.97%** | **-0.78%** | ✅ exec_eod confirmed; Iran draft no nuclear terms; Rome R5 FAILED; Dow record +294 to 50,579; S&P +0.37%; Nasdaq +0.19%; JETS $27.00; XLE $59.21 (Brent $104.52); QQQ $717.54; AMZN $269.06; NVDA $218.13; WTI sub-$100 ($96.35); INTC $90P BTC +$143; NVDA R3 sold $0.66; BP $55,832.67 |
 | 2026-05-25 | **$101,184.27** | **$745.92** | **+1.18%** | **+1.97%** | **-0.78%** | 🏖️ Memorial Day — markets closed; no change; Brent ~$93-95 (-10% since May 22, approaching $90 trim trigger); Iran deal framework pre-agreed (Lebanon clause blocking); nuclear separated to 60-day follow-on; signing probability ~60-70% |
-| 2026-05-26 | ~$101,900 | $750.47 | ~+1.90% | +2.59% | ~-0.69% | S&P record close +0.61% (7,519); Nasdaq +1.19%; Russell +1.77%; JETS $28.28 (+4.24% — market pricing eventual deal); MU +18% to $912 ($1T market cap) — not in portfolio; US "self-defense" strikes southern Iran overnight; IRGC retaliation threat; Brent +3% to $99.58 (above all XLE triggers); Iran MOU NOT signed — Rubio "few more days"; bot opened TSLA $330P Jun26 @ $1.29 (⚠️ low-premium deviation); NVDA R2/R3 BTC still overdue Day 23; exec_midday confirmed $101,694 |
+| 2026-05-26 | **$101,779.23** | $750.46 | **+1.78%** | +2.59% | **-0.81%** | ✅ exec_eod confirmed; S&P record close +0.61% (7,519); Nasdaq +1.19%; Russell +1.77%; JETS $28.28 (+4.24%); MU +18% to $912 ($1T market cap) — not in portfolio; US "self-defense" strikes southern Iran overnight; IRGC retaliation threat; Brent +3% to $99.58; Iran MOU NOT signed — Rubio "few more days"; bot opened TSLA $330P Jun26 @ $1.29 (⚠️ BP anomaly: midday $1,290 → EOD $56,126 — cause unknown); NVDA R2/R3 BTC overdue Day 23; exec_midday confirmed $101,694; BP $56,126.60 |
+| 2026-05-27 open | ~$101,900 | ~$750.75 | ~+1.90% | ~+2.62% | ~-0.72% | API blocked Day 24; no trades executed; all L1 at target; Rubio "a word/sentence" from Iran MOU (65-70% probability); TSLA $443.79 pm (+2.35%); NVDA ~$218; Brent $99.18; BTC NVDA R2+R3 overdue (Day 24 — manual action required); BP anomaly unresolved; S&P futures +0.31%, Nasdaq +0.69% |
 
 *Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — CPI 3.8% shock (energy-driven); EOD GH Actions confirmed equity $99,977.39; Options BP $11,666.84 (TSLA $370+AMZN $245 CSPs likely opened by GH Actions bot, $61.5K collateral consumed); Iran no deal — Trump rejected counter-proposal, new US sanctions, naval clashes; Brent $107.05. May 13 — exec_eod confirmed $100,614.57; L1 fully at target; TSLA+AMZN CSPs inferred open; NVDA CSP not open; PPI +1.4% hot print; no new positions. May 14 — ✅ exec_eod confirmed $100,950.97; S&P 7,500 record; Dow 50K; Trump-Xi Beijing summit; H200 China chip sales approved (NVDA +5.3%); Iran MOU NOT signed; Brent $105.87; NVDA $180P Jun18 CONFIRMED OPEN (sold $1.67, BTC $0.80 GTC submitted). May 15 — Risk-off Friday; S&P -1.14%, Nasdaq -1.62%, 30-yr yield 5.12% (2007 high); Trump rejected Iran counteroffer ("totally unacceptable") — deal dead, oil surged to $108 (Brent); XLE outperformed as energy hedge worked (closed +4.69% vs cost); TSLA -4.74% ($422.24) dragged XLY down; JETS -6.85% vs cost ($25.57); QQQ $707.23 (-0.52% vs cost); exec_midday confirmed $100,497.87 — EOD estimated ~$100,104; alpha gap improved -1.27%→-0.71% because XLE; NVDA $180P BTC $0.80 NOT FILLED (put ~$1.70, NVDA $227.15) — CRITICAL: close Monday before May 20 earnings; TSLA+AMZN CSPs still inferred/unconfirmed Day 10.*
 
@@ -757,3 +758,61 @@ None — API blocked from bot environment (Day 21). All Layer 1 targets met. No 
 3. **🟡 PRIORITY 3 — Monitor Iran deal intraday**: If MOU signed: sell 60 XLE at market, hold JETS (target $32–35). Do NOT open new CSPs (TSLA IV ~22, NVDA IV ~34 — below 40 threshold).
 
 *exec_open_2026-05-26 (updated with confirmed figures) — API blocked Day 21. BP corrected to $55,832 confirmed (prior ~$30k was wrong; TSLA/AMZN collateral released). Scenario B: Iran deal not signed; Rubio "possible today"; Trump not rushing; deal probability 45-55%. SPY ~$746, QQQ ~$719, TSLA ~$423, NVDA ~$221, JETS ~$26.91, Brent $98.11. All L1 at target. NVDA R2+R3 BTC both overdue. TSLA/AMZN CSP status confirm at broker. No new CSPs — IV below threshold.*
+
+---
+
+### 2026-05-27 — MARKET OPEN SESSION LOG (Wednesday)
+
+#### Account State (API Blocked — Day 24)
+
+| Metric | Value | Note |
+|--------|-------|------|
+| Equity (confirmed May 26 EOD) | $101,779.23 | ✅ exec_eod confirmed |
+| Equity (est. open) | ~$101,900–$102,200 | TSLA +2.35% pm lifts XLY; QQQ/SPY flat |
+| Our return (est.) | ~+1.90% | |
+| SPY | ~$750.75 | +0.04% from May 26 close |
+| SPY return | ~+2.62% | From $731.53 start |
+| Alpha (est.) | ~-0.72% | |
+| Options BP (confirmed May 26 EOD) | $56,126.60 | ⚠️ Anomaly unresolved — verify at broker |
+| Account vs $87,500 floor | ✅ OK | ~$14,300 cushion |
+
+#### Market Context
+
+- **Iran:** Rubio — "disagreements over a word, a sentence." Cabinet meeting today. Deal probability 65–70% — highest yet. IRGC threats discounted by market.
+- **Futures:** S&P +0.31%, Nasdaq +0.69%, Russell +0.74%
+- **Brent crude:** $99.18 (-0.41%) — all XLE triggers intact ($90 trim, $85 exit)
+- **TSLA:** $443.79 pm (+2.35%) — boosts XLY; TSLA $330P now 25.5% OTM
+- **NVDA:** ~$218 pm — stabilizing; $180P at 17.4% OTM
+- **After close:** Salesforce (CRM) earnings — QQQ direction signal
+
+#### Layer 1 — All At Target, No Trades Needed
+
+| Symbol | Qty | Avg Cost | Est. Open | Unreal P&L | Status |
+|--------|-----|----------|-----------|------------|--------|
+| QQQ | 45 | $710.93 | ~$725.25 | ~+$645 | ✅ Full |
+| SPY | 13 | $736.39 | ~$750.75 | ~+$187 | ✅ Full |
+| XLY | 40 | $117.00 | ~$122.50 | ~+$220 | ✅ Full — TSLA lift |
+| JETS | 80 | $27.45 | ~$28.30 | ~+$68 | ✅ Full — Iran deal pending |
+| XLE | 100 | $56.70 | ~$58.52 | ~+$182 | ✅ Full — Brent $99.18 |
+
+#### Layer 2/2b CSP Status
+
+| Symbol | Strike | Expiry | DTE | Stock (pm) | OTM% | Sold For | Status |
+|--------|--------|--------|-----|-----------|------|----------|--------|
+| NVDA R2 | $180P | Jun 18 '26 | 22 | ~$218 | 17.4% | $0.78 | 🔴 BTC DAY 24 — PRIORITY |
+| NVDA R3 | $180P | Jun 18 '26 | 22 | ~$218 | 17.4% | $0.66 | 🔴 BTC with R2 |
+| TSLA $330P | $330P | Jun 26 '26 | 30 | ~$443.79 | 25.5% | $1.29 | ⚠️ VERIFY STATUS — BP anomaly |
+| TSLA $370P | $370P | Jun 20 '26 | 24 | ~$443.79 | 16.5% | ~$11 | 🔴 VERIFY STATUS — Day 24 |
+| AMZN $245P | $245P | Jun 20 '26 | 24 | ~$268 | 8.6% | ~$5 | 🔴 VERIFY STATUS — Day 24 |
+
+#### Trades Executed Today
+
+None — API blocked from bot environment (Day 24). All Layer 1 targets met. No new positions submitted.
+
+#### Manual Actions Required (app.alpaca.markets)
+
+1. **🔴 PRIORITY 1 — Verify ALL options positions (BP anomaly)**: Midday $1,290 → EOD $56,126 unexplained. Check Positions + Order History tabs before any trades.
+2. **🔴 PRIORITY 2 — BTC NVDA R2 + R3 at open (Day 24)**: ~$0.03–0.05 mark; submit BTC limit $0.10 each; market order if 3 min no fill. Locked P&L ~+$134–138; frees ~$36K collateral.
+3. **🟡 PRIORITY 3 — Iran MOU standby**: If MOU signed → sell 60 XLE at market; hold JETS for $35 target. If Brent $90 → sell 30 XLE. No new CSPs (IV below 40% threshold).
+
+*exec_open_2026-05-27 — API blocked Day 24. Baseline $101,779.23 confirmed (exec_eod May 26). TSLA $443.79 pm (+2.35%). NVDA ~$218. Brent $99.18. Futures S&P +0.31%, Nasdaq +0.69%. Iran: Rubio "word/sentence" — 65–70% MOU probability today. All L1 at target; no equity buys needed. BTC NVDA R2+R3 overdue; verify BP anomaly first. No new CSPs (IV sub-40%).*
