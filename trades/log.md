@@ -817,3 +817,95 @@ None — API blocked from bot environment (Day 24). All Layer 1 targets met. No 
 3. **🟡 PRIORITY 3 — Iran MOU standby**: If MOU signed → sell 60 XLE at market; hold JETS for $35 target. If Brent $90 → sell 30 XLE. No new CSPs (IV below 40% threshold).
 
 *exec_open_2026-05-27 — API blocked Day 24. Baseline $101,779.23 confirmed (exec_eod May 26). TSLA $443.79 pm (+2.35%). NVDA ~$218. Brent $99.18. Futures S&P +0.31%, Nasdaq +0.69%. Iran: Rubio "word/sentence" — 65–70% MOU probability today. All L1 at target; no equity buys needed. BTC NVDA R2+R3 overdue; verify BP anomaly first. No new CSPs (IV sub-40%).*
+
+---
+
+### 2026-05-28 — MARKET OPEN SESSION LOG (Thursday)
+
+#### Account State (API Blocked — Day 26)
+
+| Metric | Value | Note |
+|--------|-------|------|
+| Equity (confirmed May 27 EOD) | $101,869.20 | ✅ exec_eod confirmed |
+| Equity (est. open) | ~$101,827 | XLE +3% offset by QQQ/SPY -0.3% |
+| Our return (est.) | ~+1.83% | |
+| SPY (est. open) | ~$749 | Futures -0.3% on PCE 3.8% |
+| SPY return (est.) | ~+2.39% | From $731.53 start |
+| Alpha (est.) | ~-0.56% | XLE outperformance narrowing gap |
+| Options BP (confirmed May 27 EOD) | $56,169.09 | Recovered from midday $361 — GTC fills likely |
+| Account vs $87,500 floor | ✅ OK — $14,369 cushion | No halt triggered |
+
+#### Market Context
+
+- **Iran:** US conducted "self-defense strikes" on Iranian missile sites + Hormuz boats May 25–26. Iran IRGC: "reciprocal response is legitimate and certain." Rubio: "disagreements over a word, a sentence" — deal stalling but not dead. Deal probability reduced to 45–55% (from 65–70% yesterday).
+- **PCE Inflation (8:30 AM today):** 3.8% annualized — above expectations. Fed rate cut in June unlikely. Direct headwind for QQQ/growth.
+- **Futures:** S&P -0.3%, Nasdaq weak — PCE data drag
+- **Brent crude:** $96.30 (+2.13%) — bounced sharply on Iran retaliation fears (from ~$94 low; had crashed -5.55% on May 27 Hormuz commitment)
+- **NVDA:** ~$218 — stable post-earnings; $180P strikes at 17.4% OTM, fully safe
+- **TSLA:** ~$443 — $330/$335P at 24–25% OTM, very safe
+- **BP recovery explanation:** EOD BP jumped from midday $361 → $56,169. Most likely: GTC BTC orders for TSLA Jun20 $370P and AMZN Jun20 $245P filled, freeing ~$61K collateral and locking ~+$550 TSLA + ~+$250 AMZN in P&L. **Must verify at broker.**
+
+#### Layer 1 — All At Target, No Trades Needed
+
+| Symbol | Qty | Avg Cost | Est. Open | Unreal P&L | Status |
+|--------|-----|----------|-----------|------------|--------|
+| QQQ | 45 | $710.93 | ~$724 | ~+$594 | ✅ Full — PCE headwind |
+| SPY | 13 | $736.39 | ~$749 | ~+$163 | ✅ Full — Futures -0.3% |
+| XLY | 40 | $117.00 | ~$121.50 | ~+$180 | ✅ Full — PCE consumer watch |
+| JETS | 80 | $27.45 | ~$28.75 | ~+$104 | ✅ Full — Iran strikes cloud thesis |
+| XLE | 100 | $56.70 | ~$58.75 | ~+$205 | ✅ Full — Brent $96.30 lifting XLE |
+
+#### Layer 2/2b CSP Status
+
+| Symbol | Strike | Expiry | DTE | Stock (est.) | OTM% | Sold For | Status |
+|--------|--------|--------|-----|-------------|------|----------|--------|
+| NVDA R2 | $180P | Jun 18 '26 | 21 | ~$218 | 17.4% | $0.78 | 🔴 **BTC DAY 26 — MARKET ORDER** |
+| NVDA R3 | $180P | Jun 18 '26 | 21 | ~$218 | 17.4% | $0.66 | 🔴 **BTC with R2 — MARKET ORDER** |
+| TSLA $330P | $330P | Jun 26 '26 | 29 | ~$443 | 25.0% | $1.29 | ⚠️ Hold — 29 DTE, very safe |
+| TSLA $335P | $335P | Jun 26 '26 | 29 | ~$443 | 24.0% | $1.19 | ⚠️ Hold — 29 DTE, very safe |
+| TSLA $370P | $370P | Jun 20 '26 | 23 | ~$443 | 16.4% | ~$11 | 🟢 **Likely GTC filled — VERIFY** |
+| AMZN $245P | $245P | Jun 20 '26 | 23 | ~$268 | 8.6% | ~$5 | 🟢 **Likely GTC filled — VERIFY** |
+
+#### Cumulative Options P&L (estimated)
+
+| Position | Sold | Status | P&L |
+|----------|------|--------|-----|
+| NVDA R1 $180P Jun18 | $1.67 | ✅ Closed $0.76 | +$91 confirmed |
+| INTC $90P Jun18 | $2.61 | ✅ Closed $1.18 | +$143 confirmed |
+| TSLA $370P Jun20 | ~$11 | 🟢 Likely GTC filled | ~+$550 (unconfirmed) |
+| AMZN $245P Jun20 | ~$5 | 🟢 Likely GTC filled | ~+$250 (unconfirmed) |
+| NVDA R2 $180P | $0.78 | 🔴 Open — BTC today | ~+$74 at $0.04 mark |
+| NVDA R3 $180P | $0.66 | 🔴 Open — BTC today | ~+$62 at $0.04 mark |
+| TSLA $330P Jun26 | $1.29 | ⚠️ Open — hold | +$129 received |
+| TSLA $335P Jun26 | $1.19 | ⚠️ Open — hold | +$119 received |
+| **Total est.** | | | **~+$1,418 cumulative** |
+
+#### Trades Executed Today
+
+None — API blocked from bot environment (Day 26). All Layer 1 positions at target. No new positions.
+
+#### Manual Actions Required (app.alpaca.markets)
+
+1. **🔴 PRIORITY 1 — BTC NVDA R2 + R3 at 9:30 AM open (Day 26 — ABSOLUTE)**
+   - Submit BTC limit $0.10 on both R2 and R3 simultaneously
+   - If no fill within 3 minutes: **hit market order immediately** — do not wait
+   - Expected locked P&L: R2 ~+$74 + R3 ~+$62 = **~+$136 confirmed**
+   - Collateral freed: ~$36,000 → further improves BP
+   - NVDA at ~17.4% OTM; zero assignment risk; no reason to hold
+
+2. **🔴 PRIORITY 2 — Verify TSLA $370P + AMZN $245P GTC fill status**
+   - Check Order History tab at app.alpaca.markets
+   - If filled: record P&L (+$550 TSLA, +$250 AMZN); BP recovery confirmed
+   - If NOT filled (paper GTC may cancel at session end): BTC at market immediately (23 DTE; marks near zero)
+   - This resolves the midday $361 → EOD $56,169 BP anomaly
+
+3. **🟡 PRIORITY 3 — Iran/XLE/JETS conditional monitoring**
+   - **Brent holds $92–96:** Hold XLE — oil bounce on Iran retaliation fears; $90 trigger not threatened
+   - **Brent breaks below $90:** Sell ALL 100 XLE at market
+   - **Iran formal MOU signed:** Sell ALL 100 XLE at market; hold JETS for $35 target
+   - **Iran escalates (retaliation confirmed):** Sell 50 JETS; add XLE if Brent >$100
+   - **JETS falls to $27.00:** Stop review; consider trimming to 60 shares
+
+4. **No new CSPs today** — PCE 3.8% + Iran uncertainty = elevated market risk; wait for NVDA R2+R3 to close and BP to normalize before adding new positions
+
+*exec_open_2026-05-28 — API blocked Day 26. Baseline $101,869.20 confirmed (exec_eod May 27). PCE 3.8% — Fed rate cut in June unlikely; QQQ/tech headwind. Brent $96.30 (+2.13%) on Iran retaliation fears — XLE safe, JETS watch. S&P futures -0.3%. Iran: US strikes May 25–26 complicated deal; 45–55% probability; Rubio "word/sentence" stalling. All L1 at target; no equity buys needed. BTC NVDA R2+R3 DAY 26 — market order at open if limit misses. TSLA $370P + AMZN $245P verify GTC fills. No new CSPs — IV environment uncertain; wait.*
