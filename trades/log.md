@@ -909,3 +909,52 @@ None — API blocked from bot environment (Day 26). All Layer 1 positions at tar
 4. **No new CSPs today** — PCE 3.8% + Iran uncertainty = elevated market risk; wait for NVDA R2+R3 to close and BP to normalize before adding new positions
 
 *exec_open_2026-05-28 — API blocked Day 26. Baseline $101,869.20 confirmed (exec_eod May 27). PCE 3.8% — Fed rate cut in June unlikely; QQQ/tech headwind. Brent $96.30 (+2.13%) on Iran retaliation fears — XLE safe, JETS watch. S&P futures -0.3%. Iran: US strikes May 25–26 complicated deal; 45–55% probability; Rubio "word/sentence" stalling. All L1 at target; no equity buys needed. BTC NVDA R2+R3 DAY 26 — market order at open if limit misses. TSLA $370P + AMZN $245P verify GTC fills. No new CSPs — IV environment uncertain; wait.*
+
+---
+
+### 2026-05-29 — MARKET OPEN SESSION LOG (Friday)
+
+**Baseline:** $102,138.36 equity (confirmed exec_eod May 28) | SPY $755.36 | Options BP $56,297.67
+
+**Market context:**
+- Dell (DELL) +38% AH — AI server revenue +757%; FY guidance raised to $167B. Direct QQQ/NVDA catalyst.
+- WTI crude premarket: **$87.66** (-1.4%) — below $90 trigger → **XLE exit required**
+- Iran deal: Negotiators agreed text; Trump "weighing"; JD Vance "couple of language points" — 65–75% probability
+- S&P 500 futures: +0.1% (Iran optimism + Dell AI)
+- QQQ est. open: ~$737–748 (all-time high extension)
+- JETS est. open: ~$29.50–30.50 (peace dividend pricing)
+- XLE est. open: ~$57.50–58.00 (WTI headwind)
+- NVDA est. open: ~$218–228 (Dell = confirmed AI GPU demand)
+
+**Positions at open (est.):**
+
+| Symbol | Qty | Avg Cost | Est. Open | Unreal P&L | Action |
+|--------|-----|----------|-----------|------------|--------|
+| QQQ | 45 | $710.93 | ~$741–745 | ~+$1,355–1,535 | ✅ Hold |
+| SPY | 13 | $736.39 | ~$756–758 | ~+$257–281 | ✅ Hold |
+| XLY | 40 | $117.00 | ~$123–124 | ~+$240–280 | ✅ Hold |
+| JETS | 80 | $27.45 | ~$29.50–30.50 | ~+$164–244 | ✅ Hold |
+| XLE | 100 | $56.70 | ~$57.50–58.00 | ~+$80–130 | 🔴 **EXIT AT OPEN** |
+
+**CSP status:**
+
+| Position | Status |
+|----------|--------|
+| TSLA $330P Jun26 | ✅ Open — hold (25% OTM, safe) |
+| TSLA $335P Jun26 | ✅ Open — hold (24% OTM, safe) |
+| AMZN $250P Jun26 | ❓ Verify at broker (uncertain fill status) |
+| NVDA R2 $180P Jun18 | ✅ Confirmed closed (BP evidence) |
+| NVDA R3 $180P Jun18 | ✅ Confirmed closed (BP evidence) |
+
+**Actions (API blocked — Day 27 — manual via app.alpaca.markets):**
+
+1. 🔴 **SELL 100 XLE at market open** — WTI $87.66 triggers exit rule; locks ~+$80–130 gain; Iran deal signing is the final oil-drop catalyst
+2. ⚠️ **Verify AMZN $250P status** — if open: hold; if not filled: reassess limit vs current AMZN price (~$270)
+3. 🟢 **Open NVDA Jul18 $195P or $200P CSP** (if BP ≥ $56K and NVDA opens ≥ $215) — last elevated IV window; $1.00+ premium; ~10% OTM
+4. 🟡 **Monitor Iran deal intraday** — if MOU signed: hold JETS for $35; pause new CSPs; XLE exit already done
+
+**No equity buys needed** — all L1 positions at target after XLE exit.
+
+**IV window note:** Dell AI blowout has temporarily elevated NVDA IV (~45–55% est.). Iran deal is tentative but unsigned — war premium remains. This is the LAST opportunity to sell elevated CSPs before peace compresses premiums 15–25%. Open NVDA Jul18 $195–200P today if possible.
+
+*exec_open_2026-05-29 — API blocked Day 27. $102,138.36 baseline. Dell +38% AH = AI infrastructure confirmed; QQQ/NVDA bullish. WTI $87.66 — XLE exit triggered; manual sell at 9:30 AM ET required. Iran MOU imminent (65–75%). JETS holds for $35 target. NVDA R2+R3 closed. New CSP: NVDA Jul18 $195–200P target if conditions met.*
