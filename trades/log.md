@@ -960,3 +960,122 @@ None — API blocked from bot environment (Day 26). All Layer 1 positions at tar
 **IV window note:** Dell AI blowout has temporarily elevated NVDA IV (~45–55% est.). Iran deal is tentative but unsigned — war premium remains. This is the LAST opportunity to sell elevated CSPs before peace compresses premiums 15–25%. Open NVDA Jul18 $195–200P today if possible.
 
 *exec_open_2026-05-29 — API blocked Day 27. $102,138.36 baseline. Dell +38% AH = AI infrastructure confirmed; QQQ/NVDA bullish. WTI $87.66 — XLE exit triggered; manual sell at 9:30 AM ET required. Iran MOU imminent (65–75%). JETS holds for $35 target. NVDA R2+R3 closed. New CSP: NVDA Jul18 $195–200P target if conditions met.*
+
+---
+
+### 2026-06-01 — MARKET OPEN SESSION LOG (Monday — Start of June)
+
+**Baseline:** ~$102,500 est. (last confirmed $102,138.36 exec_eod May 28) | SPY ~$759–761 est. | Day 30 API block
+
+> **API status:** Both `paper-api.alpaca.markets` and `data.alpaca.markets` return HTTP 403 "Host not in allowlist" — environment network policy blocks outbound Alpaca API calls. All actions must be executed manually via [app.alpaca.markets](https://app.alpaca.markets/paper-trading). This is Day 30 of the block.
+
+**Market context (June 1 pre-open):**
+- S&P 500 futures: **+0.2%** | Nasdaq-100 futures: **+0.3%** (Computex catalyst)
+- **NVDA premarket: +2%** — Computex RTX Spark PC chip (co-dev w/ MediaTek N1X, TSMC 3nm) + Vera Rubin in full production (Anthropic, OpenAI, xAI, Dell, Oracle, CoreWeave). Most bullish NVDA catalyst since original AI boom.
+- **Brent crude: $91.12** (May 31, -5.7% from $96.57 May 28) — within $1.12 of $90 exit trigger
+- **WTI crude: ~$84–87** — well below $90 exit trigger (fired May 29; active 3 trading days)
+- **Iran deal: NOT SIGNED** — Trump re-edited MOU May 29 with tougher demands (Hormuz + uranium disposal); Iran objected; NPR: "deal near, core issues remain"; Polymarket odds ~50–60% (down from 65–75%)
+- **Chicago PMI (May): 62.7** — 4-year high; economic expansion solid
+- **No May 30 premarket file** — gap in monitoring; positions not verified May 29–30
+
+**Positions at open (estimated — not API-confirmed):**
+
+| Symbol | Qty | Avg Cost | Est. June 1 Open | Est. Unreal P&L | Action |
+|--------|-----|----------|------------------|-----------------|--------|
+| QQQ | 45 | $710.93 | ~$740–745 | ~+$1,308–1,530 | ✅ Hold — NVDA Computex = QQQ at/near ATH |
+| SPY | 13 | $736.39 | ~$759–761 | ~+$294–321 | ✅ Hold — S&P +5% for May |
+| XLY | 40 | $117.00 | ~$124–125 | ~+$280–320 | ✅ Hold — oil lower = consumer positive |
+| JETS | 80 | $27.45 | ~$29–30 | ~+$124–204 | ✅ Hold — Iran deal delayed, not dead; target $35 |
+| XLE | 100 | $56.70 | ~$56–57 | ~-$70 to +$30 | 🔴 **CRITICAL EXIT — WTI trigger Day 3** |
+
+**CSP status (estimated — not API-confirmed):**
+
+| Position | Strike | Expiry | DTE | Est. Underlying | OTM% | Credit Received | Status |
+|----------|--------|--------|-----|-----------------|------|-----------------|--------|
+| TSLA $330P | $330P | Jun 26 '26 | **25** | ~$435 | **23.9%** | $1.29 | ✅ Hold — theta crushing; consider BTC at 50% profit |
+| TSLA $335P | $335P | Jun 26 '26 | **25** | ~$435 | **22.9%** | $1.19 | ✅ Hold — very safe; dual TSLA CSP on $66.5K collateral |
+| AMZN $250P | $250P | Jun 26 '26 | **25** | ~$271 | **7.7%** | $2.14 (if filled) | ❓ VERIFY — limit submitted May 28; status unknown |
+
+**Trades executed today:** None — API blocked from bot environment (Day 30). Manual execution required.
+
+**Cumulative options P&L (est.):**
+
+| Position | Sold | Status | P&L |
+|----------|------|--------|-----|
+| NVDA R1 $180P Jun18 | $1.67 | ✅ Closed | +$91 confirmed |
+| INTC $90P Jun18 | $2.61 | ✅ Closed | +$143 confirmed |
+| TSLA $370P Jun20 | ~$11 | ✅ GTC filled (est.) | ~+$550 est. |
+| AMZN $245P Jun20 | ~$5 | ✅ GTC filled (est.) | ~+$250 est. |
+| NVDA R2 $180P Jun18 | $0.78 | ✅ Closed (confirmed by BP) | ~+$74 est. |
+| NVDA R3 $180P Jun18 | $0.66 | ✅ Closed (confirmed by BP) | ~+$62 est. |
+| TSLA $330P Jun26 | $1.29 | ⚠️ Open — hold | +$129 credit received |
+| TSLA $335P Jun26 | $1.19 | ⚠️ Open — hold | +$119 credit received |
+| AMZN $250P Jun26 | $2.14 | ❓ Uncertain | +$214 credit (if filled) |
+| **Total est.** | | | **~+$1,418–$1,632** |
+
+---
+
+#### Manual Actions Required (app.alpaca.markets — execute in order)
+
+##### 🔴 PRIORITY 1 — SELL XLE 100 shares at market (IMMEDIATE — Day 3 of trigger)
+
+**Context:** WTI crude exit trigger ($90) fired on May 29 morning. Three trading sessions have elapsed without exit. The gain (once ~$210) has evaporated; position now near breakeven or slight loss. Oil will fall further when Iran deal eventually signs — this is a structural exit, not a bounce call.
+
+- **Order:** SELL 100 XLE — Market order — submit at 9:30 AM ET open
+- **Do not wait for a better price** — every day held is incremental tail risk
+- **After fill:** Note executed price; compute final P&L vs $56.70 avg cost; log in this file
+- **Reallocated cash (~$5,650):** Add to money market / buying power; hold for NVDA CSP collateral
+
+##### ⚠️ PRIORITY 2 — Verify AMZN $250P Jun26 Status
+
+- Log into Orders tab at app.alpaca.markets
+- **If AMZN $250P Jun26 is open (filled May 28):** ✅ Hold — AMZN ~$271, strike $250 = 7.7% OTM, 25 DTE. Theta working.
+- **If NOT filled (order expired/cancelled):** Re-submit limit sell at **$1.80–$2.00** (AMZN ~$270–273 range)
+- **If AMZN is at $260–265:** Re-evaluate strike at $240P instead ($260 = 7.7% OTM equivalent)
+
+##### 🟢 PRIORITY 3 — Open NVDA Aug15 $195P CSP (Computex IV window)
+
+**Context:** NVDA Computex keynote confirmed Vera Rubin full production + RTX Spark PC chip. This is the strongest fundamental catalyst NVDA has had since the original AI wave. Premarket IV spike (+2%) creates a narrow elevated-premium window. Once Iran deal signs, IV compresses 15–25% across board — this is the last good entry.
+
+**Checklist before submitting:**
+- [ ] Verify options buying power ≥ $19,500 (after XLE exit frees ~$5,650)
+- [ ] Check NVDA Aug15 chain — look for $190P–$200P, target premium $1.00–$1.50+
+- [ ] Confirm NVDA is trading ≥ $210 (= $195P is ≥9% OTM)
+- [ ] Submit: SELL 1x NVDA Aug15 $195P — **Limit order at mid-price** (~$1.00–$1.50)
+- [ ] If $195P premium < $0.80: move up to $200P (delta ~0.22, ~7% OTM, premium ~$1.50–$2.00)
+- [ ] Confirm "Cash Secured Put" in margin calculator shows collateral = $19,500–$20,000
+
+**Note on INTC:** NVDA RTX Spark (N1X Arm chip + GPU in single package) is a direct PC market entry competing with Intel. The INTC $95P CSP from the original strategy is **DROPPED** — do NOT open new INTC CSPs. The thesis has been disrupted by Computex.
+
+##### 🟡 MONITOR — JETS + Iran Deal
+
+- **Hold 80 JETS at current ~$29–30** — peace dividend trade intact; timeline extended 1–3 weeks
+- **Target: $35** (+20–25%); stop review at $26
+- **If Iran MOU announced during session:** Hold JETS, start scaling partial profits toward $35; no immediate action
+- **Do NOT add more JETS** — already at 80-share target; overweighting on unconfirmed news is premature
+
+##### 🟡 MONITOR — TSLA Dual CSP Capital Efficiency
+
+- Both $330P and $335P expire Jun 26 (25 DTE today)
+- Mark est. ~$0.20–0.30 each vs $1.29 and $1.19 received = ~78–85% of max profit captured
+- **BTC threshold (50% max profit):** $330P ≤ $0.65; $335P ≤ $0.60
+- If marks are below these levels on Mon/Tue: close one (preferably $335P, lower credit) to free $33,500 collateral for NVDA CSP
+- **No urgency today** — theta is doing the work; only close if NVDA CSP needs BP
+
+---
+
+#### Portfolio Summary (Estimated — June 1 Pre-open)
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Equity (est.) | **~$102,500** | Last confirmed $102,138.36 (May 28); 3 unconfirmed sessions |
+| Our return | **~+2.50%** | vs $100,000 start May 7 |
+| SPY return | **~+3.8%** | vs $731.53 May 7; SPY ~$759–761 est. |
+| Alpha vs SPY | **~-1.3%** | XLE drag + missed upside May 29–30 |
+| Account vs $87,500 floor | **✅ OK** | ~$15,000 cushion |
+| Layer 1 target | **4/5 at target** | QQQ ✅ SPY ✅ XLY ✅ JETS ✅ XLE 🔴 EXIT |
+| Options BP (est.) | **~$56K+** | NVDA R2/R3 freed ~$36K; XLE exit adds ~$5.6K |
+
+**NVDA Computex alpha path:** QQQ (45 shares) gains ~$225 per $5 move. If QQQ extends ATH from $737 to $745 on Computex momentum (+$8 = +1.1%), that's **+$360** to equity in a single session. Combined with XLE exit locking position and theta on TSLA CSPs, today has a realistic path to close the -1.3% alpha gap.
+
+*exec_open_2026-06-01 — API blocked Day 30. Est. equity ~$102,500 (~+2.5%). NVDA Computex (RTX Spark PC chip + Vera Rubin full prod) = QQQ/NVDA strong open. Brent $91.12; WTI ~$84–87 well below $90 — XLE exit CRITICAL (Day 3). Iran deal NOT signed (Trump new demands May 29); JETS hold for $35. TSLA $330P/$335P safe at ~24% OTM, 25 DTE. AMZN $250P uncertain — verify. NVDA Aug15 $195P CSP target if options BP adequate. No equity buys needed — all L1 at target except XLE (sell). Chicago PMI 62.7 (4-yr high). S&P May +5%, Nasdaq +8%.*
