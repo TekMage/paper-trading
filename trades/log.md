@@ -35,7 +35,8 @@
 | 2026-05-27 | **$101,869.20** | $751.32 | **+1.87%** | +2.71% | **-0.84%** | ✅ exec_eod confirmed; exec_open $101,722 / exec_midday $101,816; ⚠️ bot opened TSLA $335P Jun26 @ $1.19 (2nd consecutive bot CSP); Dow record 50,644; S&P +0.02%; Iran Hormuz commitment; WTI -5.55% to $88.68 (BELOW $90); Brent ~$94; JETS $28.95 (+5.5% vs cost); XLE $57.26; BP exhausted ($361) |
 | 2026-05-28 | **$102,138.36** | $755.36 | **+2.14%** | +3.26% | **-1.12%** | ✅ exec_eod confirmed; Dell +38% AH (AI server blowout FY $167B); NVDA R2+R3 BTC confirmed (BP $6,544→$56,298); QQQ ATH $735.42; WTI $87.66 premarket; Brent $96.57 (+2.41% IRGC fears); JETS $29.14; AMZN $250P Jun26 submitted @ $2.14 (NOT filled — exec_eod BP $56,298 confirms) |
 | **2026-05-29** | **$102,139.60** | **$755.95** | **+2.14%** | **+3.34%** | **-1.20%** | ✅ exec_eod confirmed $102,139.60; exec_open $102,225 / exec_midday $102,181 confirmed; AMZN $250P Jun26 @ $1.66 filled (BP $56,337→$31,514); S&P 9th consecutive weekly gain 7,580 (+0.22%); Dow first close above 51K (+0.72%); QQQ gapped below ATH ($725.96 open), partial recovery; Iran unsigned (Trump Situation Room ~2hrs, "final determination" pending); Brent $91.37 (-1.43%); WTI ~$88; XLE NOT sold (WTI trigger active — manual required Mon); TSLA $330P+$335P both past 50% profit (BTC Mon) |
-| **2026-06-01** | **~$102,600** | **~$758.00** | **~+2.60%** | **+3.62%** | **~-1.02%** | exec_open $102,381.60 ✅; 🔴 Iran deal SUSPENDED — Iran halted all indirect talks; threatened Hormuz blockade; Lebanon ceasefire cited; JETS -8% to $26.80 est. (stop review); XLE HOLD (WTI recovered >$90; Brent $96–97); NVDA Computex +4%; S&P record 7,599.96; bot BTC NVDA $180P submitted; TSLA CSPs 80%+ profit — BTC overdue Day 3; AMZN $250P OTM narrowed 4.6% (watch $258) |
+| **2026-06-01** | **$102,055.48** | **$758.65** | **+2.06%** | **+3.71%** | **-1.65%** | ✅ exec_eod confirmed; exec_open $102,381.60 (bot BTC NVDA R3 $180P submitted); Iran deal SUSPENDED midday (JETS $26.23 stop review); Iran "back on track" EOD (Trump ABC/CNN source); XLE HOLD (WTI recovered $91.98 >$90; Brent $95.25); S&P record 7,599.96; Nasdaq 27,086.81 ATH; TSLA CSPs 85%+ profit — BTC overdue Day 4; AMZN $250P OTM narrowed 4.6% midday → recovered ~7.5% on AMZN bounce |
+| **2026-06-02** | **~$102,100 est.** | **~$758–760 est.** | **~+2.10% est.** | **~+3.6–3.9% est.** | **~-1.5 to -1.8% est.** | API blocked Day 32; TSLA $330P+$335P BTC manual required (Day 4 overdue; marks $0.12–0.20); AMZN $250P mark ~$0.85–1.05 approaching $0.83 BTC trigger; HPE +29%, MRVL +21% premarket (AI wave); Brent $95.25, WTI $91.98; Iran "back on track"/Hezbollah ceasefire but MOU unsigned |
 
 *Note: May 8 — API blocked; all Layer 1 trades intended, not confirmed from bot. May 11 — GH Actions confirmed equity $100,210.63; L1 in place; TSLA $365P Jun5 CSP submitted as day order @ $2.50 but bid below limit — expired unfilled; NVDA/INTC errored (wrong strike/expiry); "prefer monthly expiry" fix deployed. May 12 — CPI 3.8% shock (energy-driven); EOD GH Actions confirmed equity $99,977.39; Options BP $11,666.84 (TSLA $370+AMZN $245 CSPs likely opened by GH Actions bot, $61.5K collateral consumed); Iran no deal — Trump rejected counter-proposal, new US sanctions, naval clashes; Brent $107.05. May 13 — exec_eod confirmed $100,614.57; L1 fully at target; TSLA+AMZN CSPs inferred open; NVDA CSP not open; PPI +1.4% hot print; no new positions. May 14 — ✅ exec_eod confirmed $100,950.97; S&P 7,500 record; Dow 50K; Trump-Xi Beijing summit; H200 China chip sales approved (NVDA +5.3%); Iran MOU NOT signed; Brent $105.87; NVDA $180P Jun18 CONFIRMED OPEN (sold $1.67, BTC $0.80 GTC submitted). May 15 — Risk-off Friday; S&P -1.14%, Nasdaq -1.62%, 30-yr yield 5.12% (2007 high); Trump rejected Iran counteroffer ("totally unacceptable") — deal dead, oil surged to $108 (Brent); XLE outperformed as energy hedge worked (closed +4.69% vs cost); TSLA -4.74% ($422.24) dragged XLY down; JETS -6.85% vs cost ($25.57); QQQ $707.23 (-0.52% vs cost); exec_midday confirmed $100,497.87 — EOD estimated ~$100,104; alpha gap improved -1.27%→-0.71% because XLE; NVDA $180P BTC $0.80 NOT FILLED (put ~$1.70, NVDA $227.15) — CRITICAL: close Monday before May 20 earnings; TSLA+AMZN CSPs still inferred/unconfirmed Day 10.*
 
@@ -1080,3 +1081,132 @@ None — API blocked from bot environment (Day 26). All Layer 1 positions at tar
 **NVDA Computex alpha path:** QQQ (45 shares) gains ~$225 per $5 move. If QQQ extends ATH from $737 to $745 on Computex momentum (+$8 = +1.1%), that's **+$360** to equity in a single session. Combined with XLE exit locking position and theta on TSLA CSPs, today has a realistic path to close the -1.3% alpha gap.
 
 *exec_open_2026-06-01 — API blocked Day 30. Est. equity ~$102,500 (~+2.5%). NVDA Computex (RTX Spark PC chip + Vera Rubin full prod) = QQQ/NVDA strong open. Brent $91.12; WTI ~$84–87 well below $90 — XLE exit CRITICAL (Day 3). Iran deal NOT signed (Trump new demands May 29); JETS hold for $35. TSLA $330P/$335P safe at ~24% OTM, 25 DTE. AMZN $250P uncertain — verify. NVDA Aug15 $195P CSP target if options BP adequate. No equity buys needed — all L1 at target except XLE (sell). Chicago PMI 62.7 (4-yr high). S&P May +5%, Nasdaq +8%.*
+
+---
+
+### 2026-06-02 — MARKET OPEN SESSION LOG (Tuesday)
+
+**Baseline:** $102,055.48 confirmed (exec_eod Jun 1) | SPY $758.65 | Options BP $49,503.19 | Day 32 API block
+
+> **API status:** Both `paper-api.alpaca.markets` and `data.alpaca.markets` return HTTP 403 "Host not in allowlist" — Day 32. All actions must be executed manually via [app.alpaca.markets](https://app.alpaca.markets/paper-trading).
+
+**Market context (June 2 pre-open):**
+- S&P 500 futures: **slightly lower** | Nasdaq-100 futures: **slightly lower** (digesting triple record)
+- **HPE: +26–29% premarket** — blockbuster Q2 AI server earnings; Wall St raising estimates; AI capex confirmed accelerating
+- **MRVL: +21% premarket** — Jensen Huang called Marvell "next trillion-dollar company" at Computex
+- **NVDA: ~$222–226** (slight digest from +6% June 1 close; Vera Rubin + N1X catalysts intact)
+- **Brent crude: $95.25** | **WTI: $91.98** — both above $90; XLE exit trigger NOT active
+- **Iran:** Talks "back on track" per CNN EOD source (after morning suspension); Hezbollah agreed to US-brokered Beirut ceasefire; Trump "over the next week" timeline; formal MOU unsigned
+- **JETS:** Recovered from $26.23 midday low to est. $27–28 EOD; peace thesis intact but fragile; stop review $26 still active
+
+**Positions at open (estimated — not API-confirmed):**
+
+| Symbol | Qty | Avg Cost | Est. June 2 Open | Est. Unreal P&L | Action |
+|--------|-----|----------|------------------|-----------------|--------|
+| QQQ | 45 | $710.93 | ~$743–747 | ~+$1,440–1,620 | ✅ Hold — AI momentum; NVDA +6% June 1; slight digest expected |
+| SPY | 13 | $736.39 | ~$758–760 | ~+$280–308 | ✅ Hold — S&P record $7,600; slight futures dip |
+| XLY | 40 | $117.00 | ~$123–125 | ~+$240–320 | ✅ Hold — consumer resilient; AMZN/TSLA within index stable |
+| JETS | 80 | $27.45 | ~$27–28 | ~-$36 to +$44 | 🟡 Hold — Iran "back on track"; stop review $26 active |
+| XLE | 100 | $56.70 | ~$56.50–57.50 | ~-$20 to +$80 | ✅ Hold — WTI $91.98 > $90; exit trigger NOT active |
+
+**CSP status (estimated — not API-confirmed):**
+
+| Position | Strike | Expiry | DTE | Est. Underlying | OTM% | Sold For | Est. Mark | 50% BTC | Profit% | Status |
+|----------|--------|--------|-----|-----------------|------|----------|-----------|---------|---------|--------|
+| TSLA $330P | $330 | Jun 26 '26 | **24** | ~$435–440 | **~24%** | $1.29 | ~$0.12–0.18 | $0.645 | **~86–91%** | 🔴 **BTC OVERDUE DAY 4 — manual required** |
+| TSLA $335P | $335 | Jun 26 '26 | **24** | ~$435–440 | **~23%** | $1.19 | ~$0.15–0.20 | $0.595 | **~83–87%** | 🔴 **BTC OVERDUE DAY 4 — manual required** |
+| AMZN $250P | $250 | Jun 26 '26 | **24** | ~$270–273 | **~7.5–8%** | $1.66 | ~$0.85–1.05 | $0.83 | **~37–49%** | 🟡 **WATCH — mark ~$0.02–0.22 above trigger** |
+
+**Trades executed today:** None — API blocked Day 32. Manual execution required at app.alpaca.markets.
+
+**Cumulative options P&L (est.):**
+
+| Position | Sold | Status | P&L |
+|----------|------|--------|-----|
+| NVDA R1 $180P Jun18 | $1.67 | ✅ Closed $0.76 | **+$91 confirmed** |
+| INTC $90P Jun18 | $2.61 | ✅ Closed $1.18 | **+$143 confirmed** |
+| TSLA $370P Jun20 | ~$11 | ✅ GTC closed | **~+$550 est.** |
+| AMZN $245P Jun20 | ~$5 | ✅ GTC closed | **~+$250 est.** |
+| NVDA R2 $180P Jun18 | $0.78 | ✅ Closed (BP confirmed) | **~+$74 est.** |
+| NVDA R3 $180P Jun18 | $0.66 | ✅ Closed (BP confirmed) | **~+$62 est.** |
+| NVDA $180P Jun18 (bot Jun 1) | $0.66 | ✅ BTC $0.31 submitted Jun 1 (likely filled) | **~+$35 est.** |
+| TSLA $330P Jun26 | $1.29 | 🔴 Open — BTC overdue | **~+$111–117 unrealized** |
+| TSLA $335P Jun26 | $1.19 | 🔴 Open — BTC overdue | **~+$99–104 unrealized** |
+| AMZN $250P Jun26 | $1.66 | 🟡 Open — approaching trigger | **~+$61–81 unrealized** |
+| **Total est.** | | | **~+$1,536–1,577** |
+
+---
+
+#### Manual Actions Required (app.alpaca.markets — execute in order)
+
+##### 🔴 PRIORITY 1 — BTC TSLA $330P Jun26 (CRITICAL — Day 4 overdue)
+
+**Rule triggered:** 50% profit rule fired ≥ Day 29 (May 29). Mark est. $0.12–0.18 (88–91% of max profit captured).
+Collateral tied up: **$33,000** for diminishing $12–18 remaining gain. Terrible capital efficiency.
+
+- **Symbol:** `TSLA260626P00330000`
+- **Action:** Buy to Close — Limit $0.18
+- **If no fill in 5 min:** Raise limit to $0.22
+- **If no fill in 10 min:** Market order (the $0.04 slippage risk is irrelevant vs $33K collateral)
+- **After fill:** Log exact fill price; collateral freed = $33,000
+
+##### 🔴 PRIORITY 2 — BTC TSLA $335P Jun26 (CRITICAL — Day 4 overdue)
+
+**Rule triggered:** Same as above. Mark est. $0.15–0.20.
+
+- **Symbol:** `TSLA260626P00335000`
+- **Action:** Buy to Close — Limit $0.20
+- **If no fill in 5 min:** Raise limit to $0.25
+- **After fill:** Log exact fill price; collateral freed = $33,500
+
+**Combined TSLA BTC:** Frees **$66,500** in collateral → available for NVDA Aug CSP when conditions align.
+
+##### 🟡 PRIORITY 3 — AMZN $250P Jun26 — Check Mark at Open
+
+AMZN est. $270–273 at June 2 open (recovered from $262 June 1 midday). OTM% back to ~7.5–8%.
+50% BTC trigger = $0.83 (sold $1.66). Est. mark: $0.85–1.05.
+
+- If mark ≤ $0.83: **BTC limit $0.83** — take the profit, free $25K collateral
+- If mark $0.84–1.10: **Hold** — theta will push it below $0.83 within 1–2 sessions; no urgency
+- If AMZN drops below $265: **Re-evaluate** — delta increasing; consider early BTC at any mark to protect collateral
+
+##### 🟢 PRIORITY 4 — NVDA Aug15 CSP (DEFER — wait 1 more session)
+
+Per premarket analysis: defer until Iran situation shows clearer resolution trajectory.
+- HPE +29%, MRVL +21% = AI demand confirmed; NVDA is the best CSP candidate
+- Wait for: (a) Iran "back on track" holds for 1 session without reversal, AND (b) TSLA BTCs clear collateral
+- Target: NVDA Aug 15 $195–200P, premium $4–6, collateral $19.5K–$20K
+- Best entry window: June 3–5 if Iran stabilizes
+
+##### 🟡 MONITOR — JETS
+
+- Iran "back on track" (CNN EOD source) + Hezbollah Beirut ceasefire = peace thesis recovering
+- Expected open ~$27–28. **Hold all 80 shares.**
+- Stop review: $26 intraday close. If JETS closes below $26: trim to 40 shares next session.
+- Target: $35 (+27% from cost) when formal MOU signed. Trump "over the next week" = June 8–15 window.
+
+##### ✅ LAYER 1 — All at Target (No Changes)
+
+| Symbol | Target | Status |
+|--------|--------|--------|
+| QQQ | 45 shares | ✅ At target |
+| SPY | 13 shares | ✅ At target |
+| XLY | 40 shares | ✅ At target |
+| JETS | 80 shares | ✅ At target (hold) |
+| XLE | 100 shares | ✅ HOLD — WTI $91.98 > $90 exit trigger |
+
+---
+
+#### Portfolio Summary (Estimated — June 2 Open)
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Equity (est.) | **~$102,100** | Last confirmed $102,055.48 (exec_eod Jun 1); futures slightly lower |
+| Our return | **~+2.10%** | vs $100,000 start May 7 |
+| SPY return | **~+3.71%** | vs $731.53 May 7 |
+| Alpha vs SPY | **~-1.61%** | JETS drag + cash-heavy structure vs all-equity benchmark |
+| Account vs $87,500 floor | **✅ OK** | ~$14,600 cushion |
+| Layer 1 target | **5/5 at target** | All L1 positions correct |
+| Options BP (est.) | **~$49,503** | Confirmed EOD Jun 1; +$66,500 unlocked when TSLA BTCs execute |
+
+*exec_open_2026-06-02 — API blocked Day 32. Baseline $102,055.48 confirmed (exec_eod Jun 1). HPE +29%, MRVL +21% premarket = AI capex wave confirmed; QQQ/NVDA supported. Brent $95.25, WTI $91.98 — XLE hold (trigger not active). Iran "back on track" per CNN but unsigned; Hezbollah Beirut ceasefire agreed; JETS est. $27–28 (above $26 stop). TSLA $330P+$335P BTC CRITICAL (Day 4 overdue — manual execute at 9:30 AM ET). AMZN $250P approaching 50% trigger — check mark. NVDA Aug CSP deferred 1 session. S&P/Nasdaq at triple ATH; futures slight digest. No equity buys needed.*
