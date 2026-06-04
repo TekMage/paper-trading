@@ -65,7 +65,8 @@ LAYER1 = {"QQQ": 45, "SPY": 13, "XLY": 40, "JETS": 80, "XLE": 100}
 # NVDA strike 190 targeting Jul18 expiry (post-earnings IV); OPT_DTE_MAX extended to cover ~57 DTE
 CSP_TARGETS = [
     ("NVDA", 190, 1),
-    ("AMZN", 245, 1),
+    # AMZN removed: Jun26 $250P closed at a loss (strike too close, 5.7% OTM).
+    # Re-add with 12-15% OTM strike once position is confirmed closed.
 ]
 
 # Layer 3 profit-take thresholds (unrealized %)
@@ -74,6 +75,11 @@ STOP_REVIEW    = 0.10   # flag for review if L3 down >10%
 
 # CSP close-early threshold: buy back when current premium <= this fraction of entry
 CSP_CLOSE_PCT  = 0.50
+
+# CSP stop-loss: buy back when current premium >= this multiple of entry.
+# 2.0 = stop when the put costs 2× what we received (premium has doubled against us).
+# This caps the maximum loss on any single CSP at roughly the premium received.
+CSP_STOP_MULT  = 2.0
 
 # Option chain search window — extended to 60 to reach Jul18 expiry (~57 DTE)
 OPT_DTE_MIN = 25
@@ -294,15 +300,19 @@ def management_actions(eq_positions, opt_positions):
         elif pct <= -STOP_REVIEW:
             flags.append(f"⚠️  {sym} down {pct*100:.1f}% — review stop")
 
-    # --- CSP 50% profit closes ---
+    # --- CSP profit close and stop-loss ---
     for sym, pos in opt_positions.items():
         qty = float(pos.get("qty", 0))
         if qty >= 0:
             continue  # long options — not our CSPs
-        avg_cost    = float(pos.get("avg_entry_price", 0))   # premium originally received
-        current_px  = float(pos.get("current_price", avg_cost))
-        if avg_cost > 0 and current_px <= avg_cost * CSP_CLOSE_PCT:
-            # Buy to close at 5% above current to ensure fill
+        avg_cost   = float(pos.get("avg_entry_price", 0))   # premium originally received
+        current_px = float(pos.get("current_price", avg_cost))
+
+        if avg_cost <= 0:
+            continue
+
+        if current_px <= avg_cost * CSP_CLOSE_PCT:
+            # 50% profit — buy to close, lock in gain
             limit = round(current_px * 1.05, 2)
             actions.append({
                 "type": "buy_to_close",
@@ -311,6 +321,21 @@ def management_actions(eq_positions, opt_positions):
                 "note": (f"50% profit: sold @ ${avg_cost:.2f}, "
                          f"now ${current_px:.2f} — locking in gain"),
             })
+        elif current_px >= avg_cost * CSP_STOP_MULT:
+            # Stop-loss: premium has multiplied beyond acceptable loss
+            # Buy to close at 5% above current to ensure fill
+            limit = round(current_px * 1.05, 2)
+            actions.append({
+                "type": "buy_to_close",
+                "symbol": sym,
+                "limit_price": limit,
+                "note": (f"stop-loss: sold @ ${avg_cost:.2f}, "
+                         f"now ${current_px:.2f} ({current_px/avg_cost:.1f}x) — "
+                         f"exceeds {CSP_STOP_MULT}x threshold"),
+            })
+            flags.append(f"🛑 CSP stop triggered on {sym}: "
+                         f"${avg_cost:.2f} → ${current_px:.2f} "
+                         f"({current_px/avg_cost:.1f}× premium)")
 
     return actions, flags
 
