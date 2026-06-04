@@ -125,6 +125,22 @@ def get_snapshots(symbols):
     return _get(f"{ALPACA_DATA}/stocks/snapshots",
                 {"symbols": ",".join(symbols), "feed": "iex"})
 
+def get_option_quote(symbol):
+    """Fetch live bid/ask for a single option contract.
+    Returns (bid, ask) floats, or (None, None) on failure.
+    Used to price CSP limit orders at the current market bid so orders fill immediately.
+    """
+    try:
+        data = _get(f"{ALPACA_DATA}/options/quotes/latest", {"symbols": symbol})
+        q = data.get("quotes", {}).get(symbol, {})
+        bid = q.get("bp")
+        ask = q.get("ap")
+        return (float(bid) if bid is not None else None,
+                float(ask) if ask is not None else None)
+    except Exception as e:
+        print(f"    Option quote fetch failed for {symbol}: {e}")
+        return None, None
+
 def get_option_chain(underlying, strike_target):
     gte = (date.today() + timedelta(days=OPT_DTE_MIN)).isoformat()
     lte = (date.today() + timedelta(days=OPT_DTE_MAX)).isoformat()
@@ -251,12 +267,22 @@ def csp_open_actions(eq_positions, opt_positions, orders, options_bp):
             print(f"    {underlying} CSP: no tradeable contract found — skip")
             continue
 
+        # Fetch live bid so the limit order fills immediately at open.
+        # Selling at close×0.95 caused GTC loops when the close was above the
+        # actual market bid — the order would sit unfilled and expire daily.
+        bid, ask = get_option_quote(contract["symbol"])
         close_px = float(contract["close_price"])
-        # Sell at 5% below yesterday's close to improve fill odds
-        limit_price = round(close_px * 0.95, 2)
+
+        if bid is None:
+            # Quote fetch failed — fall back to close×0.95 with a warning
+            print(f"    {underlying} CSP: live quote unavailable, using close×0.95 fallback")
+            limit_price = round(close_px * 0.95, 2)
+        else:
+            limit_price = round(bid, 2)
+            print(f"    {underlying} CSP: live bid=${bid:.2f} ask=${ask:.2f} close=${close_px:.2f}")
 
         if limit_price < CSP_MIN_PREMIUM:
-            print(f"    {underlying} CSP: limit ${limit_price:.2f} below minimum ${CSP_MIN_PREMIUM:.2f} — skip (low IV)")
+            print(f"    {underlying} CSP: bid ${limit_price:.2f} below minimum ${CSP_MIN_PREMIUM:.2f} — skip (low IV)")
             continue
 
         actions.append({
@@ -268,7 +294,9 @@ def csp_open_actions(eq_positions, opt_positions, orders, options_bp):
             "limit_price": limit_price,
             "close_price": close_px,
             "note": (f"{underlying} {contract['strike_price']}P {contract['expiration_date']} "
-                     f"@ ${limit_price} (close was ${close_px})"),
+                     f"@ ${limit_price}"
+                     + (f" (bid ${bid:.2f}, close was ${close_px})" if bid is not None
+                        else f" (close was ${close_px})")),
         })
         # Deduct from available BP so we don't over-commit in the same session
         options_bp -= required_bp
