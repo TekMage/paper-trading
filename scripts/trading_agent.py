@@ -54,20 +54,41 @@ SPY_START        = 731.53
 ACCOUNT_FLOOR    = 87_500.00
 
 # Layer 1 share targets
-LAYER1 = {"QQQ": 45, "SPY": 13, "XLY": 40, "JETS": 80, "XLE": 100}
+# XLY removed 2026-06-11: June sprint exit — position closed via FORCE_CLOSE_EQUITY.
+# QQQ increased 45→50 to absorb freed capital.
+LAYER1 = {"QQQ": 50, "SPY": 13, "JETS": 80, "XLE": 100}
+
+# Layer 1 positions to force-exit: bot sells full position then never rebuys.
+# Add symbols here when exiting a Layer 1 name — remove entry once position is flat.
+FORCE_CLOSE_EQUITY = {"XLY"}
+
+# IPO watchlist — buy a starter position the first open session the symbol is tradeable.
+# Bot checks Alpaca asset status daily; buys on first available day; never re-enters.
+IPO_WATCHLIST = [
+    {"symbol": "SPCX",      "qty": 15, "note": "SpaceX IPO — largest IPO in history, first-day momentum play"},
+    {"symbol": "ANTHROPIC", "qty": 10, "note": "Anthropic IPO — AI frontier, long-term DCA target"},
+    {"symbol": "OPENAI",    "qty": 8,  "note": "OpenAI IPO — brand momentum, watch unit economics"},
+]
 
 # CSP targets: (underlying, strike, max_contracts)
 # Priority order matters — most IV-sensitive first
 # INTC removed: v2.0 strategy does not target INTC; Jun18 position was unintended bot action
-# TSLA removed: $350P Jun18 closed at 50% profit (good exit). Bot was re-entering daily with
-#   $330-335P Jun26 at ~0.37% yield (GTC orders never filled; Alpaca paper cancels options
-#   GTC at session end). Do not re-enter TSLA until IV > 40 and manually re-added here.
-# NVDA strike 190 targeting Jul18 expiry (post-earnings IV); OPT_DTE_MAX extended to cover ~57 DTE
+# TSLA removed: $350P Jun18 closed at 50% profit (good exit). Re-enter only when IV > 40.
+# NVDA: Jul18 expiry, OPT_DTE_MAX extended to 60 to cover ~57 DTE
+# AMZN: re-added at $215P (~14% OTM at ~$250 spot). Previous $250P Jun26 closed at a loss
+#   (5.7% OTM too close). New strike provides adequate downside buffer.
 CSP_TARGETS = [
     ("NVDA", 190, 1),
-    # AMZN removed: Jun26 $250P closed at a loss (strike too close, 5.7% OTM).
-    # Re-add with 12-15% OTM strike once position is confirmed closed.
+    ("AMZN", 215, 1),
 ]
+
+# QQQ calls — buy 1 contract 2% OTM for June alpha leverage.
+# Short-dated (CALL_DTE_MAX=20) to stay within June expiry cycle.
+CALL_TARGETS = [
+    {"underlying": "QQQ", "otm_pct": 0.02, "qty": 1, "note": "June sprint leverage"},
+]
+CALL_DTE_MIN = 10
+CALL_DTE_MAX = 20
 
 # Layer 3 profit-take thresholds (unrealized %)
 PROFIT_TAKE    = {"JETS": 0.30, "IWM": 0.20, "MU": 0.20, "XLY": 0.20}
@@ -140,6 +161,16 @@ def get_option_quote(symbol):
     except Exception as e:
         print(f"    Option quote fetch failed for {symbol}: {e}")
         return None, None
+
+def asset_is_tradeable(symbol):
+    """Return True if symbol exists on Alpaca and is currently tradeable."""
+    try:
+        data = _get(f"{ALPACA_BASE}/assets/{symbol}")
+        return data.get("status") == "active" and bool(data.get("tradable", False))
+    except requests.HTTPError as e:
+        if e.response is not None and e.response.status_code == 404:
+            return False
+        raise
 
 def get_option_chain(underlying, strike_target):
     gte = (date.today() + timedelta(days=OPT_DTE_MIN)).isoformat()
@@ -227,6 +258,38 @@ def find_best_contract(underlying, strike_target):
     ))
     return contracts[0]
 
+
+def find_call_contract(underlying, strike_target):
+    """Find the best OTM call contract within the short CALL_DTE window."""
+    try:
+        gte = (date.today() + timedelta(days=CALL_DTE_MIN)).isoformat()
+        lte = (date.today() + timedelta(days=CALL_DTE_MAX)).isoformat()
+        data = _get(f"{ALPACA_BASE}/options/contracts", {
+            "underlying_symbols": underlying,
+            "type": "call",
+            "expiration_date_gte": gte,
+            "expiration_date_lte": lte,
+            "strike_price_gte": strike_target * 0.98,
+            "strike_price_lte": strike_target * 1.04,
+            "limit": 20,
+        })
+    except Exception as e:
+        print(f"    Call chain fetch failed for {underlying}: {e}")
+        return None
+
+    contracts = [c for c in data.get("option_contracts", [])
+                 if c.get("tradable") and c.get("close_price")]
+    if not contracts:
+        return None
+
+    contracts.sort(key=lambda c: (
+        0 if _is_monthly_expiry(c.get("expiration_date", "")) else 1,
+        -int(c.get("open_interest") or 0),
+        abs(float(c["strike_price"]) - strike_target),
+    ))
+    return contracts[0]
+
+
 # ---------------------------------------------------------------------------
 # Rule engine
 # ---------------------------------------------------------------------------
@@ -243,6 +306,84 @@ def layer1_actions(eq_positions):
                 "qty": shortfall,
                 "note": f"Layer 1 rebalance: have {current}, need {target}",
             })
+    return actions
+
+
+def ipo_watchlist_actions(eq_positions):
+    """Buy IPO watchlist symbols the first session they are tradeable on Alpaca."""
+    actions = []
+    for item in IPO_WATCHLIST:
+        symbol = item["symbol"]
+        if symbol in eq_positions:
+            print(f"    IPO watch: {symbol} already owned — skip")
+            continue
+        if not asset_is_tradeable(symbol):
+            print(f"    IPO watch: {symbol} not yet on Alpaca — skip")
+            continue
+        actions.append({
+            "type": "buy_stock",
+            "symbol": symbol,
+            "qty": item["qty"],
+            "note": f"IPO buy: {item['note']}",
+        })
+    return actions
+
+
+def call_buy_actions(eq_positions, opt_positions, orders, snapshots, options_bp):
+    """Buy short-dated OTM calls on CALL_TARGETS for June alpha leverage."""
+    actions = []
+    for target in CALL_TARGETS:
+        underlying = target["underlying"]
+
+        # Skip if we already have a long option position on this underlying
+        already_long = any(
+            sym.startswith(underlying) and float(pos.get("qty", 0)) > 0
+            for sym, pos in opt_positions.items()
+        )
+        if already_long or pending_option_orders(orders, underlying):
+            print(f"    {underlying} call: already open or pending — skip")
+            continue
+
+        snap = snapshots.get(underlying, {})
+        current_px = snap.get("latestTrade", {}).get("p", 0)
+        if not current_px:
+            print(f"    {underlying} call: no price data — skip")
+            continue
+
+        # Round to nearest $0.50 strike
+        raw_strike = current_px * (1 + target["otm_pct"])
+        strike_target = round(raw_strike * 2) / 2
+
+        contract = find_call_contract(underlying, strike_target)
+        if not contract:
+            print(f"    {underlying} call: no contract found near ${strike_target:.0f} — skip")
+            continue
+
+        bid, ask = get_option_quote(contract["symbol"])
+        if bid is None or ask is None or ask < 0.10:
+            print(f"    {underlying} call: quote unavailable or ask too low — skip")
+            continue
+
+        # Buy at ask × 1.02 to ensure fill (buying, not selling)
+        limit_price = round(ask * 1.02, 2)
+        cost = limit_price * 100 * target["qty"]
+
+        if options_bp < cost:
+            print(f"    {underlying} call: need ${cost:,.0f}, have ${options_bp:,.0f} — skip")
+            continue
+
+        print(f"    {underlying} call: live bid=${bid:.2f} ask=${ask:.2f} strike=${contract['strike_price']} exp={contract['expiration_date']}")
+        actions.append({
+            "type": "buy_call",
+            "symbol": contract["symbol"],
+            "underlying": underlying,
+            "strike": contract["strike_price"],
+            "expiry": contract["expiration_date"],
+            "limit_price": limit_price,
+            "qty": target["qty"],
+            "note": (f"{underlying} {contract['strike_price']}C {contract['expiration_date']} "
+                     f"@ ${limit_price} ({target['note']})"),
+        })
     return actions
 
 
@@ -313,10 +454,19 @@ def management_actions(eq_positions, opt_positions):
     actions = []
     flags   = []
 
+    # --- Force-close Layer 1 exits ---
+    for sym in FORCE_CLOSE_EQUITY:
+        if sym in eq_positions:
+            actions.append({
+                "type": "close_position",
+                "symbol": sym,
+                "note": f"Layer 1 exit: {sym} removed from strategy — closing full position",
+            })
+
     # --- Layer 3 equity profit/stop checks ---
     for sym, pos in eq_positions.items():
-        if sym in LAYER1:
-            continue  # Layer 1 — hold forever per strategy
+        if sym in LAYER1 or sym in FORCE_CLOSE_EQUITY:
+            continue  # Layer 1 / exiting — skip profit-take logic
         pct = float(pos.get("unrealized_plpc", 0))
         threshold = PROFIT_TAKE.get(sym, 0.20)
         if pct >= threshold:
@@ -400,6 +550,11 @@ def execute(actions, dry_run=False):
             elif atype == "buy_to_close":
                 r = place_option_order(symbol, "buy", 1,
                                         a["limit_price"], "buy_to_close")
+                results.append({**a, "status": "submitted", "order_id": r["id"]})
+
+            elif atype == "buy_call":
+                r = place_option_order(symbol, "buy", a.get("qty", 1),
+                                        a["limit_price"], "buy_to_open")
                 results.append({**a, "status": "submitted", "order_id": r["id"]})
 
         except requests.HTTPError as e:
@@ -766,7 +921,7 @@ def main():
     opt_pos = option_positions(positions)
 
     # ── Market snapshots ───────────────────────────────────────────────────
-    watchlist = list(LAYER1.keys()) + ["NVDA", "TSLA", "AMZN", "INTC", "IWM", "MU"]
+    watchlist = list(LAYER1.keys()) + ["NVDA", "TSLA", "AMZN", "INTC", "IWM", "MU", "XLY"]
     print("Fetching snapshots...")
     snapshots = get_snapshots(watchlist)
 
@@ -775,15 +930,19 @@ def main():
     all_flags   = []
 
     if args.session == "open":
+        # Management first — catches FORCE_CLOSE_EQUITY exits and CSP profit/stops
+        mgmt, flags = management_actions(eq_pos, opt_pos)
+        all_actions += mgmt
+        all_flags   += flags
         if not below_floor:
             print("Checking Layer 1 targets...")
             all_actions += layer1_actions(eq_pos)
             print("Checking CSP targets...")
             all_actions += csp_open_actions(eq_pos, opt_pos, orders, options_bp)
-        # Management checks at open too
-        mgmt, flags = management_actions(eq_pos, opt_pos)
-        all_actions += mgmt
-        all_flags   += flags
+            print("Checking call targets...")
+            all_actions += call_buy_actions(eq_pos, opt_pos, orders, snapshots, options_bp)
+        print("Checking IPO watchlist...")
+        all_actions += ipo_watchlist_actions(eq_pos)
 
     elif args.session == "midday":
         print("Running midday management checks...")

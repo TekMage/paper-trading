@@ -3,6 +3,43 @@
 ## Revision History
 - **v1.0 — May 7, 2026:** Initial plan. Energy/defense tilt (Iran war).
 - **v2.0 — May 7, 2026:** Post-backtest + Iran peace pivot. Rotate out of energy/defense into tech/growth/recovery.
+- **v2.1 — June 11, 2026:** June sprint. XLY exit, QQQ bumped to 50, AMZN CSP re-entry, QQQ calls for leveraged beta, IPO watchlist (SPCX/ANTHROPIC/OPENAI). Target: max alpha vs SPY before June 30 reset.
+
+---
+
+## June Sprint Strategy (v2.1 — June 11–30, 2026)
+
+**Goal:** Maximize alpha vs S&P 500 before June 30 reset. Currently -0.07% alpha. Need aggressive
+stance — conservative wheel income will not close the gap in 19 trading days.
+
+### June Sprint Changes (already implemented in bot)
+
+| Change | Action | Reason |
+|---|---|---|
+| XLY removed from Layer 1 | Close full position | -5.44% loss, consumer thesis stale, capital better deployed elsewhere |
+| QQQ bumped 45 → 50 shares | Buy 5 more QQQ at open | Absorb XLY capital into best-performing Layer 1 |
+| AMZN CSP re-entered | $215P strike (~14% OTM, Jul) | Previous $250P was too close (5.7% OTM); new strike has adequate buffer |
+| QQQ long calls | 1 contract, 2% OTM, 10-20 DTE | Leveraged upside exposure; 5-10× beta vs holding shares |
+| IPO watchlist | SPCX (15 shares), ANTHROPIC (10), OPENAI (8) | Auto-buy on first tradeable day; SPCX debuts June 12 |
+
+### IPO Analysis (for real-money account — beyond June test)
+
+| Company | Ticker | Date | Valuation | Why |
+|---|---|---|---|---|
+| **SpaceX** | SPCX | Jun 12, 2026 | $1.75T | Starlink natural monopoly, launch dominance, PROFITABLE. Best structural moat. **DCA target #1.** |
+| **Anthropic** | ANTHROPIC | ~Oct 23, 2026 | ~$965B | $47B ARR (4.7× YoY growth), Google+Amazon distribution, Constitutional AI moat. **DCA target #2.** |
+| **OpenAI** | OPENAI | Q4 2026 | $730-852B | ChatGPT brand unmatched but $27B cash burn > $25B revenue. Buy IPO pop; wait for unit econ improvement before DCA. |
+
+### ETF Exposure (pre-IPO proxy)
+QQQ already provides indirect exposure via MSFT (49% OpenAI economics), GOOG ($3B Anthropic),
+NVDA (GPU backbone for all three). ARKX will add SPCX post-IPO.
+
+### June Return Target
+| Scenario | Return | Alpha needed |
+|---|---|---|
+| Base | Flat to +0.5% | Recover current -0.07% deficit |
+| Stretch | +1.5% | Beat SPY by 1%+ if market cooperates |
+| Aggressive | +3%+ | Requires QQQ calls to pay off on an upleg |
 
 ---
 
