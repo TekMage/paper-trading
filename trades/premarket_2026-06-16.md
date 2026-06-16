@@ -1,29 +1,29 @@
 # Pre-Market Summary — Monday, June 16, 2026
 
-> **Market opens in ~30 min (9:30 AM ET). CRITICAL: Two XLE manual triggers active simultaneously.**
+> **Market opens in ~30 min (9:30 AM ET). CRITICAL: XLE exit triggers active. Both CSPs closed at 50% profit June 15 — bot will open fresh CSPs today.**
 
 ---
 
 ## Header
 
-- **API status:** UNAVAILABLE — Alpaca paper API unreachable from cloud environment
-- **Last confirmed equity:** $100,794.08 (exec_eod_2026-06-12, Friday close)
-- **Market context:** Iran–US Hormuz MOU signed June 14 → oil gapping down hard; futures sharply positive; XLE triggers fully activated
+- **API status:** UNAVAILABLE — Alpaca paper API unreachable from cloud runner
+- **Last confirmed equity:** $102,543.63 (exec_eod_2026-06-15 — authoritative)
+- **Market context:** Iran–US MOU signed Jun 14; Brent ~$83 (below $85 exit threshold); S&P futures +1.22%; FOMC meeting starts today under Chair Warsh
 
 ---
 
-## Account Snapshot (from exec_eod_2026-06-12 — authoritative)
+## Account Snapshot (from exec_eod_2026-06-15)
 
 | Metric | Value |
 |--------|-------|
-| **Equity** | **$100,794.08** |
-| Our return (inception) | +0.79% |
-| SPY benchmark return | +1.39% (SPY @ $741.67) |
-| Alpha vs SPY | -0.59% |
-| Options BP remaining | $31,843.08 |
+| **Equity** | **$102,543.63** |
+| Our return (inception) | +2.54% |
+| SPY benchmark return | +3.14% (SPY @ $754.50) |
+| Alpha vs SPY | -0.60% |
+| Options BP remaining | $72,118.46 |
 | Starting capital | $100,000 (May 7, 2026) |
 | Account floor | $87,500 |
-| Headroom above floor | $13,294 |
+| Headroom above floor | $15,043 |
 
 ---
 
@@ -33,19 +33,25 @@
 
 | Symbol | Shares | Status | Notes |
 |--------|--------|--------|-------|
-| QQQ | 50 | At target (likely — +5 submitted Jun 12 open) | Fill unconfirmed via API; exec_eod BP consistent with fill |
+| QQQ | 50 | At target | +5 shares filled Jun 12 |
 | SPY | 13 | At target | Inception cost $731.53 |
-| JETS | 80 | At target | Cost ~$27.45; close ~$28.56 Fri; Iran/oil TAILWIND today |
-| **XLE** | **100** | 🔴🔴 **SELL ALL — TWO TRIGGERS ACTIVE** | See Iran/Oil section below |
+| JETS | 80 | At target | Cost ~$27.45; Iran/oil deal = airline tailwind |
+| **XLE** | **100** | 🔴 **SELL ALL — TWO TRIGGERS ACTIVE** | See Iran/Oil section |
 | XLY | 0 | Closed Jun 11 | v2.1 exit complete |
-| SPCX | 15 | Likely filled Jun 12 IPO day | Est. fill ~$150; closed ~$161 (+7% on fill est.) |
+| SPCX | 15 | Filled Jun 12 IPO day | Bought ~$150 open; closed ~$178 Jun 15 (+19% unrealized) |
 
 ### Layer 2 — Open CSPs
 
-| Position | Status | Strike OTM | Notes |
-|----------|--------|------------|-------|
-| **NVDA $180P Jul17** | CONFIRMED OPEN | ~12% OTM (NVDA ~$205 Fri) | Fill: $1.97; BTC target ~$0.99 — bot auto-closes at 50% |
-| **AMZN $220P Jul17** | Likely open (BP evidence) | ~8% OTM (AMZN ~$238 Fri) | $220P submitted Jun 12; BP $57,970→$31,843 (~$26K drop) consistent with fill |
+**BOTH CSPs CLOSED AT 50% PROFIT ON JUNE 15:**
+
+| Position | Sold @ | Closed @ | P&L | Date Closed |
+|----------|--------|----------|-----|-------------|
+| NVDA $180P Jul17 | $3.05 (avg) | ~$1.03 | +$202/contract | Jun 15 |
+| AMZN $220P Jul17 | ~$3.25 (avg) | ~$1.32 | +$193/contract | Jun 15 |
+
+**Options BP is now fully available ($72,118)** — the bot will open fresh CSPs at today's open per current targets:
+- NVDA: ~$190P Jul18 (more conservative than prior $180P; ~7% OTM if NVDA ~$204)
+- AMZN: ~$215P Jul18 (~9–10% OTM if AMZN ~$237)
 
 *No other CSPs open. TSLA, INTC are NOT part of the current strategy.*
 
@@ -55,12 +61,12 @@
 
 | Item | Status |
 |------|--------|
-| **Iran MOU signed?** | **YES — signed June 14, 2026 in Switzerland** |
-| **Brent crude (Jun 15)** | **$83.05–$84.48/bbl** |
-| vs $90 trim trigger | 🔴 **BREACHED — $6–7 below** |
-| vs $85 exit trigger | 🔴 **BREACHED — $0.52–$1.95 below** |
+| **Iran MOU signed?** | **YES — signed June 14–15, 2026 (Trump/Vance + Iranian Parliament Speaker)** |
+| **Brent crude (Jun 16 premarket)** | **~$82.97/bbl (trading range $82.56–$83.87)** |
+| vs $90 trim trigger | 🔴 **BREACHED — $7+ below** |
+| vs $85 exit trigger | 🔴 **BREACHED — $2.03 below** |
 
-**Iran deal summary:** US–Iran framework MOU signed June 14 in Switzerland. Strait of Hormuz to reopen; $24B in frozen Iranian assets unfrozen; nuclear program enters 60-day negotiation window. Brent dropped from $87.27 (Jun 12 close) to $83–84 over the weekend in direct response.
+**Iran deal summary:** US–Iran framework MOU signed at G7 / virtually June 14–15. Strait of Hormuz to reopen immediately; $24B in frozen Iranian assets unfrozen; 60-day window for nuclear negotiations. Brent fell from $87+ to $83 over the weekend on supply-reopening expectations.
 
 ### XLE Action Required — BOTH TRIGGERS ACTIVE
 
@@ -70,8 +76,7 @@
 | Brent ≤ $85 | Sell ALL remaining XLE | 🔴 **TRIGGERED** |
 
 **Combined action: SELL ALL 100 XLE AT MARKET ON OPEN.**
-
-The $85 exit trigger (sell all) and the MOU trigger (sell 60) are both active. The $85 trigger is the more comprehensive rule — all 100 shares should be exited. At ~$56/share, this releases ~$5,600 to cash. This is a MANUAL action — the bot does not execute XLE exits.
+The $85 exit trigger supersedes the MOU trigger (both fire the same direction). At ~$56/share, exiting 100 XLE releases ~$5,600 to cash. **This is a MANUAL action — the bot does not execute XLE exits.**
 
 ---
 
@@ -79,20 +84,20 @@ The $85 exit trigger (sell all) and the MOU trigger (sell 60) are both active. T
 
 | Trigger | Level | Current | Status |
 |---------|-------|---------|--------|
-| Brent ≤ $85 → sell ALL XLE (100 shares) | $85.00 | ~$83–84 | 🔴 **TRIGGERED — ACT AT OPEN** |
-| Iran MOU signed → sell 60 XLE immediately | — | Signed Jun 14 | 🔴 **TRIGGERED — ACT AT OPEN** |
-| Brent ≤ $90 → sell 30 XLE | $90.00 | ~$83–84 | 🔴 Superseded by $85 trigger |
-| JETS ≥ $35.69 (+30% from $27.45 cost) → close all 80 JETS | $35.69 | ~$28.56 | Not triggered ($7.13 gap) |
+| Brent ≤ $85 → sell ALL XLE (100 shares) | $85.00 | ~$82.97 | 🔴 **TRIGGERED — ACT AT OPEN** |
+| Iran MOU signed → sell 60 XLE immediately | — | Signed Jun 14–15 | 🔴 **TRIGGERED — ACT AT OPEN** |
+| Brent ≤ $90 → sell 30 XLE | $90.00 | ~$82.97 | 🔴 Superseded by $85 trigger |
+| JETS ≥ $35.69 (+30% from $27.45 cost) → close all 80 JETS | $35.69 | ~$28.56 est. | Not triggered (~$7.13 gap) |
 
 ---
 
 ## Morning Priority Actions
 
-1. **SELL ALL 100 XLE AT MARKET — immediately at 9:30 AM open.** Both the Iran MOU trigger and the Brent ≤ $85 trigger are active. Do not wait for bot confirmation — this is a manual action. XLE likely opens lower given oil gap-down.
+1. **SELL ALL 100 XLE AT MARKET — immediately at 9:30 AM open.** Both the Iran MOU trigger and the Brent ≤ $85 trigger are active. XLE likely opens lower on continued oil gap-down. Do not wait for the bot. Manual order required.
 
-2. **Verify QQQ, SPCX, AMZN CSP fills.** These were submitted June 12 but API is unavailable. Check account in Alpaca UI or via API when accessible. QQQ should be at 50 shares, SPCX at 15 shares, AMZN $220P should be open.
+2. **Confirm both CSP positions are closed in Alpaca UI.** The exec_open Jun 15 submitted BTC orders for NVDA $180P and AMZN $220P; EOD BP jumped $32K → $72K confirming fills. Verify no residual option positions before market open.
 
-3. **Monitor JETS for upside.** Iran peace deal + lower oil = tailwind for airlines. JETS may rally toward $30–32 today. Exit trigger is $35.69 — watch intraday.
+3. **Watch bot's new CSP submissions at open.** With $72K in options BP, expect bot to submit NVDA ~$190P Jul18 and AMZN ~$215P Jul18. Confirm the strikes look reasonable given today's premarket price moves (NVDA ~$204, AMZN ~$237 est.).
 
 ---
 
@@ -100,35 +105,36 @@ The $85 exit trigger (sell all) and the MOU trigger (sell 60) are both active. T
 
 | Item | Finding |
 |------|---------|
-| S&P 500 futures | Strongly positive — Iran peace deal lifting risk assets |
-| NVDA | Sector down 26% from highs; RTX Spark launch Jun 1; SK Hynix partnership; $180P at 12% OTM is safe |
-| AMZN | ~$238 Fri; Prime Day June 23–26 (earlier than usual); $220P ~8% OTM — safe |
-| JETS | Iran deal + oil drop = sector tailwind; hold for $35.69 trigger |
-| SPCX | IPO day closed ~$161 (+19% vs $135 IPO price); est. unrealized gain ~+$165 on 15 shares |
-| Juneteenth | NYSE **closed Thursday June 19** (not Monday) — today trades normally |
+| S&P 500 futures | +1.22% premarket — Iran deal + risk-on bid |
+| NVDA | +2%+ Jun 15 on Iran/geopolitical relief; AMD +4%+ on 6GW Meta Instinct deal |
+| AMZN | ~$237–238 est. premarket; $215P ~10% OTM — very safe |
+| JETS | Iran peace deal + oil price drop = strong airline sector tailwind; hold for $35.69 trigger |
+| XLE | Should gap DOWN at open — sell immediately on opening print |
+| SPCX | Trading at ~$178 (closed June 15); IPO price $135; 15 shares est. +$645 unrealized |
+| FOMC | First Kevin Warsh-led decision — meeting Jun 16–17, expected hold; CPI +4.2% |
+| Juneteenth | NYSE **closed Thursday June 19** — plan CSP management around this |
 
 ### Week Macro Calendar
 
 | Date | Event |
 |------|-------|
-| Mon Jun 16 | Empire State Manufacturing 8:30 AM; **XLE exit at open** |
-| Tue Jun 17 | Retail Sales 8:30 AM; Industrial Production |
-| Wed Jun 18 | FOMC meeting begins |
-| **Thu Jun 19** | **NYSE CLOSED — Juneteenth; FOMC decision** |
-| Fri Jun 20 | Monthly options expiration (watch sector vol — no NVDA exposure) |
-
-*FOMC: First decision for Chair Warsh. Expected hold given CPI +4.2%. Watch for hawkish tone.*
+| **Mon Jun 16** | Empire State Manufacturing 8:30 AM; **Sell all XLE at open** |
+| Tue Jun 17 | Retail Sales 8:30 AM; Industrial Production; FOMC Day 2 |
+| Wed Jun 18 | FOMC decision (likely hold; watch Warsh guidance) |
+| **Thu Jun 19** | **NYSE CLOSED — Juneteenth** |
+| Fri Jun 20 | Monthly options expiration (no near-term NVDA/AMZN exposure now) |
 
 ---
 
 ## Risk Flags
 
-- 🔴 **XLE**: All trigger conditions satisfied — must exit at open or risk further oil-driven losses
-- ⚠️ **AMZN CSP ($220P)**: Fill unconfirmed via API; if unfilled (GTC expired at 4 PM Fri), bot will resubmit today — may target $215P per current strategy target
-- ⚠️ **NVDA sector**: Chips down 26% from highs; NVDA $180P Jul17 is 12% OTM with ~32 DTE — watch if NVDA drops below $190 (would reduce OTM buffer)
-- ⚠️ **Alpha lag**: Account at -0.59% alpha vs SPY ITD. XLE exit + Iran rally on other positions may help close gap today.
-- ⚠️ **FOMC week**: Rate decision Thursday (holiday) introduces midweek vol; plan around CSP positions
+- 🔴 **XLE**: All trigger conditions satisfied — must exit at open manually or risk further oil-driven losses
+- ✅ **CSPs cleared**: Both NVDA and AMZN CSPs closed at 50% profit June 15 — clean slate for new positions
+- ⚠️ **New CSPs (today)**: Bot will open NVDA $190P and AMZN $215P; verify these strikes are still safe given any overnight NVDA/AMZN moves
+- ⚠️ **FOMC vol**: Warsh's first decision Wednesday introduces midweek volatility; new CSPs with Jul18 expiry have sufficient buffer
+- ⚠️ **Alpha lag**: -0.60% ITD vs SPY. XLE exit preserves capital from further oil-driven drawdown; Iran deal upside helps QQQ/JETS/SPCX
+- ⚠️ **SPCX liquidity**: New IPO (June 12), 15 shares held — may see elevated vol around post-IPO lock-up chatter; no trigger to exit yet
 
 ---
 
-*Sources: exec_eod_2026-06-12.md (positions/equity), eod_2026-06-12.md (context/analysis), CNN/NPR/RFERL (Iran MOU June 14), Fortune/Trading Economics (Brent $83–84), TheStreet (futures), CNBC (NVDA), NBC News (Amazon Prime Day)*
+*Sources: exec_eod_2026-06-15.md, exec_open_2026-06-15.md (confirmed CSP closes + BP recovery), CNN/NPR/ABC/Al Jazeera (Iran MOU June 14–15), HDFCSKY/Trading Economics (Brent $82.97), Bloomberg/Stocktwits (S&P futures +1.22%), TipRanks/Yahoo Finance (NVDA +2%, AMD +4%), CNBC/Yahoo Finance (SPCX $178)*
