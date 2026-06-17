@@ -63,9 +63,13 @@ LAYER1 = {"QQQ": 50, "SPY": 13, "JETS": 80, "XLE": 100}
 FORCE_CLOSE_EQUITY = {"XLY"}
 
 # IPO watchlist — buy a starter position the first open session the symbol is tradeable.
-# Bot checks Alpaca asset status daily; buys on first available day; never re-enters.
+# Bot checks Alpaca asset status daily; buys on first available day.
+# IMPORTANT: remove a symbol once the position has been opened AND exited — the "already
+# owned" check only prevents re-entry while the position is live. After a profit-take the
+# symbol is no longer in eq_positions and the bot will re-buy on the next session.
+# SPCX: removed — IPO play complete. Bought Jun 12 @ ~$135, profit-taken Jun 16 at +21%.
+#   Re-entry at $201 (49% above IPO price) is not the intended play.
 IPO_WATCHLIST = [
-    {"symbol": "SPCX",      "qty": 15, "note": "SpaceX IPO — largest IPO in history, first-day momentum play"},
     {"symbol": "ANTHROPIC", "qty": 10, "note": "Anthropic IPO — AI frontier, long-term DCA target"},
     {"symbol": "OPENAI",    "qty": 8,  "note": "OpenAI IPO — brand momentum, watch unit economics"},
 ]
