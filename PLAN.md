@@ -4,6 +4,115 @@
 - **v1.0 — May 7, 2026:** Initial plan. Energy/defense tilt (Iran war).
 - **v2.0 — May 7, 2026:** Post-backtest + Iran peace pivot. Rotate out of energy/defense into tech/growth/recovery.
 - **v2.1 — June 11, 2026:** June sprint. XLY exit, QQQ bumped to 50, AMZN CSP re-entry, QQQ calls for leveraged beta, IPO watchlist (SPCX/ANTHROPIC/OPENAI). Target: max alpha vs SPY before June 30 reset.
+- **v2.2 — June 17, 2026:** Long weekend brief. Iran war formally ending (formal signing June 19). XLE full exit Thursday open. SPCX hold at underwater entry. CSP open window critical Thursday. Monday deep reset.
+
+---
+
+---
+
+## Long Weekend Brief — June 18–22, 2026 (v2.2)
+
+### Calendar Correction
+- **Thursday June 18** — Normal trading day. Full open/midday/EOD bot sessions run.
+- **Friday June 19** — **Juneteenth Federal Holiday. NYSE CLOSED.** No bot sessions.
+- **Saturday June 20 / Sunday June 21** — Weekend. No trading.
+- **Monday June 22** — Markets reopen. First full session after the peace deal formal signing.
+
+> Note: The EOD report on June 17 incorrectly stated "NYSE closed Thursday June 19." June 19 is
+> a Friday this year and is the Juneteenth holiday. Thursday June 18 is a full trading day.
+
+---
+
+### Thursday June 18 — Action Plan
+
+#### 🔴 CRITICAL — MANUAL: Sell all 100 XLE at market open (9:30 AM ET)
+The bot does NOT execute XLE trigger exits automatically. This must be done manually via Alpaca.
+- Brent ≤$85 trigger: ACTIVE since June 15 (Brent ~$79.45, $5.55 below threshold)
+- Iran MOU trigger: ACTIVE since June 15
+- This is Day 4 since both triggers fired. Every day of delay adds downside risk.
+- Proceeds: ~$5,467 at $54.67/share — redeploy into CSPs and/or JETS
+
+**How to execute:** Alpaca paper account → Sell 100 XLE → Market order → Confirm fill.
+
+#### Bot Actions at Thursday Open (automatic)
+The bot will run its normal open session. With FOMC IV spike in effect, expect:
+- **CSP open attempts:** NVDA $190P Jul18 and AMZN $215P Jul18 should finally clear the
+  $1.50 minimum premium threshold that has been blocking them all week. Jul18 is 28 DTE from
+  Thursday — last day this expiry is within OPT_DTE_MIN=25. If they don't fill Thursday,
+  the bot shifts to Aug15 expiry (~53 DTE) the following week.
+- **No SPCX re-buy:** Fixed (removed from IPO watchlist June 17).
+- **QQQ calls:** Bot will try to open 1 QQQ call 2% OTM if none held.
+
+#### SPCX — Hold Decision
+Current position: 15 shares @ $199.39 avg entry, ~$195 (-2.2%, -$65 unrealized).
+Strategy: hold for recovery to break-even (~$199-201). This was an off-strategy re-entry
+after the IPO profit-take; it's a small position ($2,925) and SPCX has strong fundamentals.
+Do not add to this position — wait for break-even, then reassess.
+
+---
+
+### Friday June 19 — Market Closed (Juneteenth + Iran Formal Signing)
+
+**No trading. Bot will not run.**
+
+This is the day of the formal US–Iran war agreement signing ceremony in Switzerland. Even
+though markets are closed, this is a major macro event to monitor:
+- Full text of the formal peace agreement may differ from the June 15 MOU (14-point framework)
+- Iranian crude tankers are physically in transit through Hormuz — formal signing confirms supply
+- Watch for: any complications at the signing, last-minute conditions, congressional reaction
+- Watch for: Brent crude futures reaction (markets don't close for futures)
+- Watch for: geopolitical reaction from Saudi Arabia, Israel, Russia on the formal signing
+
+**Key signals to track over the weekend:**
+| Signal | Implication |
+|---|---|
+| Brent futures drop further from ~$79 | Confirms supply restoration; XLE exit was right call |
+| Brent bounces toward $85 | Partial supply disruption; monitor JETS and XLE residual |
+| Iran complications at signing | Risk-off; consider hedging Monday open |
+| Congressional pushback / sanctions hold | Deal uncertainty; oil may retrace |
+| Economic data releases (if any) | Note anything that moves rate expectations |
+| JETS price action in pre-market Monday | Airlines are the direct peace dividend play |
+
+---
+
+### Monday June 22 — Pre-Market Research Reset
+
+**Do a full research session before market open.** The formal peace deal changes the
+strategic calculus significantly. Key questions to answer Monday morning:
+
+#### 1. Oil and Energy
+- Where did Brent close Friday (futures)? Where is it Sunday night?
+- Is XLE stabilizing or continuing to fall? (Confirms exit thesis)
+- Any resumption of Middle East energy contracts or refinery activity?
+
+#### 2. Peace Dividend Assessment
+- JETS: Airlines are the highest-conviction peace-dividend play. Fuel costs drop directly.
+  Current: $30.25, exit trigger $35.69 (+18% to go). Is acceleration happening?
+- Consumer discretionary: Lower fuel/inflation → consumer spending recovery. XLY was exited
+  but this thesis was correct — monitor IWM (small caps, Fed-rate-sensitive) as potential add.
+- Defense: ITA/RTX will underperform post-deal. Confirm no exposure.
+
+#### 3. FOMC vs Peace Deal — Conflicting IV Signals
+The June 17 FOMC hawkish hold (rate hike probability 77% by Dec 2026) spiked IV just as
+the peace deal compresses it. These are opposing forces. Assess by Monday:
+- Did IV compress over the weekend despite the hawkish FOMC?
+- Are NVDA/AMZN CSP premiums still above $1.50 minimum?
+- If IV has already collapsed, the original "wait 2-3 weeks post-deal" CSP rule applies.
+  If IV is still elevated (FOMC win), open CSPs at Monday open aggressively.
+
+#### 4. June Sprint Score
+With ~8 trading days left in June (June 22-30, excluding June 22+), assess:
+- Current alpha: +0.18% (EOD June 17). This is the best reading in weeks — PROTECT IT.
+- SPY June 17 close: ~$742.43. Benchmark to beat by June 30.
+- XLE exit proceeds ($5,467) redeployed into CSPs + potentially more JETS could accelerate.
+- QQQ/NVDA/AMZN benefit from peace dividend + lower energy costs → tech cost compression.
+
+#### 5. v2.3 Strategy Adjustments (if warranted)
+After reviewing the above, decide whether a full strategy update is needed. Likely candidates:
+- Add IWM or JETS to Layer 1 if peace dividend acceleration is confirmed
+- Adjust CSP strikes/minimums based on post-deal IV environment
+- Consider whether SPCX should be held beyond break-even (SpaceX unaffected by peace deal)
+- Remove FOMC rate hike scenario weighting if deal overshadows monetary policy
 
 ---
 
@@ -43,14 +152,17 @@ NVDA (GPU backbone for all three). ARKX will add SPCX post-IPO.
 
 ---
 
-## Market Context (v2.0 — May 7, 2026)
+## Market Context (v2.0 — updated June 17, 2026)
 
-### Macro Regime Change: Iran War Ending
-The ceasefire signed April 7 is holding. As of May 6 (Axios), the US and Iran are finalizing a
-14-point MOU to formally end the war, reopen the Strait of Hormuz, and begin lifting sanctions.
-**This is the single biggest macro shift of 2026 and requires a full portfolio pivot.**
+### Macro Regime Change: Iran War Ending — NOW EXECUTING
+~~Ceasefire April 7. MOU finalizing.~~ **Status as of June 17, 2026:**
+- MOU signed June 15 electronically (14-point framework, text released publicly June 17)
+- Formal signing ceremony: **Switzerland, Friday June 19** (Juneteenth — US markets closed)
+- First Iranian crude tankers physically departed Strait of Hormuz June 17
+- Brent crude: ~$79.45 — already well through the $85 exit trigger
+- **The thesis has executed. The portfolio pivot is underway.**
 
-### What changes when the deal is signed:
+### What changes when the deal is signed (now confirmed):
 - **Oil: immediate -$10-20 drop**, then settles $80–90 range (infrastructure damage, mine clearing
   keeps supply constrained — so NOT back to $60, but well below $111 current)
 - **XLE / XOP / USO: go short-side.** Energy stocks that ran 23–90% are now headwinds.
