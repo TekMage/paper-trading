@@ -1,0 +1,46 @@
+name: Trading — End of Day (4:30 PM ET)
+
+on:
+  schedule:
+    - cron: '30 20 * * 1-5'   # 4:30 PM ET, Mon–Fri
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  trade-eod:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run trading agent — EOD session
+        env:
+          ALPACA_API_KEY:    ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          ALPACA_BASE_URL:   https://paper-api.alpaca.markets/v2
+          ALPACA_DATA_URL:   https://data.alpaca.markets/v2
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/trading_agent.py --session eod
+
+      - name: Commit results
+        run: |
+          git config user.email "trading-bot@github-actions"
+          git config user.name "Trading Bot"
+          git add trades/
+          git pull --rebase --autostash origin main
+          git diff --staged --quiet || git commit -m "exec_eod: $(date -u +%Y-%m-%d)"
+          git push
