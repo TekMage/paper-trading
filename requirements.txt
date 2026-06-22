@@ -1,2 +1,17 @@
+# Core runtime for paper-trading agents and HMM
 anthropic>=0.109.0
 requests>=2.32.3
+numpy>=1.26
+pandas>=2.2
+hmmlearn>=0.3.2
+scikit-learn>=1.5
+
+# Robust env handling for isolated sub-agent / delegate_task sessions
+python-dotenv>=1.0.0
+
+# Structured data & delegation-friendly outputs
+pydantic>=2.5
+
+# Optional but recommended for full Hermes sub-agent autonomy
+# (web_search, terminal tools, etc. are provided by Hermes runtime)
+# Add more as needed for specific sub-agent capabilities

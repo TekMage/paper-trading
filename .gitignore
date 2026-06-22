@@ -14,3 +14,10 @@ venv/
 # Editor
 .vscode/
 *.swp
+
+# Logs and run artifacts (do not commit transient logs)
+*.log
+run_cycle.log
+agents/run_cycle.log
+agents/0
+*.bak
