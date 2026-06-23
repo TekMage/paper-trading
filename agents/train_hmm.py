@@ -133,8 +133,9 @@ def main():
 
     # Select robust numeric features for training (avoid full cov issues)
     numeric_features = features.select_dtypes(include=[np.number]).dropna()
-    # Prefer a subset of stable features
-    cols = [c for c in ["spy_ret", "qqq_ret", "qqq_vol_20", "qqq_trend", "vix_level", "acct_vs_qqq_20"] if c in numeric_features.columns]
+    # Prefer a subset of stable features matching compute_features (tightened set)
+    preferred = ["qqq_ret", "qqq_alpha", "qqq_vol_20", "vol_ratio", "qqq_trend_20", "vix_level", "qqq_dist_ma20", "alpha_vol_20"]
+    cols = [c for c in preferred if c in numeric_features.columns]
     if cols:
         X_train = numeric_features[cols]
     else:

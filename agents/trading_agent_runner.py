@@ -286,14 +286,35 @@ def propose_qqq_calls(positions: List[Dict], regime: Dict) -> List[Dict]:
     return []
 
 def pre_close_review(context: Dict) -> List[Dict]:
-    """~3:15 PM ET pre-close logic stub."""
+    """~3:15 PM ET pre-close review. Expanded for institutional flows, positions, regime."""
     logger.info("=== Pre-Close Review (~3:15 PM ET) ===")
     actions = []
     alpha = context.get("qqq_alpha", 0)
-    if alpha < -0.5:
-        actions.append({"action": "HEDGE_REVIEW", "note": "Consider reducing size or adding hedge before close"})
+    regime = context.get("regime", {}).get("regime_name", "")
+    positions = context.get("positions", []) or []
+    news = context.get("news", []) or []
+
+    # Core logic
+    if alpha < -0.5 or "Risk" in regime or "Defensive" in regime:
+        actions.append({"action": "HEDGE_REVIEW", "note": f"Alpha {alpha}% — consider reducing size or adding hedge (e.g. QQQ calls or VIX proxy)"})
     else:
-        actions.append({"action": "MONITOR", "note": "Watch institutional flows in final hour"})
+        actions.append({"action": "MONITOR", "note": "Watch institutional flows in final hour; maintain core positions"})
+
+    # Position-specific
+    if any("SPCX" in str(p) for p in positions):
+        actions.append({"action": "POSITION_REVIEW", "note": "SPCX drag noted — assess exit or trim before close"})
+    for p in positions[:3]:
+        sym = p.get("symbol") if isinstance(p, dict) else str(p)[:4]
+        if sym:
+            actions.append({"action": "FLOW_CHECK", "note": f"Monitor {sym} volume/flows into close"})
+
+    # News tie-in
+    geo_keywords = ["Iran", "Middle East", "geopolitical", "war", "truce"]
+    if any(any(kw.lower() in str(n).lower() for kw in geo_keywords) for n in news):
+        actions.append({"action": "GEO_MONITOR", "note": "Geopolitical news active — watch energy/defense names and oil"})
+
+    # Always log
+    logger.info(f"Pre-close actions generated: {len(actions)}")
     return actions
 
 def run_trading_cycle(context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -316,7 +337,8 @@ def run_trading_cycle(context: Optional[Dict[str, Any]] = None) -> Dict[str, Any
         account = get_account()
         equity = float(account.get("equity", 0))
         bp = float(account.get("buying_power", 0))
-        logger.info(f"Equity: ${equity:,.2f} | BP: ${bp:,.2f}")
+        opt_bp = float(account.get("options_buying_power", 0) or bp)
+        logger.info(f"Equity: ${equity:,.2f} | Total BP: ${bp:,.2f} | Options BP: ${opt_bp:,.2f}")
 
         if equity < ACCOUNT_FLOOR:
             logger.warning("Below $80k floor — pausing new positions")
@@ -339,9 +361,15 @@ def run_trading_cycle(context: Optional[Dict[str, Any]] = None) -> Dict[str, Any
         call_proposals = propose_qqq_calls(positions, regime)
         preclose_actions = pre_close_review(context) if context.get("cycle") == "pre_close" else []
 
+
         logger.info("Proposals — CSPs: %d, QQQ Calls: %d, PreClose: %d",
                     len(csp_proposals), len(call_proposals), len(preclose_actions))
 
+        # Guard new CSPs on available options buying power (rough collateral estimate)
+        if "opt_bp" not in locals() or opt_bp < 15000:
+            if csp_proposals:
+                logger.warning(f"Low options BP (${opt_bp:,.0f}) — skipping CSP proposals this cycle")
+                csp_proposals = []
         # === Real dynamic pricing + controlled paper execution ===
         priced_csps = [price_proposal(p) for p in csp_proposals]
         priced_calls = [price_proposal(p) for p in call_proposals]
@@ -409,7 +437,10 @@ def get_option_quote(contract_symbol: str):
         ask = q.get("ap")
         return (float(bid) if bid is not None else None, float(ask) if ask is not None else None)
     except Exception as e:
-        logger.warning(f"Option quote failed for {contract_symbol}: {e}")
+        if "404" not in str(e):
+            logger.warning(f"Option quote failed for {contract_symbol}: {e}")
+        else:
+            logger.debug(f"Option quote 404 (inactive/expired) for {contract_symbol}")
         return None, None
 
 def build_contract_symbol(underlying: str, expiry: str, strike: float, opt_type: str = "P") -> str:

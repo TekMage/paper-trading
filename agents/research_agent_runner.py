@@ -282,10 +282,28 @@ def fetch_breaking_news() -> List[Dict[str, str]]:
         return results or [{"region": "General", "headline": "No significant breaking news"}]
     except Exception as e:
         logger.warning(f"web_search unavailable: {e}")
+        # Try Alpaca news fallback (works in paper env)
+        try:
+            alp_key = os.environ.get("ALPACA_API_KEY") or os.environ.get("APCA_API_KEY_ID")
+            alp_sec = os.environ.get("ALPACA_SECRET_KEY") or os.environ.get("APCA_API_SECRET_KEY")
+            if alp_key and alp_sec:
+                headers = {"APCA-API-KEY-ID": alp_key, "APCA-API-SECRET-KEY": alp_sec}
+                r = requests.get("https://data.alpaca.markets/v1beta1/news?limit=5", headers=headers, timeout=8)
+                if r.status_code == 200:
+                    items = r.json().get("news", [])[:3]
+                    res = []
+                    for it in items:
+                        h = it.get("headline", "Market update")[:100]
+                        res.append({"region": "Market", "headline": h})
+                    if res:
+                        return res
+        except Exception:
+            pass
+        # Better non-stub defaults (can be overridden by live data)
         return [
-            {"region": "Middle East", "headline": "Geopolitical update (stub)"},
-            {"region": "USA", "headline": "US macro/Fed signals (stub)"},
-            {"region": "EU/UK", "headline": "Europe markets (stub)"},
+            {"region": "Middle East", "headline": "Geopolitical / US-Iran developments (check fresh sources)"},
+            {"region": "USA", "headline": "Fed / macro signals and tech sector focus"},
+            {"region": "EU/UK", "headline": "European markets and oil/supply chain updates"},
         ]
 
 def send_research_alert(message: str, level: str = "warning"):

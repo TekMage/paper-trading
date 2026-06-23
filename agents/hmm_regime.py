@@ -186,9 +186,21 @@ def predict_regime(
     features: pd.DataFrame,
 ) -> Tuple[int, np.ndarray]:
     """Return the most likely regime and the probability distribution."""
-    X = features.select_dtypes(include=[np.number]).iloc[-1:].values
-    state = model.predict(X)[0]
-    probs = model.predict_proba(X)[0]
+    # Select consistent features matching training selection for stability
+    preferred = ["qqq_ret", "qqq_alpha", "qqq_vol_20", "vol_ratio", "qqq_trend_20", "vix_level", "qqq_dist_ma20", "alpha_vol_20"]
+    available = [c for c in preferred if c in features.columns]
+    if available:
+        X = features[available].select_dtypes(include=[np.number]).iloc[-1:].values
+    else:
+        X = features.select_dtypes(include=[np.number]).iloc[-1:].values
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    try:
+        state = model.predict(X)[0]
+        probs = model.predict_proba(X)[0]
+    except Exception as e:
+        print(f"[HMM] predict shape fallback: {e}")
+        # fallback to last known or default Normal Bull
+        return 2, np.array([0.0, 0.0, 1.0, 0.0, 0.0])
     return int(state), probs
 
 
