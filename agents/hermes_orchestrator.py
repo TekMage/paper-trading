@@ -19,6 +19,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 from market_status import get_market_status, is_market_open
 from research_agent_runner import run_research_cycle
 from trading_agent_runner import run_trading_cycle
+
+# Fresh dashboard generator for EOD updates (research + live Alpaca snapshot + QQQ focus)
+try:
+    from dashboard_generator import generate_dashboard
+except Exception:
+    generate_dashboard = None
 # ------------------------------------------------------------------
 # Delegate Task Integration (preferred for full autonomy)
 # ------------------------------------------------------------------

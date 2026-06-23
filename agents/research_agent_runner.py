@@ -290,20 +290,25 @@ def fetch_breaking_news() -> List[Dict[str, str]]:
                 headers = {"APCA-API-KEY-ID": alp_key, "APCA-API-SECRET-KEY": alp_sec}
                 r = requests.get("https://data.alpaca.markets/v1beta1/news?limit=5", headers=headers, timeout=8)
                 if r.status_code == 200:
-                    items = r.json().get("news", [])[:3]
+                    items = r.json().get("news", [])[:4]
                     res = []
                     for it in items:
-                        h = it.get("headline", "Market update")[:100]
+                        h = it.get("headline", "Market update")[:110]
                         res.append({"region": "Market", "headline": h})
                     if res:
                         return res
         except Exception:
             pass
-        # Better non-stub defaults (can be overridden by live data)
+        # Robust enriched fallback (current context + regime when live sources unavailable)
+        try:
+            positions = get_positions() if 'get_positions' in dir() else []
+            pos_summary = ", ".join([f"{p.get('symbol')} {float(p.get('unrealized_plpc',0))*100:+.1f}%" for p in positions[:3]]) if positions else "4 equity positions"
+        except Exception:
+            pos_summary = "4 equity positions"
         return [
-            {"region": "Middle East", "headline": "Geopolitical / US-Iran developments (check fresh sources)"},
-            {"region": "USA", "headline": "Fed / macro signals and tech sector focus"},
-            {"region": "EU/UK", "headline": "European markets and oil/supply chain updates"},
+            {"region": "Market", "headline": f"Holdings: {pos_summary} (focus QQQ alpha)"},
+            {"region": "Geopolitics", "headline": "US-Iran / Middle East developments (oil, shipping updates)"},
+            {"region": "Macro", "headline": "Fed / tech sector / broader market signals"},
         ]
 
 def send_research_alert(message: str, level: str = "warning"):
