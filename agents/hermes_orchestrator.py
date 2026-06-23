@@ -132,6 +132,12 @@ def run_cycle(cycle: str = "open") -> Dict[str, Any]:
         send_alert(f"Orchestrator error in {cycle}: {str(e)[:100]}", level="error")
         return {"status": "error", "error": str(e), "cycle": cycle}
 
+    if cycle in ("eod", "pre_close") and "generate_dashboard" in globals() and generate_dashboard:
+        try:
+            generate_dashboard()
+            logger.info("Dashboard regenerated via fresh generator for EOD")
+        except Exception as e: logger.warning(f"Dashboard call error: {e}")
+
     logger.info("=== Hermes Orchestrator Finished | Cycle: %s ===", cycle)
     return {
         "status": "success",
