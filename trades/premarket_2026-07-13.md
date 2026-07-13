@@ -35,12 +35,12 @@
 
 | Symbol | Shares (Confirmed Jun 18) | Target | Approx Price (Jul 13 PM) | Status |
 |---|---|---|---|---|
-| QQQ | 50 | 50 | ~$700–715 est. | Unconfirmed; Nasdaq -0.8% premarket on Iran/chip headwinds |
-| SPY | 13 | 13 | ~$730–740 est. | Unconfirmed; S&P -0.4% premarket |
-| JETS | 80 | 80 | ~$30–33 est. | Unconfirmed; Brent +$5 from pre-conflict levels = airline fuel headwind; well below $35.69 trigger |
-| **XLE** | **100 or 0 (UNKNOWN)** | **EXIT** | **~$58–63 est.** | 🔴🔴🔴 **BOTH manual sell triggers active (Brent $79.16 < $85 and < $90). BUT oil is RISING due to Hormuz closure — XLE may be in a winning trade. Rules say sell; thesis says hold. Verify position and decide before open.** |
-| SPCX | 15 | 15 | ~$150–160 est. | Unconfirmed; hold — no action needed |
-| XLY | Unknown | 0 (FORCE_CLOSE) | ~$115+ est. | 🔴 FORCE_CLOSE unexecuted 17+ sessions; manual close needed or wait for Actions restoration |
+| QQQ | 50 | 50 | ~$717–723 est. | Unconfirmed; baseline Jul 9 close ~$723; Nasdaq -0.8% premarket = ~$717 open est. |
+| SPY | 13 | 13 | ~$744–750 est. | Unconfirmed; baseline Jul 9 close ~$750.45; S&P -0.4% premarket |
+| JETS | 80 | 80 | ~$31–32 est. | Unconfirmed; baseline Jul 9 close ~$32.23; Brent +$5 from pre-conflict = airline fuel headwind; well below $35.69 trigger |
+| **XLE** | **100 or 0 (UNKNOWN)** | **EXIT** | **~$55–59 est.** | 🔴🔴🔴 **BOTH manual sell triggers active (Brent $79.16 < $85 and < $90). BUT oil is RISING due to Hormuz formal closure — XLE may be in a winning trade. Rules say sell; thesis says hold. Verify position and decide before open.** |
+| SPCX | 15 | 15 | ~$152–162 est. | Unconfirmed; baseline Jul 9 ~$154–160; hold — no action needed |
+| XLY | Unknown | 0 (FORCE_CLOSE) | ~$116+ est. | 🔴 FORCE_CLOSE unexecuted 17+ sessions; manual close needed or wait for Actions restoration |
 
 **Layer 2 — Open CSPs:**
 
@@ -49,7 +49,7 @@ FLAT. No confirmed open options positions since June 18. No bot execution to ope
 | Target | Strike / Expiry | DTE (Jul 13) | Underlying Est. | OTM% | Status |
 |---|---|---|---|---|---|
 | NVDA | $190P Jul18 (disqualified) | **5 DTE — EXPIRED RISK** | ~$195–200 | ~3–5% | ⛔ Disqualified by DTE_MIN=25 and near-expiry. On Actions restore: target Aug/Sep expiry, ≥8% OTM |
-| AMZN | $215P Aug 21 | ~39 DTE | ~$245–249 est. | ~13–14% | ✅ Solid cushion; viable on bot resumption. No position open |
+| AMZN | $215P Aug 21 | ~39 DTE | ~$242–248 est. | ~12–14% | ✅ Solid cushion; viable on bot resumption. ⚠️ AMZN Q2 earnings ~Jul 30 — do NOT enter new CSP until post-earnings |
 
 **Layer 2b — QQQ Calls:**
 Not viable today. Nasdaq -0.8% premarket + Hormuz escalation = unfavorable conditions.
