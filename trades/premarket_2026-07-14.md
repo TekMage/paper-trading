@@ -1,6 +1,6 @@
 # Premarket Summary — Tuesday, July 14, 2026 (~9:00 AM ET)
 
-> **CRITICAL HEADER: (1) GitHub Actions STILL DOWN — Day 29; no bot execution since June 18; ~18 missed trading sessions. (2) NEW CEASEFIRE EXTENSION DEAL: PBS/NBC/Axios report US-Iran reached new agreement to extend ceasefire and reopen Strait of Hormuz — "ships beginning to cross through the Strait" but challenges remain; deal fragile. (3) Brent surged to $86.35–$86.99 (+3.66%) despite deal news — market skeptical of durability. (4) $85 XLE exit trigger NO LONGER ACTIVE (Brent now above $85). $90 trim trigger still active. (5) CPI 3.5% vs 3.8% expected — cooler inflation; Nasdaq slightly positive. (6) Alpaca API UNAVAILABLE.**
+> **CRITICAL HEADER: (1) GitHub Actions STILL DOWN — Day 29; no bot execution since June 18; ~18 missed trading sessions. (2) US NAVAL BLOCKADE TAKES EFFECT TODAY AT 4 PM ET (20:00 GMT) — highest-risk afternoon binary event; XLE/Brent highly volatile into close. (3) NEW CEASEFIRE EXTENSION DEAL: PBS/NBC/Axios report US-Iran reached new agreement to extend ceasefire and reopen Strait of Hormuz — "ships beginning to cross through the Strait" but challenges remain; deal fragile. (4) Brent surged overnight to $86.35–$86.99 (+~10% from Jul 13 close $78.85) on blockade announcement — $85 XLE exit trigger CLEARED; $90 trim trigger still active. (5) CPI 3.5% vs 3.8% expected — cooler inflation; Nasdaq slightly positive premarket. (6) Alpaca API UNAVAILABLE.**
 
 ---
 
@@ -12,7 +12,8 @@
 | **GitHub Actions** | 🔴 DOWN — Day 29; no exec_open, exec_midday, or exec_eod since June 18 |
 | **Last confirmed equity** | **$102,108.69** (exec_eod_2026-06-18 — ~18 trading sessions stale) |
 | **Last confirmed options BP** | **$73,470.00** (June 18 EOD) |
-| **Market context** | S&P futures -0.2%, Nasdaq +0.2–0.5%; CPI June 3.5% (below 3.8% est.); new US-Iran ceasefire extension deal reported but fragile; Brent +3.66% to $86.35–$86.99 |
+| **Jul 13 confirmed closes** | QQQ $717.80 · SPY $754.90 · S&P 500 -0.79% · Nasdaq -1.55% · Brent $78.85/bbl (from eod_2026-07-13.md) |
+| **Market context** | S&P futures -0.2%, Nasdaq +0.2–0.5%; CPI June 3.5% (below 3.8% est.); new US-Iran ceasefire extension deal reported but fragile; Brent jumped to $86.35–$86.99 overnight (+~10%) on US naval blockade announcement; blockade takes effect 4 PM ET today |
 
 ---
 
@@ -35,8 +36,8 @@
 
 | Symbol | Shares (Confirmed Jun 18) | Target | Est. Price (Jul 14 PM) | Status |
 |---|---|---|---|---|
-| QQQ | 50 | 50 | ~$715–725 est. | Unconfirmed; Nasdaq +0.2–0.5% premarket — slight tailwind vs July 13 |
-| SPY | 13 | 13 | ~$745–753 est. | Unconfirmed; S&P -0.2% premarket; CPI beat may soften intraday |
+| QQQ | 50 | 50 | **$717.80** (Jul 13) → ~$718–726 est. today | Confirmed Jul 13 close $717.80; Nasdaq +0.2–0.5% premarket today — slight tailwind |
+| SPY | 13 | 13 | **$754.90** (Jul 13) → ~$752–758 est. today | Confirmed Jul 13 close $754.90; S&P -0.2% premarket; CPI beat may soften intraday |
 | JETS | 80 | 80 | ~$32.09–32.41 est. | Unconfirmed; Jul 12–13 data ~$32.09–$32.41; Hormuz partial reopen may ease fuel cost headwind |
 | **XLE** | **100 or 0 (UNKNOWN)** | **EXIT** | **~$55–58 est.** | 🔴 **Position unconfirmed ~18 sessions. $90 trim trigger active (Brent $86.35 < $90). $85 exit trigger CLEARED (Brent rose above $85). XLE likely UP today on Brent +3.66%.** |
 | SPCX | 15 | 15 | ~$150–165 est. | Unconfirmed; memory chip/IPO adjacent names mentioned positive today; hold |
@@ -63,6 +64,7 @@ Slightly favorable today — Nasdaq +0.2-0.5% premarket, CPI beat. If Actions re
 | **Iran / Hormuz — NEW DEAL** | 🟡 **NEW CEASEFIRE EXTENSION REPORTED** — PBS, NBC, CSIS reporting US-Iran reached agreement to extend ceasefire and reopen Strait of Hormuz; "ships beginning to cross through the Strait of Hormuz." Deal described as fragile; challenges remain over transit terms and pace of negotiations. |
 | **Original MOU (Jun 17)** | Dead since Jul 8 (Trump: "over"); this is a reported extension/new agreement, not the original Islamabad Memorandum |
 | **Market reaction to deal** | Oil RISING +3.66% to $86.35 — market is NOT pricing in a durable Hormuz resolution; skeptical the deal will hold |
+| **US naval blockade** | 🔴🔴🔴 **TAKES EFFECT TODAY at 20:00 GMT = 4:00 PM ET** — US declared "Guardian of Hormuz Strait"; 20% toll on cargo value for safe passage; enforcement starts this afternoon |
 | **US military** | 4th wave of US strikes on Iran reported Jul 13; Iranian retaliation on Bahrain/Kuwait/Jordan bases |
 | **MOU signed?** | Not a signed MOU — described as "initial deal" and "extended ceasefire"; not the formal trigger event |
 | **Brent crude (Jul 14 AM)** | **$86.35–$86.99/bbl** (+3.66% from Jul 13's $79.16; +15.5% from pre-conflict ~$75 baseline) |
@@ -89,7 +91,7 @@ Slightly favorable today — Nasdaq +0.2-0.5% premarket, CPI beat. If Actions re
 
 1. **🔴 FIX GITHUB ACTIONS (Most Urgent — Day 29):** Go to [github.com/TekMage/paper-trading/actions](https://github.com/TekMage/paper-trading/actions) and re-enable all 3 workflows. ~18 trading sessions missed — $0 Layer 2 premium collected, XLY FORCE_CLOSE unexecuted, NVDA Jul18 CSP now 4 DTE and effectively expired. Every additional day compounds strategy drift. With cool CPI data and Nasdaq slightly positive, today is a favorable day to restore execution.
 
-2. **🟡 REASSESS XLE GIVEN UPDATED TRIGGER STATUS:** Brent rose from $79.16 (Jul 13) to $86.35 (Jul 14) — the $85 exit trigger is now CLEARED (oil went UP, not down). Only the $90 trim rule remains technically active. But Brent is now just $3–4 from the $90 threshold. Consider: (a) IF the ceasefire extension holds and Hormuz truly reopens → oil falls → XLE trigger rules become relevant again; (b) IF conflict re-escalates and Brent breaks above $90 → both triggers would be inactivated. Verify actual XLE position via Alpaca dashboard before the open.
+2. **🔴 XLE DECISION BEFORE 4 PM ET BLOCKADE DEADLINE:** The US naval blockade of Iranian shipping begins at 4 PM ET today — a high-stakes binary event. Brent jumped from $78.85 (Jul 13 close) to $86.35+ overnight on this announcement. If XLE is held, you're exposed to: (a) spike to $90+ if Iran retaliates at blockade implementation → both XLE triggers deactivated (oil above $90 = rules inactive); (b) crash if ceasefire extension news takes hold and markets price in Hormuz reopening. Recommend: verify XLE position via Alpaca dashboard, decide on a plan before 4 PM. The $85 trigger is now cleared (Brent above $85). $90 is the next threshold — $3–4 away.
 
 3. **🟢 CPI BEAT CREATES OPENING SESSION:** June CPI 3.5% vs 3.8% expected is a positive catalyst. Nasdaq +0.2–0.5% premarket. If Actions resume today, the bot can open positions in a relatively favorable equity environment. QQQ call (Layer 2b) and AMZN CSP (after Jul 30 earnings) are the best near-term Layer 2 opportunities.
 
@@ -100,7 +102,8 @@ Slightly favorable today — Nasdaq +0.2-0.5% premarket, CPI beat. If Actions re
 | Flag | Severity | Detail |
 |---|---|---|
 | GitHub Actions offline — Day 29 | 🔴 CRITICAL | ~18 missed sessions; $0 Layer 2 premium collected; XLY FORCE_CLOSE unexecuted; NVDA Jul18 CSP effectively expired |
-| Ceasefire extension fragile | 🔴 HIGH | PBS/NBC report new deal but "challenges remain"; Brent +3.66% signals market skepticism; formal MOU signing not confirmed |
+| US blockade effective 4 PM ET today | 🔴 CRITICAL | Blockade begins 20:00 GMT; Iranian response (mine-laying, tanker attack, missile strike) would spike Brent toward $90+; XLE becomes a high-volatility hold into close |
+| Ceasefire extension fragile | 🔴 HIGH | PBS/NBC report new deal but "challenges remain"; Brent +$7.50 overnight signals market skepticism; formal MOU signing not confirmed |
 | XLE / XLY position status unknown | 🔴 HIGH | Both positions unconfirmed ~18 sessions; XLE trigger status has CHANGED (see above); XLY FORCE_CLOSE still unexecuted |
 | Brent approaching $90 threshold | 🟡 MEDIUM | Brent $86.35–$86.99 — only $3–4 below $90; if Hormuz deal collapses or new escalation event, $90 trim trigger could be cleared (deactivated) rapidly |
 | Account equity ~18 sessions stale | 🟡 MEDIUM | $102K confirmed June 18; CPI beat + Nasdaq positive today = modest tailwind for QQQ/SPY; cannot confirm net without live data |
