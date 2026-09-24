@@ -174,7 +174,7 @@ def generate_dashboard() -> str:
     spy_alpha = research.get("spy_alpha", -1.4)
     qqq_alpha = research.get("qqq_alpha", -0.8)
     regime = research.get("regime", "Normal Bull")
-    bias = research.get("bias", "Cash-secured wheel; beat SPY (primary), QQQ secondary")
+    bias = research.get("bias", "YOLO max value; $110k by 2026-11-30; SPCX blocked")
 
     opt_bp = float(account.get("options_buying_power", account.get("buying_power", 73000)))
 

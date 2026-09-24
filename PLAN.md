@@ -1,10 +1,20 @@
 # Trading Plan — Full Strategy
 
+## Current test (supersedes the goals below)
+
+As of 2026-09-24 the live mandate is in `README.md` and `agents/config/strategy_config.json`:
+
+- Paper only. Score account equity vs **$110,000 by the 2026-11-30 close**, not vs SPY.
+- SPCX was sold at market (15 @ $147.41). Do not rebuy. Do not restore the hold.
+- $80k floor still pauses new risk.
+- Sections below are historical. Do not execute them.
+
 ## Revision History
 - **v1.0 — May 7, 2026:** Initial plan. Energy/defense tilt (Iran war).
 - **v2.0 — May 7, 2026:** Post-backtest + Iran peace pivot. Rotate out of energy/defense into tech/growth/recovery.
 - **v2.1 — June 11, 2026:** June sprint. XLY exit, QQQ bumped to 50, AMZN CSP re-entry, QQQ calls for leveraged beta, IPO watchlist (SPCX/ANTHROPIC/OPENAI). Target: max alpha vs SPY before June 30 reset.
 - **v2.2 — June 17, 2026:** Long weekend brief. Iran war formally ending (formal signing June 19). XLE full exit Thursday open. SPCX hold at underwater entry. CSP open window critical Thursday. Monday deep reset.
+- **v4.0 — September 24, 2026:** Test retarget. $110k account value by 2026-11-30. Beat-SPY dropped. SPCX sold and blocked. QQQ call slot allowed in a bear regime. See README.md.
 
 ---
 

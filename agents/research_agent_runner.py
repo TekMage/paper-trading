@@ -219,8 +219,8 @@ def apply_research_self_correct(trade_summary: Dict[str, Any], spy_alpha: float)
             notes.append(f"AUTO: csp_min_premium {cur} → {new} (stall / premium friction)")
             changed = True
 
-    # If lagging SPY, widen bear OTM slightly for safer income (not more risk)
-    if spy_alpha < -1.0:
+    # Beat-SPY OTM widening is off for the $110k test. Do not fight yolo_max_value.
+    if spy_alpha < -1.0 and cfg.get("beat_spy", True) and not cfg.get("yolo_max_value"):
         lo, hi = bounds.get("csp_otm_bear", [0.10, 0.18])
         cur = float(cfg.get("csp_otm_bear", 0.14))
         new = min(hi, round(cur + 0.01, 2))
@@ -548,12 +548,11 @@ def run_research_cycle() -> Dict[str, Any]:
         f.write("\n")
 
         f.write("## Recommendations\n")
-        f.write("- **Primary goal: beat SPY** (QQQ secondary). Prefer cash-secured CSPs.\n")
+        f.write("- **Primary goal: $110k account value by 2026-11-30.** SPY alpha is a footnote, not the score.\n")
         f.write("- Manage open short options first (50% profit-take / DTE force).\n")
-        f.write("- Hold SPCX for recovery unless capital needed for clearly better ROI.\n")
+        f.write("- SPCX is sold and blocked. Do not rebuy it.\n")
         f.write("- Respect $80k floor — pause new risk if breached\n")
-        if spy_alpha < 0:
-            f.write("- SPY alpha negative — prioritize premium income + cut dead weight only for better use of cash\n")
+        f.write("- Deploy idle cash into the wheel and the QQQ call slot. Do not sit on recovered cash.\n")
         f.write("\n")
 
         bt = load_backtest_summary()
@@ -592,17 +591,18 @@ def run_research_cycle() -> Dict[str, Any]:
             f.write(f"- Challenge (historical): {fail}\n")
         f.write("\n")
         f.write("## Plan Evolution Recommendations (data-driven)\n")
-        f.write("- Cash-secured CSPs only until options BP recovers; manage shorts first.\n")
+        f.write("- Cash-secured CSPs plus the QQQ call slot; manage shorts first.\n")
         f.write("- Log every skip reason; stall alert if zero fills persist.\n")
-        f.write("- SPY primary alpha; do not trust QQQ-only marketing metrics.\n")
+        f.write("- Score equity vs $110k / 2026-11-30, not vs SPY.\n")
         if zfs >= 3:
             f.write("- **Aggressive:** force profit-take on winners, open 1 CSP on liquid name same day capital frees.\n")
         f.write("\n")
 
         f.write("## Trading Agent Brief\n")
         f.write(
-            f"Regime: {regime.get('regime_name')}. SPYα {spy_alpha}% (primary), QQQα {qqq_alpha}% (secondary). "
-            f"Cash-secured wheel. SPCX hold-unless-better-use. Paper only. Zero-fill streak={zfs}.\n"
+            f"Regime: {regime.get('regime_name')}. Goal $110k by 2026-11-30 "
+            f"(SPYα {spy_alpha}% / QQQα {qqq_alpha}% are context only). "
+            f"YOLO max value. SPCX blocked. Paper only. Zero-fill streak={zfs}.\n"
         )
 
     logger.info("Research brief saved: %s", output_file)

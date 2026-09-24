@@ -369,21 +369,23 @@ def propose_csp_trades(positions: List[Dict], regime: Dict, min_premium: float =
 
 def propose_qqq_calls(positions: List[Dict], regime: Dict) -> tuple:
     """Propose QQQ call using OCC call detection (equity shares do not block)."""
-    from strategy_lib import has_long_qqq_call, regime_is_bull, regime_is_elevated_vol
+    from strategy_lib import has_long_qqq_call, regime_is_bull, regime_is_elevated_vol, load_strategy_config
     skips: List[Dict] = []
+    cfg = load_strategy_config()
+    yolo = bool(cfg.get("yolo_max_value"))
     if has_long_qqq_call(positions):
         skips.append({"code": "MAX_POSITION", "detail": "Already long QQQ call option"})
         return [], skips
     regime_name = regime.get("regime_name", "")
-    # In elevated/stress regimes prioritize short premium income, not long gamma spend
-    if regime_is_elevated_vol(regime_name):
+    # Test window: chase account value, not the bear-regime call ban.
+    if not yolo and regime_is_elevated_vol(regime_name):
         skips.append({
             "code": "REGIME_BLOCK",
             "detail": f"No QQQ long calls in elevated/stress regime {regime_name} — harvest CSPs instead",
         })
         return [], skips
     rec = get_regime_recommendation(regime_name)
-    if not (regime_is_bull(regime_name) or "Growth" in rec.get("posture", "")):
+    if not yolo and not (regime_is_bull(regime_name) or "Growth" in rec.get("posture", "")):
         skips.append({"code": "REGIME_BLOCK", "detail": f"No QQQ calls in regime {regime_name}"})
         return [], skips
     best = select_best_contract("QQQ", opt_type="call", otm_pct=0.02, dte_min=10, dte_max=20, min_premium=0.5)
@@ -543,35 +545,8 @@ def pre_close_review(context: Dict) -> List[Dict]:
     positions = context.get("positions", []) or []
     news = context.get("news", []) or []
 
-    # Core logic — SPY primary lag is the mandate signal
-    if spy_alpha < -1.0 or alpha < -0.5 or "Risk" in regime or "Defensive" in regime:
-        actions.append({
-            "action": "HEDGE_REVIEW",
-            "note": f"SPYα {spy_alpha}% QQQα {alpha}% — manage shorts + harvest vol; consider hedge",
-        })
-    else:
-        actions.append({"action": "MONITOR", "note": "Watch institutional flows in final hour; maintain core positions"})
-
-    # Position-specific: SPCX "drag" only when the live lot is underwater vs avg_entry
-    # (IPO lot was sold Jun 16; current 15 shares are the Jun 17 rebuy @ ~199.39).
-    for p in positions:
-        if not isinstance(p, dict) or str(p.get("symbol")) != "SPCX":
-            continue
-        try:
-            upl = float(p.get("unrealized_pl") or 0)
-            uplpc = float(p.get("unrealized_plpc") or 0)
-        except (TypeError, ValueError):
-            upl, uplpc = 0.0, 0.0
-        avg = p.get("avg_entry_price")
-        if upl < 0:
-            actions.append({
-                "action": "POSITION_REVIEW",
-                "note": (
-                    f"SPCX still underwater ${upl:.0f} ({uplpc*100:.1f}%) vs avg {avg} "
-                    "(Jun 17 rebuy, not IPO lot) — hold-unless-better-use"
-                ),
-            })
-        break
+    # Core logic — account-value goal, not SPY lag
+    actions.append({"action": "MONITOR", "note": "Test goal is $110k by 2026-11-30. SPCX is blocked. Deploy recovered cash."})
     for p in positions:
         if not isinstance(p, dict):
             continue
@@ -790,11 +765,7 @@ def run_trading_cycle(context: Optional[Dict[str, Any]] = None) -> Dict[str, Any
             logger.info(f"Pre-close action: {act}")
             notes.append(str(act))
 
-        # SPCX policy note
-        if any(str(p.get("symbol")) == "SPCX" for p in positions):
-            notes.append(
-                "SPCX: HOLD for recovery; dump only if capital needed for clearly better ROI opportunity"
-            )
+        # SPCX sold 2026-09-24. Do not rebuy.
 
         result = {
             "status": "success",
