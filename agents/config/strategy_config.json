@@ -1,0 +1,49 @@
+{
+  "account_floor": 80000,
+  "paper_only": true,
+  "primary_benchmark": "SPY",
+  "secondary_benchmark": "QQQ",
+  "cash_secured_only": true,
+  "cash_secure_haircut": 0.9,
+  "csp_universe": [
+    "NVDA",
+    "AMZN",
+    "QQQ",
+    "SPY",
+    "META",
+    "GOOGL"
+  ],
+  "csp_min_premium": 0.75,
+  "csp_max_new_contracts_per_day": 2,
+  "csp_dte_min": 21,
+  "csp_dte_max": 45,
+  "csp_otm_bull": 0.1,
+  "csp_otm_bear": 0.18,
+  "csp_otm_elevated": 0.14,
+  "csp_sell_limit_frac": 0.92,
+  "csp_high_vol_sell_limit_frac": 0.85,
+  "csp_high_vol_yield_pct": 0.6,
+  "csp_high_vol_min_premium_scale": 0.85,
+  "profit_take_pct": 0.5,
+  "manage_dte_force": 7,
+  "manage_dte_hard": 2,
+  "manage_loss_cut_pct": 0.75,
+  "manage_adverse_multiple": 1.6,
+  "manage_defensive_enabled": true,
+  "ipo_no_rebuy_days": 20,
+  "ipo_max_nav_pct": 0.01,
+  "spcx_hold_unless_better_use": true,
+  "spcx_symbol": "SPCX",
+  "zero_fill_alert_sessions": 3,
+  "auto_correct_research": true,
+  "auto_tweak_bounds": {
+    "csp_min_premium": [
+      0.75,
+      1.75
+    ],
+    "csp_otm_bear": [
+      0.1,
+      0.18
+    ]
+  }
+}

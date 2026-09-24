@@ -12,6 +12,9 @@ python-dotenv>=1.0.0
 # Structured data & delegation-friendly outputs
 pydantic>=2.5
 
+# Headline materiality (System One). Key stays in ~/.hermes/.env as TYPESAFE_API_KEY.
+typesafe-sdk>=0.7.1,<0.8
+
 # Optional but recommended for full Hermes sub-agent autonomy
 # (web_search, terminal tools, etc. are provided by Hermes runtime)
 # Add more as needed for specific sub-agent capabilities

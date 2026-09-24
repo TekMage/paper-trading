@@ -49,32 +49,36 @@
 <body>
 
 <h1>Paper Trading Dashboard (Hermes Agents)</h1>
-<p class="subtitle">Updated 2026-06-22 21:56 &nbsp;·&nbsp; Started 2026-05-07 &nbsp;·&nbsp; $100,000 starting capital &nbsp;·&nbsp; Primary: QQQ alpha</p>
+<p class="subtitle">Updated 2026-09-23 21:00 &nbsp;·&nbsp; Started 2026-05-07 &nbsp;·&nbsp; $100,000 starting capital &nbsp;·&nbsp; Primary: SPY alpha &nbsp;·&nbsp; Secondary: QQQ</p>
 
 <div class="stats">
   <div class="stat">
     <div class="stat-label">Account Value</div>
-    <div class="stat-value neu">$101,283.20</div>
+    <div class="stat-value neu">$103,237.06</div>
   </div>
   <div class="stat">
     <div class="stat-label">Total P&amp;L</div>
-    <div class="stat-value pos">$+1,283.20</div>
+    <div class="stat-value pos">$+3,237.06</div>
   </div>
   <div class="stat">
     <div class="stat-label">Our Return</div>
-    <div class="stat-value pos">+1.28%</div>
+    <div class="stat-value pos">+3.24%</div>
   </div>
   <div class="stat">
-    <div class="stat-label">QQQ Alpha (vs start)</div>
-    <div class="stat-value pos">+0.40%</div>
+    <div class="stat-label">SPY Alpha (primary)</div>
+    <div class="stat-value neg">-1.72%</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">QQQ Alpha (secondary)</div>
+    <div class="stat-value neg">-3.42%</div>
   </div>
   <div class="stat">
     <div class="stat-label">Options BP</div>
-    <div class="stat-value neu">$73,057</div>
+    <div class="stat-value neu">$34,264</div>
   </div>
   <div class="stat">
     <div class="stat-label">Regime</div>
-    <div class="stat-value neu"><span class="regime">Normal Bull</span></div>
+    <div class="stat-value neu"><span class="regime">Normal Bear</span></div>
   </div>
 </div>
 
@@ -83,37 +87,51 @@
   <canvas id="equityChart"></canvas>
 </div>
 
-<h3 style="margin: 1rem 0 0.5rem;">Current Positions (P&amp;L vs QQQ focus)</h3>
+<h3 style="margin: 1rem 0 0.5rem;">Current Positions (P&amp;L — SPY primary measuring stick)</h3>
 <table>
   <thead><tr><th>Symbol</th><th>Qty</th><th>Unrealized %</th><th>Unrealized $</th></tr></thead>
   <tbody>
     
         <tr>
+          <td><strong>AMZN261016P00230000</strong></td>
+          <td>-1</td>
+          <td class="neg">-15.45%</td>
+          <td class="neg">$-19.00</td>
+        </tr>
+        
+        <tr>
           <td><strong>JETS</strong></td>
           <td>80</td>
-          <td class="pos">+12.86%</td>
-          <td class="pos">$282.40</td>
+          <td class="pos">+2.91%</td>
+          <td class="pos">$64.00</td>
+        </tr>
+        
+        <tr>
+          <td><strong>NVDA261016P00205000</strong></td>
+          <td>-1</td>
+          <td class="pos">+2.38%</td>
+          <td class="pos">$3.00</td>
         </tr>
         
         <tr>
           <td><strong>QQQ</strong></td>
           <td>50</td>
-          <td class="pos">+3.38%</td>
-          <td class="pos">$1,197.05</td>
+          <td class="pos">+4.37%</td>
+          <td class="pos">$1,548.05</td>
         </tr>
         
         <tr>
           <td><strong>SPCX</strong></td>
           <td>15</td>
-          <td class="neg">-22.89%</td>
-          <td class="neg">$-684.57</td>
+          <td class="neg">-25.38%</td>
+          <td class="neg">$-759.12</td>
         </tr>
         
         <tr>
           <td><strong>SPY</strong></td>
           <td>13</td>
-          <td class="pos">+0.73%</td>
-          <td class="pos">$70.30</td>
+          <td class="pos">+4.04%</td>
+          <td class="pos">$387.50</td>
         </tr>
         
   </tbody>
@@ -121,18 +139,19 @@
 
 <div class="chart-wrap">
   <div class="chart-title">Key Metrics &amp; Context</div>
-  <p><strong>Bias:</strong> Growth + Wheel, aim for strong QQQ alpha</p>
-  <p><strong>Market:</strong> CLOSED (next open: 2026-06-23T09:30:00-04:00)</p>
-  <p><strong>Lesson:</strong> Lagged benchmark — review beta or concentration</p>
+  <p><strong>Bias:</strong> Defensive income, shorter duration, protect vs QQQ downside</p>
+  <p><strong>Market:</strong> CLOSED (next open: 2026-09-24T09:30:00-04:00)</p>
+  <p><strong>Lesson:</strong> Data-driven plan evolution active (see research brief)</p>
   <p><strong>Backtest alpha vs SPY:</strong> +2.08% (Sharpe ~7.18)</p>
 </div>
 
 <div class="chart-wrap">
   <div class="chart-title">Recent Breaking News / Context (from research)</div>
   <ul>
-    <li>- [Market] SpaceX, Micron Technology, Super Micro Computer, Netflix And Palantir: Why These 5 Stocks Are On Inv</li>
-<li>- [Market] Maye Musk 'Reprimanded' Daily By Women Who Sent $20,000 or $40,000 After Supposedly Getting 'Proposa</li>
-<li>- [Market] Trading Halt: Halted at 7:50:00 p.m. ET - Trading Halt: Halt News Pending</li>
+    <li>- [Market] Here's How Much $100 Invested In LPL Finl Hldgs 15 Years Ago Would Be Worth Today</li>
+<li>- [Market] Here's How Much $100 Invested In Cloudflare 5 Years Ago Would Be Worth Today</li>
+<li>- [Market] $100 Invested In Semtech 5 Years Ago Would Be Worth This Much Today</li>
+<li>- [Market] Here's How Much $100 Invested In US Foods Holdings 10 Years Ago Would Be Worth Today</li>
 
   </ul>
 </div>
@@ -142,10 +161,10 @@
 </p>
 
 <script>
-const DATES = ["2026-06-11", "2026-06-12", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22"];
-const EQUITIES = [100513.74, 100794.08, 101674.82, 102149.58, 101674.82, 101283.2];
-const OUR_RETS = [0.88, 0.98, 1.08, 1.18, 1.28, 1.38] ; // approx cumulative
-const SPY_RETS = [0.88, 0.88, 0.88, 0.88, 0.88, 0.88];
+const DATES = ["2026-06-11", "2026-06-12", "2026-06-16", "2026-06-17", "2026-06-18", "2026-09-23"];
+const EQUITIES = [100513.74, 100794.08, 101674.82, 102149.58, 101674.82, 103237.06];
+const OUR_RETS = [6.66, 6.76, 6.86, 6.96, 7.06, 7.16] ; // approx cumulative
+const SPY_RETS = [6.66, 6.66, 6.66, 6.66, 6.66, 6.66];
 
 new Chart(document.getElementById('equityChart'), {
   type: 'line',

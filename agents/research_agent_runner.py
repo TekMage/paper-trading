@@ -32,104 +32,233 @@ logger = logging.getLogger("research_agent")
 
 import glob
 
-def parse_recent_trade_logs(max_files: int = 6) -> Dict[str, Any]:
-    """Richer parser for trades/*.md.
-    Extracts per-trade P&L, specific CSP details, narratives, and actionable lessons.
-    """
+def parse_recent_trade_logs(max_files: int = 10) -> Dict[str, Any]:
+    """Parse cycle JSON logs first (live), fall back to trades/*exec*/*eod*.md."""
     import re
-    trades_dir = Path(__file__).parent.parent / "trades"
-    files = sorted(glob.glob(str(trades_dir / "*eod*.md")) + glob.glob(str(trades_dir / "*exec*.md")), reverse=True)[:max_files]
+    from collections import Counter
+
     summary = {
-        "files_analyzed": len(files),
+        "files_analyzed": 0,
         "alphas": [],
+        "spy_alphas": [],
         "recent_actions": [],
         "avg_alpha": 0.0,
-        "trades": [],           # structured list
+        "avg_spy_alpha": 0.0,
+        "trades": [],
         "lessons": [],
-        "notes": []
+        "notes": [],
+        "skip_counts": {},
+        "zero_fill_streak": 0,
+        "last_fill_date": None,
+        "orders_last_n": 0,
+        "source": "none",
     }
 
-    for fpath in files:
-        try:
-            txt = open(fpath).read()
-            fname = Path(fpath).name
-            date_match = re.search(r"20\d{2}-\d{2}-\d{2}", fname)
-            tdate = date_match.group(0) if date_match else "unknown"
+    try:
+        from cycle_logger import load_recent_cycle_logs, compute_zero_fill_streak
+        cycles = load_recent_cycle_logs(max_files)
+    except Exception:
+        cycles = []
 
-            # Alpha - more patterns
-            alphas = re.findall(r"Alpha[:\s]*([-+]?[0-9.]+)%", txt, re.I)
-            alphas += re.findall(r"Alpha\s+([-+]?[0-9.]+)", txt, re.I)
-            file_alphas = []
-            for a in alphas:
+    if cycles:
+        summary["source"] = "cycle_json"
+        summary["files_analyzed"] = len(cycles)
+        summary["zero_fill_streak"] = compute_zero_fill_streak(cycles)
+        skip_counter: Counter = Counter()
+        for entry in cycles:
+            tdate = entry.get("date") or "unknown"
+            spy_a = entry.get("spy_alpha")
+            qqq_a = entry.get("qqq_alpha")
+            if spy_a is not None:
                 try:
-                    val = float(a)
-                    if abs(val) < 50:  # sanity
-                        file_alphas.append(val)
-                        summary["alphas"].append(val)
-                except:
+                    summary["spy_alphas"].append(float(spy_a))
+                except Exception:
                     pass
-
-            # Key metrics - broader
-            our_ret = re.search(r"Our return[^0-9-]*([-+]?[0-9.]+)%", txt, re.I)
-            spy_ret = re.search(r"SPY[^0-9-]*([-+]?[0-9.]+)%", txt, re.I)
-
-            # CSP / trade actions
-            csp = re.findall(r"sell_csp\s+([A-Z0-9]+)", txt, re.I)
-            summary["recent_actions"].extend([f"sell_csp {s}" for s in csp[:2]])
-
-            # Narrative lessons (expanded keywords from real EOD files)
+            if qqq_a is not None:
+                try:
+                    summary["alphas"].append(float(qqq_a))
+                except Exception:
+                    pass
+            for a in entry.get("actions") or []:
+                summary["recent_actions"].append(str(a)[:120])
+                if "sell_csp" in str(a) or "buy_to_close" in str(a):
+                    summary["last_fill_date"] = tdate
+            summary["orders_last_n"] += int(entry.get("orders_submitted") or 0)
+            for s in entry.get("skips") or []:
+                if isinstance(s, dict):
+                    skip_counter[s.get("code", "UNKNOWN")] += 1
+                else:
+                    skip_counter["OTHER"] += 1
             lessons = []
-            low = txt.lower()
-            keywords = {
-                "drag": "Name/sector drag hurt performance",
-                "declined": "Underlying decline compressed OTM buffers",
-                "roll": "Roll triggers important for CSP management",
-                "outperformed": "Defensive or income strategies added alpha",
-                "geopolitical": "Geo/macro events drove volatility",
-                "oil": "Commodity (oil) moves affected sectors",
-                "yield": "Treasury yield moves impacted growth",
-                "premium": "Premium capture vs mark-to-market dynamics",
-                "buffer": "OTM buffer erosion risk on short puts"
-            }
-            for kw, lesson in keywords.items():
-                if kw in low:
-                    lessons.append(lesson)
-
-            # Structured trade record
-            trade_rec = {
+            if int(entry.get("orders_submitted") or 0) == 0 and entry.get("market_open"):
+                lessons.append("Open session with zero fills — wheel may be stalled")
+            for s in entry.get("skips") or []:
+                if isinstance(s, dict) and s.get("code") in ("LOW_CASH_SECURED", "LOW_BP", "FLOOR"):
+                    lessons.append(f"Capital/guard skip: {s.get('code')}")
+            summary["trades"].append({
                 "date": tdate,
-                "file": fname,
-                "alpha": file_alphas[0] if file_alphas else None,
-                "our_return": float(our_ret.group(1)) if our_ret else None,
-                "spy_return": float(spy_ret.group(1)) if spy_ret else None,
-                "actions": csp,
-                "lessons": lessons
-            }
-            summary["trades"].append(trade_rec)
+                "file": entry.get("_file"),
+                "alpha": qqq_a,
+                "spy_alpha": spy_a,
+                "our_return": entry.get("account_return_pct"),
+                "spy_return": entry.get("spy_return_pct"),
+                "actions": entry.get("actions") or [],
+                "lessons": lessons,
+            })
             summary["lessons"].extend(lessons)
-
-            if file_alphas or "alpha" in low:
-                summary["notes"].append(f"{fname}: alpha data present")
-
-        except Exception:
-            pass
+        summary["skip_counts"] = dict(skip_counter)
+    else:
+        trades_dir = Path(__file__).parent.parent / "trades"
+        files = sorted(
+            glob.glob(str(trades_dir / "*eod*.md")) + glob.glob(str(trades_dir / "*exec*.md")),
+            reverse=True,
+        )[:max_files]
+        summary["source"] = "legacy_md"
+        summary["files_analyzed"] = len(files)
+        for fpath in files:
+            try:
+                txt = open(fpath).read()
+                fname = Path(fpath).name
+                date_match = re.search(r"20\d{2}-\d{2}-\d{2}", fname)
+                tdate = date_match.group(0) if date_match else "unknown"
+                alphas = re.findall(r"Alpha[:\s]*([-+]?[0-9.]+)%", txt, re.I)
+                file_alphas = []
+                for a in alphas:
+                    try:
+                        val = float(a)
+                        if abs(val) < 50:
+                            file_alphas.append(val)
+                            summary["alphas"].append(val)
+                    except Exception:
+                        pass
+                our_ret = re.search(r"Our return[^0-9-]*([-+]?[0-9.]+)%", txt, re.I)
+                spy_ret = re.search(r"SPY[^0-9-]*([-+]?[0-9.]+)%", txt, re.I)
+                csp = re.findall(r"sell_csp\s+([A-Z0-9]+)", txt, re.I)
+                summary["recent_actions"].extend([f"sell_csp {s}" for s in csp[:2]])
+                lessons = []
+                low = txt.lower()
+                keywords = {
+                    "drag": "Name/sector drag hurt performance",
+                    "declined": "Underlying decline compressed OTM buffers",
+                    "roll": "Roll triggers important for CSP management",
+                    "outperformed": "Defensive or income strategies added alpha",
+                    "premium": "Premium capture vs mark-to-market dynamics",
+                }
+                for kw, lesson in keywords.items():
+                    if kw in low:
+                        lessons.append(lesson)
+                trade_rec = {
+                    "date": tdate,
+                    "file": fname,
+                    "alpha": file_alphas[0] if file_alphas else None,
+                    "our_return": float(our_ret.group(1)) if our_ret else None,
+                    "spy_return": float(spy_ret.group(1)) if spy_ret else None,
+                    "actions": csp,
+                    "lessons": lessons,
+                }
+                summary["trades"].append(trade_rec)
+                summary["lessons"].extend(lessons)
+            except Exception:
+                pass
 
     if summary["alphas"]:
         summary["avg_alpha"] = round(sum(summary["alphas"]) / len(summary["alphas"]), 2)
+    if summary["spy_alphas"]:
+        summary["avg_spy_alpha"] = round(sum(summary["spy_alphas"]) / len(summary["spy_alphas"]), 2)
 
-    # Heuristic lessons from numbers
+    # Aggressive self-correct lessons
+    zfs = summary.get("zero_fill_streak") or 0
+    if zfs >= 3:
+        summary["lessons"].insert(0, f"CRITICAL: {zfs} trading sessions with zero fills — strategy stalled")
+    if summary.get("skip_counts", {}).get("LOW_CASH_SECURED"):
+        summary["lessons"].append("Cash-secured collateral tight — free capital via manage/profit-take")
+    if summary.get("skip_counts", {}).get("MAX_POSITION"):
+        summary["lessons"].append("Short put capacity blocked on some names — diversify underlyings after closes")
+    if summary.get("orders_last_n", 0) == 0 and summary["files_analyzed"] >= 3 and summary["source"] == "cycle_json":
+        summary["lessons"].append("No orders in recent cycle window — prioritize manage + 1 cash-secured CSP")
+
     for t in summary.get("trades", []):
         if t.get("our_return") is not None and t.get("spy_return") is not None:
-            diff = t["our_return"] - t["spy_return"]
-            if diff > 0.4:
-                summary["lessons"].append("Outperformed benchmark — wheel/income worked")
-            elif diff < -0.4:
-                summary["lessons"].append("Lagged benchmark — review beta or concentration")
-        if t.get("alpha") is not None and t["alpha"] < -0.8:
-            summary["lessons"].append("Notable negative alpha day — consider defensive tilt next")
+            try:
+                diff = float(t["our_return"]) - float(t["spy_return"])
+                if diff < -0.4:
+                    summary["lessons"].append("Lagged SPY — increase wheel income or cut drags")
+                elif diff > 0.4:
+                    summary["lessons"].append("Beat SPY recently — keep cash-secured wheel process")
+            except Exception:
+                pass
 
-    summary["lessons"] = list(dict.fromkeys(summary["lessons"]))[:6]
+    summary["lessons"] = list(dict.fromkeys(summary["lessons"]))[:8]
     return summary
+
+
+def apply_research_self_correct(trade_summary: Dict[str, Any], spy_alpha: float) -> List[str]:
+    """Aggressively tweak safe config knobs when stalled / lagging SPY. Returns change notes."""
+    from strategy_lib import load_strategy_config, save_strategy_config
+
+    notes: List[str] = []
+    try:
+        cfg = load_strategy_config()
+    except Exception as e:
+        return [f"self-correct skipped: {e}"]
+    if not cfg.get("auto_correct_research", True):
+        return ["auto_correct_research disabled"]
+
+    bounds = cfg.get("auto_tweak_bounds") or {}
+    changed = False
+    zfs = int(trade_summary.get("zero_fill_streak") or 0)
+    skips = trade_summary.get("skip_counts") or {}
+
+    # If stalled on premium, slightly lower min premium within bounds
+    if zfs >= 3 or skips.get("PREMIUM_LOW", 0) >= 2 or skips.get("NO_CHAIN", 0) >= 3:
+        lo, hi = bounds.get("csp_min_premium", [0.75, 1.75])
+        cur = float(cfg.get("csp_min_premium", 1.0))
+        new = max(lo, round(cur - 0.25, 2))
+        if new < cur:
+            cfg["csp_min_premium"] = new
+            notes.append(f"AUTO: csp_min_premium {cur} → {new} (stall / premium friction)")
+            changed = True
+
+    # If lagging SPY, widen bear OTM slightly for safer income (not more risk)
+    if spy_alpha < -1.0:
+        lo, hi = bounds.get("csp_otm_bear", [0.10, 0.18])
+        cur = float(cfg.get("csp_otm_bear", 0.14))
+        new = min(hi, round(cur + 0.01, 2))
+        if new > cur:
+            cfg["csp_otm_bear"] = new
+            notes.append(f"AUTO: csp_otm_bear {cur} → {new} (SPY alpha {spy_alpha}%)")
+            changed = True
+
+    # If many MAX_POSITION and zero fills, ensure universe has enough names (no-op if already)
+    if skips.get("MAX_POSITION", 0) >= 2 and len(cfg.get("csp_universe") or []) < 6:
+        universe = list(cfg.get("csp_universe") or [])
+        for sym in ["META", "GOOGL", "AMD"]:
+            if sym not in universe:
+                universe.append(sym)
+                notes.append(f"AUTO: added {sym} to csp_universe")
+                changed = True
+        cfg["csp_universe"] = universe
+
+    if changed:
+        save_strategy_config(cfg)
+        # append lessons.jsonl
+        try:
+            lessons_path = Path(__file__).parent.parent / "research" / "lessons.jsonl"
+            import json
+            from datetime import datetime
+            with open(lessons_path, "a") as f:
+                f.write(json.dumps({
+                    "ts": datetime.now().isoformat(timespec="seconds"),
+                    "spy_alpha": spy_alpha,
+                    "zero_fill_streak": zfs,
+                    "changes": notes,
+                    "skip_counts": skips,
+                }) + "\n")
+        except Exception:
+            pass
+    else:
+        notes.append("AUTO: no config tweak needed this cycle")
+    return notes
 
 def load_backtest_summary() -> Dict[str, Any]:
     """Extract key lessons from backtest_results.md (robust parser)."""
@@ -259,10 +388,20 @@ def fetch_recent_prices() -> Dict[str, pd.Series]:
     return fetch_hmm_prices(days_back=250)
 
 def calculate_qqq_alpha(equity: float, qqq_price: float = 740.0,
-                        start_equity: float = 100000.0, start_qqq: float = 731.53) -> float:
-    acct_ret = (equity - start_equity) / start_equity * 100
-    qqq_ret = (qqq_price - start_qqq) / start_qqq * 100
-    return round(acct_ret - qqq_ret, 2)
+                        start_equity: float = 100000.0, start_qqq: float = 694.94) -> float:
+    try:
+        from strategy_lib import calculate_benchmark_alphas, load_benchmarks
+        b = load_benchmarks()
+        return calculate_benchmark_alphas(equity, float(b.get("spy_start", 731.53)), qqq_price)["qqq_alpha"]
+    except Exception:
+        acct_ret = (equity - start_equity) / start_equity * 100
+        qqq_ret = (qqq_price - start_qqq) / start_qqq * 100
+        return round(acct_ret - qqq_ret, 2)
+
+
+def calculate_dual_alpha(equity: float, spy_price: float, qqq_price: float) -> Dict[str, float]:
+    from strategy_lib import calculate_benchmark_alphas
+    return calculate_benchmark_alphas(equity, spy_price, qqq_price)
 
 def fetch_breaking_news() -> List[Dict[str, str]]:
     try:
@@ -336,8 +475,11 @@ def run_research_cycle() -> Dict[str, Any]:
     # Real data for HMM (longer history)
     prices = fetch_recent_prices()
     vix_series = fetch_vix_or_vol(prices["qqq"]) if "fetch_vix_or_vol" in dir() else pd.Series([18]*len(prices["qqq"]))
-    qqq_price_early = prices["qqq"].iloc[-1] if len(prices["qqq"]) > 0 else 740.0
-    qqq_alpha = calculate_qqq_alpha(equity, float(qqq_price_early))
+    qqq_price_early = float(prices["qqq"].iloc[-1]) if len(prices["qqq"]) > 0 else 740.0
+    spy_price_early = float(prices["spy"].iloc[-1]) if len(prices["spy"]) > 0 else 750.0
+    dual = calculate_dual_alpha(equity, spy_price_early, qqq_price_early)
+    spy_alpha = dual["spy_alpha"]
+    qqq_alpha = dual["qqq_alpha"]
     try:
         min_len = min(len(prices["spy"]), len(prices["qqq"]))
         spy_p = prices["spy"].iloc[-min_len:].reset_index(drop=True)
@@ -349,8 +491,8 @@ def run_research_cycle() -> Dict[str, Any]:
         logger.info("Regime: %s | Bias: %s", regime.get("regime_name"), regime.get("bias"))
     except Exception as e:
         logger.warning("HMM shape/error fallback: %s", str(e)[:80])
-        regime_name = "Normal Bull" if qqq_alpha > 0 else "Elevated Risk + Bull Trend"
-        regime = {"regime_name": regime_name, "bias": "Growth + Wheel" if qqq_alpha > 0 else "Defensive", "note": "feature alignment fallback"}
+        regime_name = "Normal Bull" if spy_alpha > 0 else "Elevated Risk + Bull Trend"
+        regime = {"regime_name": regime_name, "bias": "Growth + Wheel" if spy_alpha > 0 else "Defensive", "note": "feature alignment fallback"}
 
     # Periodic HMM retrain (lightweight check)
     try:
@@ -359,13 +501,25 @@ def run_research_cycle() -> Dict[str, Any]:
     except Exception:
         pass
 
-    # qqq_alpha already computed earlier
-    logger.info("QQQ Alpha (vs start): %s%%", qqq_alpha)
+    logger.info("SPY Alpha (primary): %s%% | QQQ Alpha (secondary): %s%%", spy_alpha, qqq_alpha)
 
+    if spy_alpha < -2.0:
+        send_research_alert(f"Significant SPY underperformance: {spy_alpha}%", level="warning")
     if qqq_alpha < -2.0:
         send_research_alert(f"Significant QQQ underperformance: {qqq_alpha}%", level="warning")
 
     news = fetch_breaking_news()
+    try:
+        from news_relevance import filter_news_for_book
+        news = filter_news_for_book(news, positions)
+    except Exception as e:
+        logger.warning("News relevance filter skipped: %s", e)
+    trade_summary = parse_recent_trade_logs(max_files=10)
+    zfs = int(trade_summary.get("zero_fill_streak") or 0)
+    if zfs >= 3:
+        send_research_alert(f"CRITICAL: strategy stalled — {zfs} zero-fill sessions", level="critical")
+
+    self_correct_notes = apply_research_self_correct(trade_summary, spy_alpha)
 
     today = date.today().isoformat()
     research_dir = Path(__file__).parent.parent / "research"
@@ -379,81 +533,115 @@ def run_research_cycle() -> Dict[str, Any]:
         f.write(f"**Open Positions:** {len(positions)}\n\n")
         f.write(f"**Current Regime:** {regime.get('regime_name', 'Unknown')}\n")
         f.write(f"**Bias:** {regime.get('bias', 'N/A')}\n\n")
-        f.write(f"**QQQ Alpha (vs start):** {qqq_alpha}%\n\n")
+        f.write(f"**SPY Alpha (primary vs start):** {spy_alpha}%\n")
+        f.write(f"**QQQ Alpha (secondary vs start):** {qqq_alpha}%\n")
+        f.write(f"**Account return:** {dual['account_return_pct']}% | SPY: {dual['spy_return_pct']}% | QQQ: {dual['qqq_return_pct']}%\n\n")
+
+        if zfs >= 3:
+            f.write(f"> **STRATEGY STALLED:** {zfs} recent trading sessions with zero fills. Self-correct engaged.\n\n")
 
         f.write("## Breaking News (Last 24h)\n")
         for item in news:
-            f.write(f"- [{item['region']}] {item['headline']}\n")
+            material = item.get("material")
+            suffix = f" (material {material:.2f})" if isinstance(material, (int, float)) else ""
+            f.write(f"- [{item['region']}] {item['headline']}{suffix}\n")
         f.write("\n")
 
         f.write("## Recommendations\n")
-        f.write("- Align trades to current regime bias for QQQ alpha\n")
+        f.write("- **Primary goal: beat SPY** (QQQ secondary). Prefer cash-secured CSPs.\n")
+        f.write("- Manage open short options first (50% profit-take / DTE force).\n")
+        f.write("- Hold SPCX for recovery unless capital needed for clearly better ROI.\n")
         f.write("- Respect $80k floor — pause new risk if breached\n")
-        f.write("- Pre-close review for institutional flows\n\n")
+        if spy_alpha < 0:
+            f.write("- SPY alpha negative — prioritize premium income + cut dead weight only for better use of cash\n")
+        f.write("\n")
 
-        # === Richer What Worked / Failed + Plan Evolution ===
-        trade_summary = parse_recent_trade_logs(max_files=5)
         bt = load_backtest_summary()
         f.write("## Recent Performance & Lessons Learned\n")
-        f.write(f"Files analyzed: {trade_summary.get('files_analyzed', 0)} | Recent avg alpha: {trade_summary.get('avg_alpha', 'N/A')}%\n\n")
+        f.write(
+            f"Source: {trade_summary.get('source')} | Files: {trade_summary.get('files_analyzed', 0)} | "
+            f"Zero-fill streak: {zfs} | Skip counts: {trade_summary.get('skip_counts')}\n\n"
+        )
 
-        # Structured recent trades
-        for t in trade_summary.get("trades", [])[:3]:
-            alpha_str = f"{t.get('alpha')}% alpha" if t.get('alpha') is not None else "no alpha"
-            f.write(f"- {t.get('date')}: {alpha_str}")
-            if t.get('our_return'): f.write(f", our ret {t['our_return']}% vs SPY {t.get('spy_return')}%")
+        for t in trade_summary.get("trades", [])[:5]:
+            f.write(f"- {t.get('date')}: SPYα={t.get('spy_alpha')} QQQα={t.get('alpha')}")
+            if t.get("our_return") is not None:
+                f.write(f", our {t['our_return']}% vs SPY {t.get('spy_return')}%")
             f.write("\n")
-            if t.get("pnl_notes"):
-                f.write(f"  P&L notes: {t['pnl_notes'][0][:80]}\n")
-            if t.get("lessons"):
-                f.write(f"  Lessons: {'; '.join(t['lessons'])}\n")
+            if t.get("actions"):
+                f.write(f"  Actions: {', '.join(str(a)[:60] for a in t['actions'][:3])}\n")
         f.write("\n")
 
         if trade_summary.get("lessons"):
-            f.write("## Key Lessons Extracted from Trades\n")
-            for les in trade_summary["lessons"][:4]:
+            f.write("## Key Lessons (live self-correct)\n")
+            for les in trade_summary["lessons"][:6]:
                 f.write(f"- {les}\n")
             f.write("\n")
 
-        f.write("## Backtest Insights (from research/backtest_results.md)\n")
+        f.write("## Auto config adjustments this cycle\n")
+        for n in self_correct_notes:
+            f.write(f"- {n}\n")
+        f.write("\n")
+
+        f.write("## Backtest Insights (historical — not a substitute for live wheel)\n")
         if bt.get("alpha") is not None:
             f.write(f"Backtest period alpha vs SPY: {bt['alpha']}% | Sharpe ~{bt.get('sharpe', '?')}\n")
         for w in bt.get("worked", [])[:2]:
-            f.write(f"- Worked: {w}\n")
+            f.write(f"- Worked (historical): {w}\n")
         for fail in bt.get("failed", [])[:2]:
-            f.write(f"- Challenge: {fail}\n")
+            f.write(f"- Challenge (historical): {fail}\n")
         f.write("\n")
         f.write("## Plan Evolution Recommendations (data-driven)\n")
-        f.write("- Prioritize dynamic option selection for current market (avoid fixed strikes).\n")
-        f.write("- Increase regime-aware sizing: aggressive in Normal Bull for QQQ alpha, defensive otherwise.\n")
-        f.write("- Retrain HMM periodically with longer history + real VIX/vol proxies (tightened features now active).\n")
-        # Use trade lessons to drive recommendations
-        lessons_lower = " ".join(trade_summary.get("lessons", [])).lower()
-        if "roll" in lessons_lower or "buffer" in lessons_lower or "otm" in lessons_lower:
-            f.write("- Improve CSP OTM buffer management and roll triggers to protect premium capture.\n")
-        if "drag" in lessons_lower:
-            f.write("- Reduce concentration in names that have shown recent drag; diversify wheel names.\n")
-        if qqq_alpha < 0:
-            f.write("- Focus on high-premium CSPs and reduce directional bias until alpha recovers.\n")
+        f.write("- Cash-secured CSPs only until options BP recovers; manage shorts first.\n")
+        f.write("- Log every skip reason; stall alert if zero fills persist.\n")
+        f.write("- SPY primary alpha; do not trust QQQ-only marketing metrics.\n")
+        if zfs >= 3:
+            f.write("- **Aggressive:** force profit-take on winners, open 1 CSP on liquid name same day capital frees.\n")
         f.write("\n")
 
         f.write("## Trading Agent Brief\n")
-        f.write(f"Regime: {regime.get('regime_name')}. Current alpha {qqq_alpha}%. ")
-        f.write("Use dynamic chain selection. Paper only. Lessons from trades/backtest incorporated.\n")
+        f.write(
+            f"Regime: {regime.get('regime_name')}. SPYα {spy_alpha}% (primary), QQQα {qqq_alpha}% (secondary). "
+            f"Cash-secured wheel. SPCX hold-unless-better-use. Paper only. Zero-fill streak={zfs}.\n"
+        )
 
     logger.info("Research brief saved: %s", output_file)
     logger.info("=== Research Agent Finished ===")
 
-    analysis = {"trades": parse_recent_trade_logs(3), "backtest": load_backtest_summary()}
+    # Research cycle telemetry
+    try:
+        from cycle_logger import write_cycle_log
+        write_cycle_log("research", {
+            "equity": equity,
+            "spy_alpha": spy_alpha,
+            "qqq_alpha": qqq_alpha,
+            "account_return_pct": dual["account_return_pct"],
+            "spy_return_pct": dual["spy_return_pct"],
+            "qqq_return_pct": dual["qqq_return_pct"],
+            "regime": regime.get("regime_name"),
+            "orders_submitted": 0,
+            "market_open": status.get("is_open"),
+            "actions": [],
+            "skips": [],
+            "notes": self_correct_notes + trade_summary.get("lessons", [])[:3],
+            "zero_fill_streak": zfs,
+            "skip_counts": trade_summary.get("skip_counts"),
+        })
+    except Exception as e:
+        logger.warning("Research cycle log failed: %s", e)
+
+    analysis = {"trades": trade_summary, "backtest": load_backtest_summary(), "self_correct": self_correct_notes}
     return {
         "status": "success",
         "brief": str(output_file),
         "equity": equity,
+        "spy_alpha": spy_alpha,
         "qqq_alpha": qqq_alpha,
         "regime": regime,
         "positions_count": len(positions),
         "news_count": len(news),
         "analysis": analysis,
+        "zero_fill_streak": zfs,
     }
 
 if __name__ == "__main__":

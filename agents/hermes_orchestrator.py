@@ -82,10 +82,17 @@ def run_cycle(cycle: str = "open") -> Dict[str, Any]:
         alpha = research_result.get("qqq_alpha", 0) if research_result else 0
         regime = research_result.get("regime", {}).get("regime_name", "Unknown") if research_result else "Unknown"
 
-        # High impact alerts
-        if alpha < -1.5:
+        # High impact alerts — SPY primary
+        spy_alpha = research_result.get("spy_alpha") if research_result else None
+        if spy_alpha is not None and spy_alpha < -1.5:
+            send_alert(f"SPY Alpha warning: {spy_alpha}% (regime: {regime})", level="warning",
+                       extra={"cycle": cycle, "equity": research_result.get("equity")})
+        elif alpha < -1.5:
             send_alert(f"QQQ Alpha warning: {alpha}% (regime: {regime})", level="warning",
                        extra={"cycle": cycle, "equity": research_result.get("equity")})
+        if research_result and research_result.get("zero_fill_streak", 0) >= 3:
+            send_alert(f"CRITICAL: zero-fill streak {research_result.get('zero_fill_streak')}", level="critical",
+                       extra={"cycle": cycle})
         if research_result and research_result.get("equity", 100000) < 80000:
             send_alert("CRITICAL: Account below $80k floor!", level="critical",
                        extra={"equity": research_result.get("equity")})
@@ -95,12 +102,47 @@ def run_cycle(cycle: str = "open") -> Dict[str, Any]:
         if cycle == "research_only" or not market_open:
             logger.info("Running research-only cycle (market closed or explicit)")
             trading_result = {"status": "skipped", "reason": "research_only_or_closed"}
+            # Always emit cycle JSON/md when trading is skipped (closed or research_only).
+            # pre_market/open/midday holes previously left no YYYY-MM-DD_{cycle}.json.
+            if cycle in ("eod", "pre_close", "research_only", "pre_market", "open", "midday"):
+                try:
+                    from cycle_logger import write_cycle_log
+                    eod_payload = {
+                        "status": "success",
+                        "equity": research_result.get("equity") if research_result else None,
+                        "spy_alpha": research_result.get("spy_alpha") if research_result else None,
+                        "qqq_alpha": research_result.get("qqq_alpha") if research_result else None,
+                        "account_return_pct": (research_result or {}).get("analysis", {}).get("our_return")
+                            if isinstance((research_result or {}).get("analysis"), dict) else None,
+                        "regime": regime,
+                        "orders_submitted": 0,
+                        "market_open": False,
+                        "paper_only": True,
+                        "account_floor": 80000,
+                        "actions": [
+                            f"{cycle.upper()}: market closed — research + dashboard only (no new risk)",
+                        ],
+                        "skips": [{"code": "MARKET_CLOSED", "detail": f"{cycle} after close — no new risk"}],
+                        "notes": list((research_result or {}).get("analysis", {}).get("lessons") or [])[:6]
+                            if isinstance((research_result or {}).get("analysis"), dict) else [],
+                        "zero_fill_streak": (research_result or {}).get("zero_fill_streak"),
+                        "positions_count": (research_result or {}).get("positions_count"),
+                    }
+                    # Prefer richer fields if research top-level carries them
+                    for k in ("account_return_pct", "spy_return_pct", "qqq_return_pct"):
+                        if research_result and research_result.get(k) is not None:
+                            eod_payload[k] = research_result.get(k)
+                    paths = write_cycle_log(cycle if cycle != "research_only" else "research", eod_payload)
+                    logger.info("Wrote closed-market cycle log: %s", paths)
+                except Exception as e:
+                    logger.warning("Failed to write closed-market cycle log: %s", e)
         else:
             logger.info("Market OPEN — passing research context to Trading Agent")
             # Pass context
             trading_context = {
                 "research_brief": research_result.get("brief") if research_result else None,
                 "qqq_alpha": alpha,
+                "spy_alpha": research_result.get("spy_alpha") if research_result else None,
                 "regime": research_result.get("regime") if research_result else {},
                 "cycle": cycle,
             }

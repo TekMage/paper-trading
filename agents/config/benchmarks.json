@@ -1,0 +1,9 @@
+{
+  "account_start_equity": 100000.0,
+  "account_start_date": "2026-05-07",
+  "spy_start": 731.53,
+  "qqq_start": 694.94,
+  "qqq_start_note": "QQQ daily close 2026-05-07 (account start day); SPY primary, QQQ secondary",
+  "primary_benchmark": "SPY",
+  "secondary_benchmark": "QQQ"
+}

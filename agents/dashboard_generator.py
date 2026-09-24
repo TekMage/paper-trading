@@ -4,7 +4,7 @@ Fresh dashboard generator for the Hermes paper-trading system.
 
 Prioritizes:
 - Current EOD / cycle data from research brief + live Alpaca snapshot.
-- QQQ alpha (primary benchmark) + positions P&L.
+- SPY alpha (primary benchmark) + QQQ alpha (secondary) + positions P&L.
 - Regime, lessons, and plan evolution from research.
 - Always updates "Updated" timestamp and latest metrics even on research-only EOD days.
 - Dark theme matching existing dashboard.html style + Chart.js.
@@ -108,8 +108,19 @@ def read_latest_research() -> Dict[str, Any]:
     if m:
         data["equity"] = float(m.group(1).replace(",", ""))
 
-    # QQQ Alpha
-    m = re.search(r"\*\*QQQ Alpha \(vs start\):\*\* ([\d\.\-]+)%", text)
+    # SPY Alpha (primary) — accept several brief label variants
+    m = re.search(
+        r"\*\*SPY Alpha(?: \(primary(?: vs start)?\))?:\*\* ([\d\.\-]+)%",
+        text,
+    )
+    if m:
+        data["spy_alpha"] = float(m.group(1))
+
+    # QQQ Alpha (secondary)
+    m = re.search(
+        r"\*\*QQQ Alpha(?: \(secondary(?: vs start)?\)| \(vs start\))?:\*\* ([\d\.\-]+)%",
+        text,
+    )
     if m:
         data["qqq_alpha"] = float(m.group(1))
 
@@ -159,10 +170,11 @@ def generate_dashboard() -> str:
     total_pnl = round(equity - PAPER_START, 2)
     our_ret = round((equity - PAPER_START) / PAPER_START * 100, 2)
 
-    # QQQ alpha (prefer from research)
-    qqq_alpha = research.get("qqq_alpha", 0.4)
+    # Dual alpha: SPY primary, QQQ secondary (from research brief)
+    spy_alpha = research.get("spy_alpha", -1.4)
+    qqq_alpha = research.get("qqq_alpha", -0.8)
     regime = research.get("regime", "Normal Bull")
-    bias = research.get("bias", "Growth + Wheel, aim for strong QQQ alpha")
+    bias = research.get("bias", "Cash-secured wheel; beat SPY (primary), QQQ secondary")
 
     opt_bp = float(account.get("options_buying_power", account.get("buying_power", 73000)))
 
@@ -253,7 +265,7 @@ def generate_dashboard() -> str:
 <body>
 
 <h1>Paper Trading Dashboard (Hermes Agents)</h1>
-<p class="subtitle">Updated {now_str} &nbsp;·&nbsp; Started 2026-05-07 &nbsp;·&nbsp; $100,000 starting capital &nbsp;·&nbsp; Primary: QQQ alpha</p>
+<p class="subtitle">Updated {now_str} &nbsp;·&nbsp; Started 2026-05-07 &nbsp;·&nbsp; $100,000 starting capital &nbsp;·&nbsp; Primary: SPY alpha &nbsp;·&nbsp; Secondary: QQQ</p>
 
 <div class="stats">
   <div class="stat">
@@ -269,7 +281,11 @@ def generate_dashboard() -> str:
     <div class="stat-value {'pos' if our_ret >= 0 else 'neg'}">{our_ret:+.2f}%</div>
   </div>
   <div class="stat">
-    <div class="stat-label">QQQ Alpha (vs start)</div>
+    <div class="stat-label">SPY Alpha (primary)</div>
+    <div class="stat-value {'pos' if spy_alpha >= 0 else 'neg'}">{spy_alpha:+.2f}%</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">QQQ Alpha (secondary)</div>
     <div class="stat-value {'pos' if qqq_alpha >= 0 else 'neg'}">{qqq_alpha:+.2f}%</div>
   </div>
   <div class="stat">
@@ -287,7 +303,7 @@ def generate_dashboard() -> str:
   <canvas id="equityChart"></canvas>
 </div>
 
-<h3 style="margin: 1rem 0 0.5rem;">Current Positions (P&amp;L vs QQQ focus)</h3>
+<h3 style="margin: 1rem 0 0.5rem;">Current Positions (P&amp;L — SPY primary measuring stick)</h3>
 <table>
   <thead><tr><th>Symbol</th><th>Qty</th><th>Unrealized %</th><th>Unrealized $</th></tr></thead>
   <tbody>
@@ -339,7 +355,7 @@ new Chart(document.getElementById('equityChart'), {{
 
     out_path = TRADES_DIR / "dashboard.html"
     out_path.write_text(html)
-    print(f"[dashboard] Wrote fresh dashboard: {out_path} (equity ${equity:,.2f}, QQQ alpha {qqq_alpha:+.2f}%)")
+    print(f"[dashboard] Wrote fresh dashboard: {out_path} (equity ${equity:,.2f}, SPYα {spy_alpha:+.2f}%, QQQα {qqq_alpha:+.2f}%)")
     return str(out_path)
 
 
